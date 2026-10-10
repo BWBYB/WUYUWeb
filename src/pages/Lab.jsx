@@ -14,6 +14,7 @@ import StickerPeel from '../components/lab/StickerPeel'
 import Crosshair from '../components/lab/Crosshair'
 import { LiquidButton } from '../components/ui/liquid-glass-button'
 import { useThemeSwitcherTheme } from '../components/ui/theme-switcher-context'
+import LegacyHeaderNav from '../components/lab/LegacyHeaderNav'
 
 const ThreeHero = lazy(() => import('../components/ThreeHero'))
 
@@ -578,6 +579,15 @@ export default function Lab() {
   ]
 
   const playgrounds = [
+    {
+      title: 'Legacy Header Navigation',
+      subtitle: '旧版导航栏备份',
+      component: (
+        <div className="legacy-header-nav-demo">
+          <LegacyHeaderNav />
+        </div>
+      ),
+    },
     { title: 'Magnetic Button', subtitle: '磁力按钮', component: <MagneticButton /> },
     { title: 'Tilt Card', subtitle: '视差卡片', component: <TiltCard /> },
     { title: 'Text Scramble', subtitle: '文字乱码', component: <ScrambleText /> },

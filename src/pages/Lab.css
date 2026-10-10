@@ -250,6 +250,35 @@
   box-shadow: 0 0 10px currentColor;
 }
 
+/* The old header stays available as a contained lab experiment. */
+.legacy-header-nav-demo {
+  position: relative;
+  min-height: 92px;
+  margin: 0 -20px;
+  overflow: hidden;
+}
+
+.legacy-header-nav-demo .header-wrapper {
+  position: absolute;
+  top: 16px;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  min-height: 48px;
+  transform: none;
+}
+
+.legacy-header-nav-demo .header-wrapper.unified {
+  left: 12px;
+  right: 12px;
+}
+
+.legacy-header-nav-demo .header-wrapper.separated {
+  left: 12px;
+  right: 12px;
+}
+
+
 /* ─── Magnetic Button ─── */
 .magnetic-btn {
   padding: 12px 28px;

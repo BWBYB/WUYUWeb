@@ -1,0 +1,226 @@
+/* The top navigation intentionally reuses Theme Switcher's .switcher model. */
+.switcher--navigation {
+  --switcher-height: 63px;
+  --switcher-option-width: 68px;
+  --switcher-gap: 8px;
+  --switcher-capsule-width: 84px;
+  --switcher-third: calc(var(--switcher-step) * 3);
+  position: relative !important;
+  inset: auto !important;
+  z-index: 2;
+  width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
+  max-width: 100%;
+  height: var(--switcher-height);
+  margin: 0 !important;
+  padding: 8px 12px 10px;
+  transform: none !important;
+  overflow: visible;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  color: var(--c-content);
+}
+
+.switcher--navigation .switcher__option {
+  --c: var(--c-content);
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  width: var(--switcher-option-width);
+  height: 100%;
+  padding: 0 6px;
+  gap: 4px;
+  color: var(--c);
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+  transform: none;
+  transform-origin: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.switcher--navigation .switcher__option:hover {
+  --c: var(--c-action);
+  color: var(--c);
+}
+
+.switcher--navigation .navigation-option-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  color: var(--c);
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  transform: none;
+  transform-origin: center;
+}
+
+.switcher--navigation .switcher__option:hover .navigation-option-icon {
+  scale: 1.2;
+}
+
+.switcher--navigation .navigation-option-label {
+  display: inline-block;
+  overflow: hidden;
+  max-width: 64px;
+  color: var(--c);
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+  transform: none;
+  transform-origin: center;
+}
+
+.switcher--navigation .navigation-settings-link {
+  cursor: pointer;
+}
+
+.switcher--navigation .navigation-settings-link:hover {
+  --c: var(--c-action);
+}
+
+/* Use committed React state for the capsule position; the base switcher's
+   :has(:checked) rules must not expose the destination before animation starts. */
+header.site-header > fieldset.switcher.switcher--navigation::after {
+  translate: var(--switcher-nav-translate, 0);
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-active-option="1"]::after {
+  --switcher-nav-translate: 0;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-active-option="2"]::after {
+  --switcher-nav-translate: var(--switcher-step);
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-active-option="3"]::after {
+  --switcher-nav-translate: var(--switcher-trip);
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-active-option="4"]::after {
+  --switcher-nav-translate: var(--switcher-third);
+}
+
+/* The animation is driven by the previous and current committed states, not
+   by the native radio's transient :checked state. */
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="3"][data-active-option="4"]::after {
+  transform-origin: 0;
+  animation: switcher-move-3-4 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="4"][data-active-option="3"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-4-3 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="2"][data-active-option="4"]::after {
+  transform-origin: 0;
+  animation: switcher-move-2-4 var(--switcher-long-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="4"][data-active-option="2"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-4-2 var(--switcher-long-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="1"][data-active-option="4"]::after {
+  transform-origin: 0;
+  animation: switcher-move-1-4 var(--switcher-long-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="4"][data-active-option="1"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-4-1 var(--switcher-long-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="1"][data-active-option="2"]::after {
+  transform-origin: 0;
+  animation: switcher-move-1-2 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="2"][data-active-option="3"]::after {
+  transform-origin: 0;
+  animation: switcher-move-2-3 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="2"][data-active-option="1"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-2-1 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="3"][data-active-option="2"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-3-2 var(--switcher-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="1"][data-active-option="3"]::after {
+  transform-origin: 0;
+  animation: switcher-move-1-3 var(--switcher-long-duration) linear both;
+}
+
+header.site-header > fieldset.switcher.switcher--navigation[data-previous-option="3"][data-active-option="1"]::after {
+  transform-origin: 100%;
+  animation: switcher-move-3-1 var(--switcher-long-duration) linear both;
+}
+
+@keyframes switcher-move-3-4 {
+  0% { translate: var(--switcher-trip); scale: 1 1; }
+  14% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-third); scale: 1 1; }
+}
+
+@keyframes switcher-move-4-3 {
+  0% { translate: var(--switcher-third); scale: 1 1; }
+  14% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-trip) + var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-trip); scale: 1 1; }
+}
+
+@keyframes switcher-move-2-4 {
+  0% { translate: var(--switcher-step); scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-third); scale: 1 1; }
+}
+
+@keyframes switcher-move-4-2 {
+  0% { translate: var(--switcher-third); scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) + var(--switcher-trip) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-step); scale: 1 1; }
+}
+
+@keyframes switcher-move-1-4 {
+  0% { translate: 0; scale: 1 1; }
+  14% { translate: calc(var(--switcher-third) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-third) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-third) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-third) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-third); scale: 1 1; }
+}
+
+@keyframes switcher-move-4-1 {
+  0% { translate: var(--switcher-third); scale: 1 1; }
+  14% { translate: calc(var(--switcher-third) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-third) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-third) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-third) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: 0; scale: 1 1; }
+}
+
