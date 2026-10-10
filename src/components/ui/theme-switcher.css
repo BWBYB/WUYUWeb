@@ -1,0 +1,296 @@
+/* The visual rules below follow the public CodePen implementation. */
+.theme-provider {
+  --c-glass: #bbbbbc;
+  --c-light: #fff;
+  --c-dark: #000;
+  --c-content: #224;
+  --c-action: #0052f5;
+  --c-bg: #e8e8e9;
+  --glass-reflex-dark: 1;
+  --glass-reflex-light: 1;
+  --saturation: 150%;
+  color: var(--c-content);
+  font-family: "DM Sans", sans-serif;
+  font-optical-sizing: auto;
+  transition: background 0.4s cubic-bezier(1, 0, 0.4, 1),
+    color 0.4s cubic-bezier(1, 0, 0.4, 1);
+}
+
+.theme-provider[data-theme="light"] { background: var(--c-bg); }
+
+.theme-provider[data-theme="dark"] {
+  --c-content: #e1e1e1;
+  --c-action: #03d5ff;
+  --c-bg: #1b1b1d;
+  --glass-reflex-dark: 2;
+  --glass-reflex-light: 0.3;
+}
+
+.theme-provider[data-theme="dim"] {
+  --c-light: #99deff;
+  --c-dark: #20001b;
+  --c-glass: #ff7ab2;
+  --c-content: #d5dbe2;
+  --c-action: #ff48a9;
+  --c-bg: #152433;
+  --glass-reflex-dark: 2;
+  --glass-reflex-light: 0.7;
+  --saturation: 200%;
+}
+
+/* Lab supplies the surrounding card; keep the official theme variables local. */
+.theme-switcher-demo.theme-provider {
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.switcher {
+  --switcher-duration: 0.72s;
+  --switcher-long-duration: 0.86s;
+  --switcher-pre-stretch: 1.08;
+  --switcher-stretch: 1.22;
+  --switcher-accel-distance: 0.24;
+  --switcher-cruise-distance: 0.76;
+  --switcher-settle-distance: 0.95;
+  --switcher-early-distance: 0.05;
+  --switcher-glass-opacity: 12%;
+  --switcher-active-opacity: 36%;
+  --switcher-blur: 8px;
+  --switcher-saturation: 150%;
+  --switcher-height: 70px;
+  --switcher-option-width: 68px;
+  --switcher-gap: 8px;
+  --switcher-capsule-width: 84px;
+  --switcher-step: calc(var(--switcher-option-width) + var(--switcher-gap));
+  --switcher-trip: calc(var(--switcher-step) * 2);
+  z-index: 1000;
+  box-sizing: border-box;
+  width: calc(var(--switcher-option-width) * 3 + var(--switcher-gap) * 2 + 24px);
+  max-width: calc(100vw - 24px);
+  height: var(--switcher-height);
+  margin: 0;
+  padding: 8px 12px 10px;
+  display: flex;
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  align-items: center;
+  gap: var(--switcher-gap);
+  border: none;
+  border-radius: 99em;
+  background-color: color-mix(in srgb, var(--c-glass) var(--switcher-glass-opacity), transparent);
+  -webkit-backdrop-filter: blur(var(--switcher-blur)) saturate(var(--switcher-saturation));
+  backdrop-filter: blur(var(--switcher-blur)) saturate(var(--switcher-saturation));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0 1px 5px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0 6px 16px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  transition: background-color 0.4s cubic-bezier(1, 0, 0.4, 1),
+    box-shadow 0.4s cubic-bezier(1, 0, 0.4, 1);
+}
+
+@supports not (background-color: color-mix(in srgb, white, transparent)) {
+  .switcher {
+    background-color: rgb(187 187 188 / 12%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%), 0 6px 16px rgb(0 0 0 / 8%);
+  }
+}
+
+.switcher--inline {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  margin: 0 auto;
+  transform: none;
+}
+
+.switcher__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.switcher__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  white-space: nowrap;
+}
+
+.switcher__icon {
+  width: 100%;
+  display: block;
+  transition: scale 0.2s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.switcher__option {
+  --c: var(--c-content);
+  box-sizing: border-box;
+  width: var(--switcher-option-width);
+  height: 100%;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99em;
+  opacity: 1;
+  transition: all 0.16s;
+}
+
+.switcher__option:hover { --c: var(--c-action); cursor: pointer; }
+.switcher__option:hover .switcher__icon { scale: 1.2; }
+.switcher__option:has(input:checked) { --c: var(--c-content); cursor: auto; }
+.switcher__option:has(input:checked) .switcher__icon { scale: 1; }
+
+.switcher::after {
+  z-index: -1;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: var(--switcher-capsule-width);
+  height: calc(100% - 10px);
+  display: block;
+  content: "";
+  border-radius: 99em;
+  background-color: color-mix(in srgb, var(--c-glass) var(--switcher-active-opacity), transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2px 1px 0 -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0 3px 6px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+}
+
+.switcher:has(input[c-option="1"]:checked)::after {
+  translate: 0;
+}
+
+.switcher:has(input[c-option="2"]:checked)::after {
+  translate: var(--switcher-step);
+}
+
+.switcher:has(input[c-option="3"]:checked)::after {
+  translate: var(--switcher-trip);
+}
+
+/* The active glass travels from the previous option instead of appearing at its destination. */
+.switcher[c-previous="1"]:has(input[c-option="2"]:checked)::after {
+  transform-origin: 0;
+  animation: switcher-move-1-2 var(--switcher-duration) linear both;
+}
+
+.switcher[c-previous="2"]:has(input[c-option="1"]:checked)::after {
+  transform-origin: 100%;
+  animation: switcher-move-2-1 var(--switcher-duration) linear both;
+}
+
+.switcher[c-previous="2"]:has(input[c-option="3"]:checked)::after {
+  transform-origin: 0;
+  animation: switcher-move-2-3 var(--switcher-duration) linear both;
+}
+
+.switcher[c-previous="3"]:has(input[c-option="2"]:checked)::after {
+  transform-origin: 100%;
+  animation: switcher-move-3-2 var(--switcher-duration) linear both;
+}
+
+.switcher[c-previous="1"]:has(input[c-option="3"]:checked)::after {
+  transform-origin: 0;
+  animation: switcher-move-1-3 var(--switcher-long-duration) linear both;
+}
+
+.switcher[c-previous="3"]:has(input[c-option="1"]:checked)::after {
+  transform-origin: 100%;
+  animation: switcher-move-3-1 var(--switcher-long-duration) linear both;
+}
+
+.switcher__filter {
+  z-index: -1;
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes switcher-move-1-2 {
+  0% { translate: 0; scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-step); scale: 1 1; }
+}
+
+@keyframes switcher-move-2-1 {
+  0% { translate: var(--switcher-step); scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: 0; scale: 1 1; }
+}
+
+@keyframes switcher-move-2-3 {
+  0% { translate: var(--switcher-step); scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-trip); scale: 1 1; }
+}
+
+@keyframes switcher-move-3-2 {
+  0% { translate: var(--switcher-trip); scale: 1 1; }
+  14% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-step) + var(--switcher-step) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-step); scale: 1 1; }
+}
+
+@keyframes switcher-move-1-3 {
+  0% { translate: 0; scale: 1 1; }
+  14% { translate: calc(var(--switcher-trip) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-trip) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-trip) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-trip) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: var(--switcher-trip); scale: 1 1; }
+}
+
+@keyframes switcher-move-3-1 {
+  0% { translate: var(--switcher-trip); scale: 1 1; }
+  14% { translate: calc(var(--switcher-trip) * var(--switcher-settle-distance)); scale: var(--switcher-pre-stretch) 1; }
+  30% { translate: calc(var(--switcher-trip) * var(--switcher-cruise-distance)); scale: var(--switcher-stretch) 1; }
+  64% { translate: calc(var(--switcher-trip) * var(--switcher-accel-distance)); scale: var(--switcher-stretch) 1; }
+  84% { translate: calc(var(--switcher-trip) * var(--switcher-early-distance)); scale: var(--switcher-pre-stretch) 1; }
+  100% { translate: 0; scale: 1 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switcher,
+  .switcher::after,
+  .switcher__icon { transition: none; animation: none; }
+}

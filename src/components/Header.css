@@ -1,0 +1,904 @@
+/* ═══════════════════════════════════════
+   Liquid Glass Header — Morphing Nav
+   ═══════════════════════════════════════ */
+
+/* Wrapper — always has glass, unified: compact; separated: stretched thin */
+.header-wrapper {
+  --morph-duration: 1.8s;
+  --logo-duration: 2.5s;
+  --fade-duration: 1.5s;
+  --label-duration: 2s;
+  --surface-duration: 1.1s;
+  --edge-duration: 0.8s;
+  --panel-duration: 0.28s;
+  --morph-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  overflow: hidden;
+  padding: 6px 10px 6px 8px;
+  border-radius: 50px;
+  background: rgba(20, 20, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  transition:
+    left var(--morph-duration) var(--morph-easing),
+    right var(--morph-duration) var(--morph-easing),
+    padding var(--morph-duration) var(--morph-easing),
+    border-radius var(--morph-duration) var(--morph-easing),
+    background-color var(--morph-duration) ease,
+    border-color var(--morph-duration) ease,
+    box-shadow var(--morph-duration) ease,
+    backdrop-filter var(--morph-duration) ease;
+  will-change: left, right, padding, border-radius;
+}
+
+.header-pointer-highlight {
+  position: absolute;
+  top: var(--pointer-y, 50%);
+  left: var(--pointer-x, 50%);
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(130, 170, 255, 0.08) 32%,
+    transparent 72%
+  );
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  opacity: var(--pointer-opacity, 0);
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+/* Unified: one big capsule with a 10% viewport inset */
+.header-wrapper.unified {
+  left: 10%;
+  right: 10%;
+  width: auto;
+  justify-content: space-between;
+  pointer-events: all;
+}
+
+/* Separated: stretched, glass only behind children */
+.header-wrapper.separated {
+  left: 16px;
+  right: 16px;
+  align-items: flex-start;
+  padding: 0 16px;
+  border-radius: 50px;
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  justify-content: space-between;
+  overflow: visible;
+}
+
+/* When settings opens from the unified capsule, let the shared surface fade
+   away quickly while the logo/nav geometry keeps the long morph timing. This
+   prevents the old full-width capsule from becoming a large ghost rectangle. */
+.header-wrapper.settings-open {
+  background: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  transition:
+    left var(--morph-duration) var(--morph-easing),
+    right var(--morph-duration) var(--morph-easing),
+    padding var(--morph-duration) var(--morph-easing),
+    border-radius var(--morph-duration) var(--morph-easing),
+    background-color var(--panel-duration) ease,
+    border-color var(--panel-duration) ease,
+    box-shadow var(--panel-duration) ease,
+    backdrop-filter var(--panel-duration) ease;
+}
+
+/* Keep the logo anchored to the top edge while the unified capsule finishes
+   its closing morph. This avoids a discrete center-alignment jump when the
+   tall settings surface has just collapsed. */
+.header-wrapper.settings-closing {
+  align-items: flex-start;
+}
+
+/* ═══════════════════════════════════════
+   Liquid Glass Effects (on wrapper, unified only)
+   ═══════════════════════════════════════ */
+
+.nav-liquid-highlight {
+  position: absolute;
+  top: var(--pointer-y, 50%);
+  left: var(--pointer-x, 50%);
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.06) 38%,
+    transparent 72%
+  );
+  transform: translate(-50%, -50%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: var(--pointer-opacity, 0);
+  transition: opacity 0.24s ease;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+.nav-liquid-chromatic {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(120, 180, 255, 0.05) 0%,
+    rgba(255, 120, 200, 0.03) 40%,
+    rgba(120, 255, 200, 0.03) 60%,
+    rgba(200, 120, 255, 0.05) 100%
+  );
+  pointer-events: none;
+  animation: nav-chromatic 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes nav-chromatic {
+  0%, 100% { filter: hue-rotate(0deg); opacity: 0.4; }
+  50% { filter: hue-rotate(20deg); opacity: 0.7; }
+}
+
+.nav-liquid-specular {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35) 40%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.35) 60%,
+    transparent
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Liquid effects stay clipped to the same capsule as the nav surface. */
+.nav-liquid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* The unified state uses one highlight across the complete glass capsule. */
+.unified .nav-liquid-highlight {
+  opacity: 0;
+}
+
+.separated .header-pointer-highlight {
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════
+   Logo — WUYU text → W circle
+   ═══════════════════════════════════════ */
+
+.header-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  z-index: 2;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 24px;
+  transition:
+    width var(--logo-duration) var(--morph-easing),
+    height var(--logo-duration) var(--morph-easing),
+    border-radius var(--logo-duration) var(--morph-easing),
+    background-color var(--morph-duration) ease,
+    padding var(--logo-duration) var(--morph-easing),
+    box-shadow var(--logo-duration) ease,
+    border-color var(--logo-duration) ease,
+    backdrop-filter var(--logo-duration) ease;
+}
+
+/* Unified: no separate background (part of big capsule) */
+.unified .header-logo {
+  background: transparent;
+  padding: 6px 10px;
+  width: 72px;
+  height: 36px;
+}
+
+/* Separated: own glass circle */
+.separated .header-logo {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(20, 20, 30, 0.6);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  justify-content: center;
+  pointer-events: all;
+  transition: none;
+}
+
+.separated .logo-uyu {
+  transition: none;
+}
+
+.logo-w {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.logo-uyu {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 60px;
+  opacity: 1;
+  margin-left: 2px;
+  transition:
+    max-width var(--logo-duration) cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity var(--fade-duration) ease,
+    margin var(--label-duration) ease;
+}
+
+.separated .logo-uyu {
+  max-width: 0;
+  opacity: 0;
+  margin-left: 0;
+}
+
+/* ═══════════════════════════════════════
+   Divider between logo and nav (unified only)
+   ═══════════════════════════════════════ */
+
+.header-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  margin: 0 4px;
+  transition: opacity var(--fade-duration) ease, width var(--fade-duration) ease, margin var(--fade-duration) ease;
+}
+
+.separated .header-divider {
+  width: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════
+   Navigation Links
+   ═══════════════════════════════════════ */
+
+.header-nav {
+  --nav-item-size: 36px;
+  --nav-item-width: 84px;
+  --nav-icon-size: 18px;
+  --nav-gap: 4px;
+  --nav-inline-padding: 0px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+  z-index: 2;
+  margin-left: auto;
+  width: calc(5 * var(--nav-item-width) + 4 * var(--nav-gap) + 2px + 2 * var(--nav-inline-padding));
+  height: calc(var(--nav-item-size) + 2px);
+  padding: 0 var(--nav-inline-padding);
+  border-radius: 50px;
+  background: transparent;
+  border: 1px solid transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    gap var(--morph-duration) var(--morph-easing),
+    padding var(--morph-duration) var(--morph-easing),
+    border-radius var(--morph-duration) var(--morph-easing),
+    background-color var(--surface-duration) ease,
+    border-color var(--edge-duration) ease,
+    box-shadow var(--edge-duration) ease,
+    backdrop-filter var(--surface-duration) ease,
+    width var(--morph-duration) var(--morph-easing),
+    height var(--morph-duration) var(--morph-easing);
+  will-change: padding, border-radius;
+}
+
+.header-nav.settings-open {
+  z-index: 120;
+}
+
+.separated .header-nav {
+  --nav-gap: 1px;
+  --nav-inline-padding: 6px;
+  pointer-events: all;
+  width: calc(5 * var(--nav-item-size) + 4 * var(--nav-gap) + 2px + 2 * var(--nav-inline-padding));
+  padding: 4px var(--nav-inline-padding);
+  height: 46px;
+  border-radius: 50px;
+  background: rgba(20, 20, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  transition:
+    gap var(--morph-duration) var(--morph-easing),
+    padding var(--morph-duration) var(--morph-easing),
+    border-radius var(--morph-duration) var(--morph-easing),
+    background-color var(--surface-duration) ease,
+    border-color var(--edge-duration) ease,
+    box-shadow var(--edge-duration) ease,
+    backdrop-filter var(--surface-duration) ease,
+    width var(--morph-duration) var(--morph-easing),
+    height var(--morph-duration) var(--morph-easing);
+}
+
+.separated .header-nav.settings-open {
+  width: min(320px, calc(100vw - 32px));
+  height: 286px;
+  padding: 0;
+  border-radius: 26px;
+  overflow: hidden;
+  background: rgba(20, 20, 30, 0.72);
+}
+
+.separated .header-nav.settings-open > .header-nav-link:not(.settings-btn) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px) scale(0.86);
+}
+
+.separated .header-nav.settings-open .settings-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 16;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+}
+
+.separated .header-nav.settings-open .settings-btn .header-nav-icon {
+  transform: translateX(-1px);
+}
+
+/* The demo settings surface keeps the nav width fixed and unfolds below it. */
+.header-settings-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: grid;
+  width: auto;
+  max-height: none;
+  box-sizing: border-box;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+  overflow: hidden;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.94);
+  transform-origin: top right;
+  transition:
+    opacity var(--panel-duration) ease,
+    visibility 0s linear var(--morph-duration),
+    transform var(--morph-duration) var(--morph-easing);
+}
+
+.separated .header-settings-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.settings-panel-heading,
+.settings-control,
+.settings-control-copy,
+.settings-range-wrap {
+  min-width: 0;
+}
+
+.settings-panel-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding-right: 38px;
+}
+
+.settings-panel-heading-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.settings-panel-detail-link {
+  color: rgba(180, 195, 255, 0.78);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.settings-panel-detail-link:hover {
+  color: #fff;
+}
+
+.settings-panel-caption {
+  color: rgba(180, 195, 255, 0.66);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.settings-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+}
+
+.settings-control-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.settings-control-copy > span {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.2;
+}
+
+.settings-control-copy small {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.settings-switch {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.settings-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.settings-switch-track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background-color 0.24s ease, border-color 0.24s ease;
+}
+
+.settings-switch-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+  transition: transform 0.28s var(--morph-easing), background-color 0.24s ease;
+}
+
+.settings-checkbox:checked + .settings-switch-track {
+  border-color: rgba(160, 180, 255, 0.48);
+  background: rgba(112, 130, 255, 0.34);
+}
+
+.settings-checkbox:checked + .settings-switch-track .settings-switch-thumb {
+  background: #f5f6ff;
+  transform: translateX(14px);
+}
+
+.settings-checkbox:focus-visible + .settings-switch-track,
+.settings-select:focus-visible,
+.settings-range:focus-visible {
+  outline: 2px solid rgba(160, 180, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.settings-select-control {
+  align-items: end;
+}
+
+.settings-select-wrap {
+  position: relative;
+  flex: 0 0 92px;
+}
+
+.settings-select-wrap::after {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  color: rgba(255, 255, 255, 0.6);
+  content: '⌄';
+  font-size: 13px;
+  pointer-events: none;
+  transform: translateY(-56%);
+}
+
+.settings-select {
+  width: 100%;
+  padding: 7px 26px 7px 9px;
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.settings-select option {
+  background: #25253a;
+  color: #f5f6ff;
+}
+
+.settings-range-control {
+  align-items: end;
+}
+
+.settings-range-wrap {
+  display: flex;
+  align-items: center;
+  flex: 0 1 104px;
+  gap: 8px;
+}
+
+.settings-range {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  border-radius: 999px;
+  outline: none;
+  background: linear-gradient(90deg, rgba(160, 180, 255, 0.84) 0 72%, rgba(255, 255, 255, 0.14) 72% 100%);
+  cursor: ew-resize;
+}
+
+.settings-speed-range {
+  background: linear-gradient(
+    90deg,
+    rgba(160, 180, 255, 0.84) 0 var(--range-progress, 0%),
+    rgba(255, 255, 255, 0.14) var(--range-progress, 0%) 100%
+  );
+}
+
+.settings-range::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  appearance: none;
+  border: 2px solid rgba(223, 228, 255, 0.96);
+  border-radius: 50%;
+  background: #7888e8;
+  box-shadow: 0 0 10px rgba(130, 150, 255, 0.5);
+}
+
+.settings-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(223, 228, 255, 0.96);
+  border-radius: 50%;
+  background: #7888e8;
+  box-shadow: 0 0 10px rgba(130, 150, 255, 0.5);
+}
+
+.settings-range-value {
+  min-width: 19px;
+  color: rgba(180, 195, 255, 0.76);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.header-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-item-width);
+  min-width: var(--nav-item-width);
+  height: var(--nav-item-size);
+  gap: 4px;
+  padding: 0 8px;
+  border-radius: 30px;
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition:
+    width var(--morph-duration) var(--morph-easing),
+    min-width var(--morph-duration) var(--morph-easing),
+    padding var(--morph-duration) var(--morph-easing),
+    gap var(--morph-duration) var(--morph-easing),
+    font-size var(--morph-duration) var(--morph-easing),
+    color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  z-index: 3;
+}
+
+.separated .header-nav-link {
+  width: var(--nav-item-size);
+  min-width: var(--nav-item-size);
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+
+.header-nav-link:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.header-nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.header-nav-active-indicator {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(160, 180, 255, 0.8);
+  box-shadow: 0 0 8px rgba(160, 180, 255, 0.65);
+  pointer-events: none;
+  animation: nav-indicator-pulse 2s ease-in-out infinite;
+}
+
+@keyframes nav-indicator-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.72; }
+  50% { transform: translateX(-50%) scale(1.28); opacity: 1; }
+}
+
+.header-nav-icon {
+  font-size: 15px;
+  line-height: var(--nav-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+  flex: 0 0 var(--nav-icon-size);
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.3s ease;
+}
+
+.header-nav-link.active .header-nav-icon {
+  opacity: 1;
+}
+
+.header-nav-link:hover .header-nav-icon {
+  transform: scale(1.1);
+}
+
+.settings-btn {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.settings-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.settings-btn.is-open {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.settings-btn.is-open .header-nav-icon {
+  transform: translateX(-1px);
+}
+
+.settings-btn.is-open:hover .header-nav-icon {
+  transform: translateX(-1px) scale(1.08);
+}
+
+.header-nav-label {
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  max-width: 60px;
+  opacity: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+  transition:
+    max-width var(--label-duration) cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity var(--fade-duration) ease;
+}
+
+.header-nav-link.active .header-nav-label {
+  font-weight: 500;
+}
+
+/* Hide labels when separated for condensed icon-only capsule */
+.separated .header-nav-label {
+  max-width: 0;
+  opacity: 0;
+}
+
+.separated .header-nav-icon {
+  opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════ */
+
+/* Medium screens: tighten buttons */
+@media (max-width: 900px) {
+  .header-wrapper.unified {
+    left: 5%;
+    right: 5%;
+    width: auto;
+  }
+  .header-nav {
+    --nav-item-width: 72px;
+    --nav-gap: 3px;
+  }
+  .header-nav-link {
+    padding: 0 8px;
+    gap: 4px;
+    font-size: 13px;
+  }
+  .header-nav-label {
+    max-width: 42px;
+  }
+}
+
+/* Narrow screens: icon-only, compact */
+@media (max-width: 600px) {
+  .header-wrapper.unified {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    padding: 4px 6px;
+  }
+  .unified .header-logo {
+    padding: 4px 6px;
+    width: 36px;
+    height: 36px;
+  }
+  .header-nav {
+    --nav-item-width: 36px;
+    --nav-gap: 2px;
+  }
+  .header-nav-link {
+    padding: 0;
+    gap: 0;
+  }
+  .header-nav-icon {
+    opacity: 0.9;
+  }
+  .header-nav-label {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .logo-uyu {
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+  }
+  .header-divider {
+    margin: 0 2px;
+  }
+
+  .separated .header-nav.settings-open {
+    width: min(320px, calc(100vw - 119px));
+  }
+}
+
+.header-nav-link:focus-visible {
+  outline: 2px solid rgba(160, 180, 255, 0.9);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-nav-active-indicator,
+  .nav-liquid-chromatic {
+    animation: none;
+  }
+
+  .nav-liquid-highlight {
+    transition: none;
+  }
+
+  .header-settings-panel,
+  .settings-switch-track,
+  .settings-switch-thumb {
+    transition: none;
+  }
+}
