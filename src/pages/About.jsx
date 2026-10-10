@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import '../styles/effects.css'
 import './About.css'
 
@@ -67,6 +68,16 @@ export default function About() {
             用 React + Vite 搭建，暗色主题 + Bento Grid 布局。
             用来记录我的学习心得和生活碎片。希望若干年后回头看，这些文字能让我想起现在的自己。
           </p>
+          <div className="about-timeline-actions">
+            <Link className="about-timeline-link" to="/timeline">
+              查看更新记录 <span aria-hidden="true">→</span>
+            </Link>
+            {import.meta.env.DEV && (
+              <Link className="about-timeline-link" to="/updates-editor">
+                本地编辑 <span aria-hidden="true">✎</span>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -163,6 +163,23 @@
   margin: 0;
 }
 
+.about-timeline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.about-timeline-link {
+  display: inline-flex;
+  gap: 8px;
+  color: var(--accent-2);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.about-timeline-link:hover { color: var(--text-h); }
+
 @media (max-width: 768px) {
   .about-title {
     font-size: 28px;

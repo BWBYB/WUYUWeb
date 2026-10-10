@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -8,9 +9,14 @@ import Player from './pages/Player'
 import About from './pages/About'
 import Settings from './pages/Settings'
 import Archive from './pages/Archive'
+import Timeline from './pages/Timeline'
 import { getPostByLegacyId } from './lib/content/posts'
 import './styles/effects.css'
 import './App.css'
+
+const UpdatesEditor = import.meta.env.DEV
+  ? lazy(() => import('./pages/UpdatesEditor'))
+  : null
 
 function LegacyPostRedirect() {
   const { id } = useParams()
@@ -28,6 +34,13 @@ function App() {
           <Route path="/blog/:slug" element={<Post />} />
           <Route path="/post/:id" element={<LegacyPostRedirect />} />
           <Route path="/archive" element={<Archive />} />
+          <Route path="/timeline" element={<Timeline />} />
+          {UpdatesEditor && (
+            <Route
+              path="/updates-editor"
+              element={<Suspense fallback={<div className="route-loading">正在加载编辑器…</div>}><UpdatesEditor /></Suspense>}
+            />
+          )}
           <Route path="/lab" element={<Lab />} />
           <Route path="/player" element={<Player />} />
           <Route path="/about" element={<About />} />
