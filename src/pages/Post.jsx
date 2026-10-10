@@ -1,11 +1,44 @@
-import { useParams, Link } from 'react-router-dom'
-import { getPostById } from '../data/posts'
+import { useEffect, useRef } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { getAdjacentPosts, getPostBySlug } from '../lib/content/posts'
 import '../styles/effects.css'
 import './Post.css'
 
+function formatReadingTime(wordCount) {
+  const minutes = Math.max(1, Math.ceil(wordCount / 300))
+  return `${minutes} 分钟阅读`
+}
+
 export default function Post() {
-  const { id } = useParams()
-  const post = getPostById(id)
+  const { slug } = useParams()
+  const post = getPostBySlug(slug)
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    const container = contentRef.current
+    if (!container) return undefined
+
+    const buttons = [...container.querySelectorAll('pre')].map((pre) => {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.className = 'code-copy-button'
+      button.textContent = '复制'
+      button.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.textContent || ''
+        try {
+          await navigator.clipboard.writeText(code)
+          button.textContent = '已复制'
+          window.setTimeout(() => { button.textContent = '复制' }, 1400)
+        } catch {
+          button.textContent = '复制失败'
+        }
+      })
+      pre.append(button)
+      return { pre, button }
+    })
+
+    return () => buttons.forEach(({ pre, button }) => pre.removeChild(button))
+  }, [post?.content])
 
   if (!post) {
     return (
@@ -16,7 +49,7 @@ export default function Post() {
     )
   }
 
-  const paragraphs = post.content.split('\n\n').filter(p => p.trim())
+  const { previous, next } = getAdjacentPosts(post.slug)
 
   return (
     <article className="post-page fade-in">
@@ -24,49 +57,51 @@ export default function Post() {
 
       <header className="post-header">
         <div className="post-header-meta">
-          <span className="post-header-category">{post.category}</span>
-          <time className="post-header-date">{post.date}</time>
+          {post.category && <span className="post-header-category">{post.category}</span>}
+          <time className="post-header-date" dateTime={post.date}>{post.date}</time>
+          <span className="post-header-date">{formatReadingTime(post.wordCount)}</span>
         </div>
         <h1 className="post-header-title">{post.title}</h1>
+        {post.summary && <p className="post-header-summary">{post.summary}</p>}
+        {post.tags.length > 0 && (
+          <div className="post-header-tags" aria-label="文章标签">
+            {post.tags.map((tag) => <span key={tag}>#{tag}</span>)}
+          </div>
+        )}
+        {post.cover && <img className="post-cover" src={post.cover} alt="" />}
       </header>
 
-      <div className="post-content glass-card">
-        <div className="post-content-inner">
-          {paragraphs.map((p, i) => {
-            if (p.startsWith('## ')) {
-              return <h2 key={i}>{p.replace('## ', '')}</h2>
-            }
-            if (p.startsWith('### ')) {
-              return <h3 key={i}>{p.replace('### ', '')}</h3>
-            }
-            if (p.startsWith('```')) {
-              const lines = p.split('\n')
-              const code = lines.slice(1, -1).join('\n')
-              return <pre key={i}><code>{code}</code></pre>
-            }
-            if (p.includes('\n- ') || p.startsWith('- ')) {
-              const items = p.split('\n').filter(l => l.startsWith('- ')).map(l => l.replace('- ', ''))
-              return (
-                <ul key={i}>
-                  {items.map((item, j) => <li key={j}>{item}</li>)}
-                </ul>
-              )
-            }
-            if (p.match(/^\d+\./)) {
-              const items = p.split('\n').filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, ''))
-              return (
-                <ol key={i}>
-                  {items.map((item, j) => <li key={j}>{item}</li>)}
-                </ol>
-              )
-            }
-            const formatted = p
-              .replace(/`([^`]+)`/g, '<code>$1</code>')
-              .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-            return <p key={i} dangerouslySetInnerHTML={{ __html: formatted }} />
-          })}
+      <div className="post-layout">
+        {post.toc.length > 0 && (
+          <aside className="post-toc" aria-label="文章目录">
+            <strong>目录</strong>
+            <nav>
+              {post.toc.map((item) => (
+                <a key={item.id} className={`toc-level-${item.level}`} href={`#${item.id}`}>
+                  {item.title}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        )}
+
+        <div className="post-content glass-card">
+          <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
       </div>
+
+      <nav className="post-navigation" aria-label="文章导航">
+        {previous ? (
+          <Link to={`/blog/${previous.slug}`} className="post-navigation-link">
+            <span>上一篇</span><strong>{previous.title}</strong>
+          </Link>
+        ) : <span />}
+        {next ? (
+          <Link to={`/blog/${next.slug}`} className="post-navigation-link post-navigation-next">
+            <span>下一篇</span><strong>{next.title}</strong>
+          </Link>
+        ) : <span />}
+      </nav>
 
       <footer className="post-footer">
         <Link to="/blog" className="post-footer-link">&larr; 阅读更多文章</Link>

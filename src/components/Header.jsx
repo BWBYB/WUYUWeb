@@ -39,7 +39,7 @@ export default function Header() {
     if (path === '/') return location.pathname === '/'
     return location.pathname === path ||
       location.pathname.startsWith(`${path}/`) ||
-      (path === '/blog' && location.pathname.startsWith('/post/'))
+      (path === '/blog' && (location.pathname.startsWith('/post/') || location.pathname.startsWith('/archive')))
   }
 
   const setPointerPosition = (event) => {

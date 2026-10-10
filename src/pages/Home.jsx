@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { posts } from '../data/posts'
+import { posts } from '../lib/content/posts'
 import '../styles/effects.css'
 import './Home.css'
 
@@ -213,7 +213,7 @@ export default function Home() {
           </div>
           <div className="card-posts">
             {recentPosts.map(post => (
-              <Link key={post.id} to={`/post/${post.id}`} className="card-post-item">
+              <Link key={post.slug} to={`/blog/${post.slug}`} className="card-post-item">
                 <div className="card-post-meta">
                   <span className="card-post-category">{post.category}</span>
                   <time className="card-post-date">{post.date}</time>

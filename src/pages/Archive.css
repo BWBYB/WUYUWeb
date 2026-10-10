@@ -1,0 +1,20 @@
+.archive-page {
+  padding-top: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.archive-header { margin-bottom: 40px; }
+.archive-title { margin: 0 0 8px; color: var(--text-h); font-size: 36px; }
+.archive-desc { margin: 0; color: var(--text); }
+.archive-groups { display: grid; gap: 32px; }
+.archive-group h2 { margin: 0 0 12px; color: var(--text-h); font-size: 18px; font-weight: 500; }
+.archive-list { display: grid; gap: 8px; }
+.archive-item { display: flex; justify-content: space-between; gap: 20px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; color: var(--text); text-decoration: none; transition: border-color .2s, background .2s; }
+.archive-item:hover { border-color: var(--border-hover); background: var(--bg-card); color: var(--text-h); }
+.archive-item time { flex: none; color: var(--text-muted); font-size: 13px; }
+
+@media (max-width: 600px) {
+  .archive-title { font-size: 28px; }
+  .archive-item { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
