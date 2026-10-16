@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
 import { easingFromControls, scaledDuration } from './ui/nav-settings'
 import NavigationSwitcher from './ui/NavigationSwitcher'
@@ -7,9 +7,13 @@ import './Header.css'
 
 export default function Header() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const { navSettings } = useNavSettings()
   const [isSplit, setIsSplit] = useState(false)
+  // 设置小窗口（分裂态点 ⚙ 展开，右侧导航条向下拉伸）
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const navPillRef = useRef(null)
 
   // 「关于」页（点 logo 进入）：logo 文字亮起。
   const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
@@ -21,7 +25,10 @@ export default function Header() {
 
     const update = () => {
       ticking = false
-      setIsSplit(window.scrollY >= navSettings.stretchThreshold)
+      const nextSplit = window.scrollY >= navSettings.stretchThreshold
+      setIsSplit(nextSplit)
+      // 分裂→合并时自动关闭设置小窗口（合并态下不展示面板）
+      if (!nextSplit) setIsSettingsOpen(false)
     }
 
     const onScroll = () => {
@@ -34,6 +41,27 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [navSettings.stretchThreshold])
+
+  // 点面板外部关闭（点击目标不在 nav-pill 内则关闭）
+  useEffect(() => {
+    if (!isSettingsOpen) return
+    const onPointerDown = (e) => {
+      if (navPillRef.current && !navPillRef.current.contains(e.target)) {
+        setIsSettingsOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [isSettingsOpen])
+
+  const toggleSettings = () => {
+    if (!isSplit) {
+      // 合并态：保持原行为，直接跳转详细设置页
+      navigate('/settings')
+      return
+    }
+    setIsSettingsOpen((prev) => !prev)
+  }
 
   const headerStyle = {
     '--nav-height': `${settings.height * 0.9}px`,
@@ -61,6 +89,7 @@ export default function Header() {
       style={headerStyle}
       data-on-about={isAboutPage ? 'true' : undefined}
       data-hide-capsule={isAboutPage || isSettingsPage ? 'true' : undefined}
+      data-settings-open={isSettingsOpen ? 'true' : undefined}
     >
       <div className="logo-pill">
         <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">
@@ -68,8 +97,27 @@ export default function Header() {
         </Link>
       </div>
 
-      <div className="nav-pill">
-        <NavigationSwitcher />
+      <div
+        className="nav-pill"
+        ref={navPillRef}
+        data-settings-open={isSettingsOpen ? 'true' : undefined}
+      >
+        <NavigationSwitcher
+          isSplit={isSplit}
+          onToggleSettings={toggleSettings}
+        />
+
+        {/* 设置小窗口：分裂态点 ⚙ 展开，右侧导航条向下拉伸 */}
+        <div className="nav-settings-panel" data-open={isSettingsOpen ? 'true' : undefined}>
+          <div className="nav-settings-list">
+            <div className="nav-settings-item">动画快慢</div>
+            <div className="nav-settings-item">主题</div>
+            <div className="nav-settings-item">其他</div>
+          </div>
+          <Link to="/settings" className="nav-settings-detail">
+            详细设置 <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </header>
   )

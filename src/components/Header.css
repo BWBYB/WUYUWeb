@@ -36,7 +36,10 @@
   left: 50%;
   z-index: 100;
   display: flex;
-  height: var(--nav-height, 63px);
+  /* 不写死 height（对齐 Legacy header-wrapper）：高度由最高子元素撑开。
+     常态 = nav-pill 的 fieldset 高度（--nav-height 63px）；
+     打开设置面板时 nav-pill 长高，header 跟随变高，顶部（fixed top:16px）不动。
+     之前写死 height + align-items:center 会让长高的 nav-pill 上下同时凸出。 */
   width: min(945px, calc(90vw - 49px));
   align-items: center;
   justify-content: space-between;
@@ -78,6 +81,12 @@
 /* 分裂态：父级胶囊变宽贴两端，玻璃淡出，中间露出背景 */
 .site-header.is-split {
   width: calc(100vw - 64px); /* 两端各留 32px */
+  /* 分裂态恒顶部对齐（不随面板开关切换 align-items）：
+     - logo 用 margin-top 补偿居中偏移，位置恒定 9.5px（见下）
+     - nav-pill 顶部贴 0，打开面板时只向下长
+     之前用 [data-settings-open] 瞬切 align-items（center↔flex-start），
+     align-items 不可插值，关闭瞬间 logo 会跳到 center 位置再回落 → 抽搐。 */
+  align-items: flex-start;
 }
 
 .site-header.is-split::before {
@@ -106,7 +115,8 @@
   transition:
     width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     height var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
-    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    margin-top var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 /* logo 胶囊玻璃：分裂态淡入 */
@@ -140,6 +150,9 @@
   /* 保持 999px（完全圆角）而非 50%：999px 在任意尺寸下都渲染成「短边一半」，
      从胶囊→正圆是连续过渡；50% 在矩形中间态只有半圆角，会产生变形。 */
   border-radius: 999px;
+  /* 分裂态 header 顶部对齐，logo（44px）需下移 (63-44)/2=9.5px 以保持
+     原本 center 对齐下的视觉位置。此值恒定，不随面板开关变化 → 不抽搐。 */
+  margin-top: calc((var(--nav-height, 63px) - 44px) / 2);
 }
 
 .site-header.is-split .logo-pill::before {
@@ -238,7 +251,8 @@
     0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
     0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
   opacity: 0;
-  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
+  transition: opacity var(--nav-stretch-duration, 0.5s) ease,
+    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .site-header.is-split .nav-pill::before {
@@ -321,6 +335,141 @@
   top: 50% !important;
   transform: translateY(-50%) !important;
   border-radius: 50% !important;
+}
+
+/* ═══════════════════════════════════════
+   设置小窗口（分裂态点 ⚙，右侧导航条向下拉伸）
+   ═══════════════════════════════════════
+   参考 Legacy Header Navigation 的展开机制：
+     - .nav-pill 容器自己「长高」（height 增加），上边界不动（header fixed top 不变）
+     - 4 个导航图标淡出上移隐藏（opacity + translateY + scale）
+     - ⚙ 锚定到右上角（保留，不变成返回）
+     - 面板 position:absolute; inset:0 铺满变大的胶囊，淡入 */
+.site-header.is-split .nav-pill {
+  height: var(--nav-height, 63px);
+  /* 分裂态圆角固定 = 半高（31.5px），不再用 999px：
+     999px 在 height 变高时会渲染成超大灯泡圆（竖椭圆）。
+     固定半高后，未展开=正圆胶囊，展开=上下对称的「拉长胶囊」，
+     圆角全程不变 → 上方不动、只向下拉伸、无竖椭圆中间态。 */
+  border-radius: calc(var(--nav-height, 63px) / 2);
+  overflow: hidden;
+  transition:
+    height var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.site-header.is-split .nav-pill[data-settings-open="true"] {
+  height: 200px;
+  /* 圆角保持 calc(var(--nav-height)/2) 不变，上圆角不动、只向下拉伸 */
+}
+
+/* 打开面板时：fieldset 改为 static，让 ⚙ 的 absolute 锚定到 .nav-pill（position:relative），
+   而不是锚定到垂直居中的 fieldset——否则 ⚙ 会落在面板中部而非右上角。 */
+.nav-pill[data-settings-open="true"] .switcher--navigation {
+  position: static !important;
+}
+
+/* 设置面板：铺满变大的胶囊，淡入（不是从底部挂出独立浮层） */
+.nav-settings-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 12; /* 对齐 Legacy：面板盖在玻璃(::before z:-1)与 fieldset(z:2) 之上 */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 50px 12px 14px; /* 顶部留白给右上角锚定的 ⚙ */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.94);
+  transform-origin: top right;
+  transition:
+    opacity var(--nav-stretch-duration, 0.5s) ease,
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear var(--nav-stretch-duration, 0.5s);
+}
+
+.nav-pill[data-settings-open="true"] .nav-settings-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity var(--nav-stretch-duration, 0.5s) ease,
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear 0s;
+}
+
+/* 占位选项列表 */
+.nav-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-settings-item {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--nav-content-color);
+  font-size: 14px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* 详细设置按钮 */
+.nav-settings-detail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  border-radius: 999px;
+  color: var(--nav-action-color);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s ease, background-color .2s ease;
+}
+
+.nav-settings-detail:hover {
+  background-color: color-mix(in srgb, var(--nav-action-color) 12%, transparent);
+}
+
+/* 面板打开时：4 个导航图标淡出上移隐藏（保留 ⚙） */
+.nav-pill[data-settings-open="true"] .switcher--navigation .switcher__option:not(.navigation-settings-link) {
+  opacity: 0 !important;
+  transform: translateY(-10px) scale(0.86);
+  pointer-events: none !important;
+}
+
+/* 面板打开时：⚙ 锚定到右上角，固定 30px 圆形 + 玻璃底座（不再孤立浮在玻璃上） */
+.nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link {
+  position: absolute !important;
+  top: 12px;
+  right: 12px;
+  z-index: 16;
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--nav-glass-color) calc(var(--nav-glass-opacity) * 0.9), transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1px 1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent);
+}
+
+/* 打开态隐藏 ⚙ 的标签（只留图标） */
+.nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link .navigation-option-label {
+  display: none;
+}
+
+/* 面板打开时：隐藏选中胶囊（只剩 ⚙，无导航胶囊指示） */
+.nav-pill[data-settings-open="true"] .switcher--navigation::after {
+  opacity: 0 !important;
 }
 
 /* ── 移动端 ─────────────────────────────── */

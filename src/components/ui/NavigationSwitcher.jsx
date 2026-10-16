@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useThemeSwitcherTheme } from './theme-switcher-context'
 import './navigation-switcher.css'
 
@@ -23,7 +23,7 @@ function getRouteIndex(pathname) {
   return navigationOptions.findIndex(option => isActivePath(option.path, pathname))
 }
 
-export default function NavigationSwitcher() {
+export default function NavigationSwitcher({ isSplit = false, onToggleSettings }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
@@ -147,14 +147,21 @@ export default function NavigationSwitcher() {
         </label>
       ))}
 
-      <Link
-        to={settingsOption.path}
+      <button
+        type="button"
         className="switcher__option navigation-settings-link"
         aria-label={settingsOption.label}
+        onClick={() => {
+          if (isSplit) {
+            if (onToggleSettings) onToggleSettings()
+          } else {
+            navigate(settingsOption.path)
+          }
+        }}
       >
         <span className="switcher__icon navigation-option-icon" aria-hidden="true">{settingsOption.icon}</span>
         <span className="navigation-option-label">{settingsOption.label}</span>
-      </Link>
+      </button>
     </fieldset>
   )
 }
