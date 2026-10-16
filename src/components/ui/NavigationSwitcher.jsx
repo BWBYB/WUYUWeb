@@ -29,17 +29,18 @@ export default function NavigationSwitcher() {
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const routeIndex = getRouteIndex(location.pathname)
   const initialIndex = routeIndex >= 0 ? routeIndex : 0
-  const [lastRouteIndex, setLastRouteIndex] = useState(initialIndex)
+  const [activeIndex, setActiveIndex] = useState(initialIndex)
   const [previousOption, setPreviousOption] = useState(String(initialIndex + 1))
   const radioGroupName = `navigation-${useId()}`
-  const activeIndex = routeIndex >= 0 ? routeIndex : lastRouteIndex
 
-  // Keep browser back/forward transitions on the same path as direct clicks.
+  // Keep browser back/forward transitions on the same path as direct clicks,
+  // and commit the previous + active options together so the capsule animation
+  // starts from the previous position instead of flashing at the destination.
   useEffect(() => {
-    if (routeIndex < 0 || routeIndex === lastRouteIndex) return
-    setPreviousOption(String(lastRouteIndex + 1))
-    setLastRouteIndex(routeIndex)
-  }, [lastRouteIndex, routeIndex])
+    if (routeIndex < 0 || routeIndex === activeIndex) return
+    setPreviousOption(String(activeIndex + 1))
+    setActiveIndex(routeIndex)
+  }, [activeIndex, routeIndex])
 
   const selectNavigation = (nextIndex) => {
     if (nextIndex !== activeIndex) {
