@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useThemeSwitcherTheme } from './theme-switcher-context'
 import './navigation-switcher.css'
@@ -33,20 +33,63 @@ export default function NavigationSwitcher() {
   const [previousOption, setPreviousOption] = useState(String(initialIndex + 1))
   const radioGroupName = `navigation-${useId()}`
 
-  // Keep browser back/forward transitions on the same path as direct clicks,
-  // and commit the previous + active options together so the capsule animation
-  // starts from the previous position instead of flashing at the destination.
+  // 动画期锁定：胶囊移动动画播放期间，新的切换目标先排队，等当前动画
+  // 结束后再依次执行，避免 CSS animation 从中途被重触发（跳回写死的 0% 起点）导致抽搐。
+  const animatingRef = useRef(false)
+  const pendingIndexRef = useRef(null)
+  const lockTimerRef = useRef(null)
+  // 用 ref 记录「胶囊当前实际停在哪个 index」，避免闭包 stale（动画结束时读到旧 activeIndex）。
+  const currentIndexRef = useRef(initialIndex)
+
+  // 动画结束（或兜底超时）时调用：解锁，若队列还有目标则继续切换。
+  const finishAnimation = () => {
+    if (lockTimerRef.current) {
+      clearTimeout(lockTimerRef.current)
+      lockTimerRef.current = null
+    }
+    animatingRef.current = false
+    const pending = pendingIndexRef.current
+    if (pending !== null && pending !== currentIndexRef.current) {
+      pendingIndexRef.current = null
+      commitSwitch(currentIndexRef.current, pending)
+    }
+  }
+
+  // 从 current 切换到 target（驱动胶囊动画）。current 必须是「胶囊当前实际位置」。
+  const commitSwitch = (current, target) => {
+    if (target === current) return
+    setPreviousOption(String(current + 1))
+    setActiveIndex(target)
+    currentIndexRef.current = target
+    animatingRef.current = true
+    // 兜底：若 animationend 因 reduced-motion / 动画被禁用而未触发，
+    // 用超时（略长于最长动画）强制解锁，避免后续点击被永久锁住。
+    if (lockTimerRef.current) clearTimeout(lockTimerRef.current)
+    lockTimerRef.current = setTimeout(finishAnimation, 2000)
+  }
+
+  const handleAnimationEnd = () => finishAnimation()
+
+  // 浏览器前进/后退、或路由变化时，把胶囊追赶到最新页。
   useEffect(() => {
     if (routeIndex < 0 || routeIndex === activeIndex) return
-    setPreviousOption(String(activeIndex + 1))
-    setActiveIndex(routeIndex)
-  }, [activeIndex, routeIndex])
+    if (animatingRef.current) {
+      // 正在播动画：只更新排队目标，等当前动画结束再追。
+      pendingIndexRef.current = routeIndex
+      return
+    }
+    commitSwitch(activeIndex, routeIndex)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeIndex])
 
   const selectNavigation = (nextIndex) => {
-    if (nextIndex !== activeIndex) {
-      setPreviousOption(String(activeIndex + 1))
-    }
     navigate(navigationOptions[nextIndex].path)
+    if (animatingRef.current) {
+      // 正在播动画：目标先排队，页面已立即跳转，胶囊到位后再追。
+      pendingIndexRef.current = nextIndex
+      return
+    }
+    commitSwitch(activeIndex, nextIndex)
   }
 
   const switcherStyle = {
@@ -81,11 +124,16 @@ export default function NavigationSwitcher() {
       style={switcherStyle}
       data-previous-option={previousOption}
       data-active-option={String(activeIndex + 1)}
+      onAnimationEnd={handleAnimationEnd}
     >
       <legend className="switcher__legend">主导航</legend>
 
       {navigationOptions.map((option, index) => (
-        <label key={option.path} className="switcher__option">
+        <label
+          key={option.path}
+          className="switcher__option"
+          onClick={() => selectNavigation(index)}
+        >
           <input
             className="switcher__input"
             type="radio"

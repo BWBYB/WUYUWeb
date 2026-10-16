@@ -91,6 +91,13 @@
   cursor: pointer;
 }
 
+/* 导航标签无论选中与否都显示手型光标（覆盖 theme-switcher 里
+   :has(input:checked) { cursor:auto } 的选中态文本光标） */
+.switcher--navigation .switcher__option,
+.switcher--navigation .switcher__option:has(input:checked) {
+  cursor: pointer;
+}
+
 .switcher--navigation .navigation-settings-link:hover {
   --c: var(--c-action);
 }
@@ -99,6 +106,9 @@
    :has(:checked) rules must not expose the destination before animation starts. */
 header.site-header .nav-pill fieldset.switcher.switcher--navigation::after {
   translate: var(--switcher-nav-translate, 0);
+  /* 让点击穿透玻璃胶囊，落到下面的标签上：胶囊盖住某个标签时仍能点中该标签
+     （如胶囊在首页，点首页仍能触发跳转）。pointer-events 不影响玻璃的视觉与动效。 */
+  pointer-events: none;
 }
 
 header.site-header .nav-pill fieldset.switcher.switcher--navigation[data-active-option="1"]::after {
