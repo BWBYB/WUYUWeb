@@ -11,8 +11,10 @@ export default function Header() {
   const { navSettings } = useNavSettings()
   const [isSplit, setIsSplit] = useState(false)
 
-  // 「关于」页（点 logo 进入）：logo 文字亮起、导航选中胶囊淡出。
+  // 「关于」页（点 logo 进入）：logo 文字亮起。
   const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
+  // 「设置」页（点 ⚙ 进入）：只让导航选中胶囊淡出，logo 不变。
+  const isSettingsPage = location.pathname === '/settings' || location.pathname.startsWith('/settings/')
 
   useEffect(() => {
     let ticking = false
@@ -58,6 +60,7 @@ export default function Header() {
       className={isSplit ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
       data-on-about={isAboutPage ? 'true' : undefined}
+      data-hide-capsule={isAboutPage || isSettingsPage ? 'true' : undefined}
     >
       <div className="logo-pill">
         <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">

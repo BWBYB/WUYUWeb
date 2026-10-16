@@ -278,15 +278,15 @@
     opacity var(--nav-stretch-duration, 0.5s) ease !important;
 }
 
-/* 「关于」页（点 logo 进入）：导航没有对应按钮，选中胶囊完全淡出隐藏；
-   合并态 logo 文字用 action 色高亮。分裂态 logo 圆形胶囊玻璃保留
-   （分裂态下 logo 需要玻璃撑起液态外观，淡出会导致 W 裸露无边框），只靠文字变色提示。
-   离开时全部淡入/恢复。 */
-.site-header[data-on-about="true"] .nav-pill > .switcher--navigation::after {
+/* 「关于」页（点 logo）或「设置」页（点 ⚙）：导航没有对应按钮，选中胶囊完全淡出隐藏。
+   离开时淡入/恢复。 */
+.site-header[data-hide-capsule="true"] .nav-pill > .switcher--navigation::after {
   opacity: 0 !important;
 }
 
-/* 关于页：logo 文字用 action 色高亮（合并态 WUYU 亮 / 分裂态 W 亮） */
+/* 仅「关于」页：logo 文字用 action 色高亮（合并态 WUYU 亮 / 分裂态 W 亮）。
+   分裂态 logo 圆形胶囊玻璃保留（分裂态下 logo 需要玻璃撑起液态外观，
+   淡出会导致 W 裸露无边框），只靠文字变色提示。 */
 .site-header[data-on-about="true"] .site-header-logo {
   color: var(--nav-action-color);
 }
