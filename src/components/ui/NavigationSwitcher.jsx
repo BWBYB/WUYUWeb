@@ -41,7 +41,8 @@ export default function NavigationSwitcher() {
   // 用 ref 记录「胶囊当前实际停在哪个 index」，避免闭包 stale（动画结束时读到旧 activeIndex）。
   const currentIndexRef = useRef(initialIndex)
 
-  // 动画结束（或兜底超时）时调用：解锁，若队列还有目标则继续切换。
+  // 动画结束（或超时兜底）时调用：解锁，若队列还有目标则继续切换。
+  // 不依赖 animationend 事件（在 translate 属性动画上不可靠），改用固定时长 setTimeout。
   const finishAnimation = () => {
     if (lockTimerRef.current) {
       clearTimeout(lockTimerRef.current)
@@ -62,34 +63,27 @@ export default function NavigationSwitcher() {
     setActiveIndex(target)
     currentIndexRef.current = target
     animatingRef.current = true
-    // 兜底：若 animationend 因 reduced-motion / 动画被禁用而未触发，
-    // 用超时（略长于最长动画）强制解锁，避免后续点击被永久锁住。
+    // 相邻格用 duration，跨 2 格用 long-duration，据此在动画播完后解锁。
+    const distance = Math.abs(target - current)
+    const durationSec = distance >= 2 ? settings.longDuration : settings.duration
     if (lockTimerRef.current) clearTimeout(lockTimerRef.current)
-    lockTimerRef.current = setTimeout(finishAnimation, 2000)
+    lockTimerRef.current = setTimeout(finishAnimation, (durationSec + 0.05) * 1000)
   }
 
-  const handleAnimationEnd = () => finishAnimation()
-
-  // 浏览器前进/后退、或路由变化时，把胶囊追赶到最新页。
+  // 单一数据流：胶囊移动只由「路由变化 → 本 effect」驱动。
   useEffect(() => {
-    if (routeIndex < 0 || routeIndex === activeIndex) return
+    if (routeIndex < 0) return
+    if (routeIndex === currentIndexRef.current) return
     if (animatingRef.current) {
-      // 正在播动画：只更新排队目标，等当前动画结束再追。
       pendingIndexRef.current = routeIndex
       return
     }
-    commitSwitch(activeIndex, routeIndex)
+    commitSwitch(currentIndexRef.current, routeIndex)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeIndex])
 
   const selectNavigation = (nextIndex) => {
     navigate(navigationOptions[nextIndex].path)
-    if (animatingRef.current) {
-      // 正在播动画：目标先排队，页面已立即跳转，胶囊到位后再追。
-      pendingIndexRef.current = nextIndex
-      return
-    }
-    commitSwitch(activeIndex, nextIndex)
   }
 
   const switcherStyle = {
@@ -124,7 +118,6 @@ export default function NavigationSwitcher() {
       style={switcherStyle}
       data-previous-option={previousOption}
       data-active-option={String(activeIndex + 1)}
-      onAnimationEnd={handleAnimationEnd}
     >
       <legend className="switcher__legend">主导航</legend>
 
@@ -141,7 +134,13 @@ export default function NavigationSwitcher() {
             value={option.path}
             c-option={String(index + 1)}
             checked={activeIndex === index}
-            onChange={() => selectNavigation(index)}
+            // 阻止 input 的原生 click/change 行为：点击 label 会默认「转发」点击给内部 radio，
+            // 触发 radio 切换 + onChange，若这里也 navigate 会向历史栈 push 第二条记录，
+            // 导致「返回」要按两次。导航只由 label 的 onClick 触发一次 navigate。
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onChange={(e) => e.preventDefault()}
+            readOnly
+            tabIndex={-1}
           />
           <span className="switcher__icon navigation-option-icon" aria-hidden="true">{option.icon}</span>
           <span className="navigation-option-label">{option.label}</span>
