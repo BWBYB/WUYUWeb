@@ -7,6 +7,12 @@ import {
   saveThemeSwitcherSettings,
   THEME_SWITCHER_PRESETS,
 } from './theme-switcher-settings'
+import {
+  DEFAULT_NAV_SETTINGS,
+  normalizeNavSettings,
+  readNavSettings,
+  saveNavSettings,
+} from './nav-settings'
 
 const STORAGE_KEY = 'my-blog-theme-switcher-theme'
 const themes = new Set(['light', 'dark', 'system'])
@@ -32,6 +38,7 @@ export function ThemeSwitcherProvider({ children }) {
   const [theme, setThemeState] = useState(readTheme)
   const [systemTheme, setSystemTheme] = useState(readSystemTheme)
   const [settings, setSettingsState] = useState(readThemeSwitcherSettings)
+  const [navSettings, setNavSettingsState] = useState(readNavSettings)
   const resolvedTheme = theme === 'system' ? systemTheme : theme
 
   useEffect(() => {
@@ -92,6 +99,20 @@ export function ThemeSwitcherProvider({ children }) {
     saveThemeSwitcherSettings(nextSettings)
   }
 
+  const updateNavSetting = (key, value) => {
+    setNavSettingsState((current) => {
+      const next = normalizeNavSettings({ ...current, [key]: value })
+      saveNavSettings(next)
+      return next
+    })
+  }
+
+  const resetNavSettings = () => {
+    const next = { ...DEFAULT_NAV_SETTINGS }
+    setNavSettingsState(next)
+    saveNavSettings(next)
+  }
+
   return (
     <ThemeSwitcherContext.Provider
       value={{
@@ -102,6 +123,9 @@ export function ThemeSwitcherProvider({ children }) {
         updateSetting,
         resetSettings,
         applyPreset,
+        navSettings,
+        updateNavSetting,
+        resetNavSettings,
       }}
     >
       {children}

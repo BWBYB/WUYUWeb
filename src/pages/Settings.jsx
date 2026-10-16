@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import ThemeSwitcherCustomizer from '../components/ui/ThemeSwitcherCustomizer'
+import NavCustomizer from '../components/ui/NavCustomizer'
 import './Settings.css'
 
 export default function Settings() {
@@ -19,6 +20,8 @@ export default function Settings() {
       </header>
 
       <ThemeSwitcherCustomizer />
+
+      <NavCustomizer />
 
       <Link className="settings-page-back fade-in fade-in-5" to={returnTo}>
         <span aria-hidden="true">←</span> 返回

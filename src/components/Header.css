@@ -30,7 +30,15 @@
     0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
     0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
   transition: background-color 0.4s cubic-bezier(1, 0, 0.4, 1),
-    box-shadow 0.4s cubic-bezier(1, 0, 0.4, 1);
+    box-shadow 0.4s cubic-bezier(1, 0, 0.4, 1),
+    width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* 下滑拉伸：胶囊变宽，两端各留 --nav-stretch-inset。
+   logo 与按钮由 space-between 自动推到两端，中间露出空玻璃。
+   缓动由 --nav-stretch-easing 驱动（默认快出慢停）。 */
+.is-stretched {
+  width: calc(100vw - var(--nav-stretch-inset, 32px) * 2);
 }
 
 .site-header-logo {
@@ -68,6 +76,68 @@
   flex: 0 1 auto;
 }
 
+/* ═══════════════════════════════════════
+   下滑拉伸：右侧导航按钮缩小 + 胶囊变圆
+   ═══════════════════════════════════════
+   触发态复用 is-stretched（下滑阈值由 navSettings.stretchThreshold 控制）。
+   按钮从「图标+标签」缩成「纯图标」，选中胶囊从小胶囊变正圆。
+   尺寸/时长/缓动全部由 Header.jsx 注入的 --nav-* 变量驱动。
+   变量在 fieldset 上被 inline style 注入，故这里用 !important 覆盖。 */
+
+/* 展开态：导航按钮用独立宽度（--nav-expanded-option-width），避免「CD机」标签截断。
+   胶囊 = 按钮宽 + 16px（两侧各宽 8px），left 恒为 4px 居中。 */
+.site-header > .switcher--navigation {
+  --switcher-option-width: var(--nav-expanded-option-width, 76px) !important;
+  --switcher-gap: 8px !important;
+  --switcher-capsule-width: calc(var(--nav-expanded-option-width, 76px) + 16px) !important;
+  width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
+  transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+/* 胶囊：展开态，left 4px + 宽（按钮宽+16px），圆心对准第一个按钮中心 */
+.site-header > .switcher--navigation::after {
+  transition: left var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    top var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    translate var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    height var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+/* 按钮：宽度收缩 + 标签淡出（max-width + opacity，不用 display 以免跳变） */
+.is-stretched > .switcher--navigation {
+  --switcher-option-width: var(--nav-collapsed-option-width, 44px) !important;
+  --switcher-gap: var(--nav-collapsed-gap, 4px) !important;
+  --switcher-capsule-width: var(--nav-collapsed-capsule-width, 44px) !important;
+}
+
+.is-stretched > .switcher--navigation .switcher__option {
+  gap: 0 !important;
+  padding: 0 6px !important;
+  transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    padding var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    gap var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+.is-stretched > .switcher--navigation .navigation-option-label {
+  max-width: 0 !important;
+  opacity: 0 !important;
+  transition: max-width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+}
+
+/* 胶囊：收缩态，left 由 --nav-collapsed-capsule-left 计算（圆心对准按钮中心），正圆罩住按钮。
+   left / translate / width / height / border-radius 同步过渡，圆心始终对准。 */
+.is-stretched > .switcher--navigation::after {
+  left: var(--nav-collapsed-capsule-left, 12px) !important;
+  width: var(--switcher-capsule-width) !important;
+  height: var(--nav-collapsed-capsule-width, 44px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  border-radius: 50% !important;
+}
+
 @media (max-width: 760px) {
   .site-header {
     width: calc(90vw - 34px);
@@ -85,5 +155,18 @@
 @media (prefers-reduced-motion: reduce) {
   .site-header-logo {
     transition: none;
+  }
+
+  /* 降级：关掉宽度弹性，改成快速线性切换 */
+  .site-header {
+    transition: width 0.2s linear;
+  }
+
+  /* 按钮缩小 / 胶囊变圆的过渡也一并降级为即时切换 */
+  .is-stretched > .switcher--navigation,
+  .is-stretched > .switcher--navigation .switcher__option,
+  .is-stretched > .switcher--navigation .navigation-option-label,
+  .is-stretched > .switcher--navigation::after {
+    transition: none !important;
   }
 }
