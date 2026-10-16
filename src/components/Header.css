@@ -1,17 +1,18 @@
 .site-header {
   position: fixed;
   top: 16px;
-  left: 16px;
-  right: 16px;
+  left: 50%;
   z-index: 100;
   display: flex;
   height: var(--nav-height, 63px);
+  width: min(945px, calc(90vw - 49px));
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   box-sizing: border-box;
   padding: 0 14px 0 18px;
   overflow: visible;
+  transform: translateX(-50%);
   border: none;
   border-radius: 999px;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -69,8 +70,7 @@
 
 @media (max-width: 760px) {
   .site-header {
-    left: 8px;
-    right: 8px;
+    width: calc(90vw - 34px);
     gap: 8px;
     padding: 0 6px 0 8px;
   }
