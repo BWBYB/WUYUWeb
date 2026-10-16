@@ -1,16 +1,13 @@
-// 导航栏动效设置：独立于 ThemeSwitcher 的一套参数。
-// 只负责「下滑拉伸」相关的阈值、时长、缓动、留白与收缩尺寸。
+// 导航栏分裂动效设置：独立于 ThemeSwitcher 的一套参数。
+// 只负责「下滑分裂」相关的阈值、时长、倍速与缓动。
+// 尺寸类参数（两端留白/按钮宽/胶囊直径）已移除，等整体动态效果定型后再重新设计。
 
 export const DEFAULT_NAV_SETTINGS = {
-  stretchThreshold: 90,        // 触发拉伸的滚动阈值（px）
-  stretchDuration: 0.5,        // 拉伸/收缩时长（s）
-  animationSpeed: 1,           // 全局动画倍速：1=正常，0.2=极慢（慢放观察），2=极快
+  stretchThreshold: 90,        // 触发分裂的滚动阈值（px）
+  stretchDuration: 0.5,        // 分裂/合并时长（s，倍速 1× 时的基准）
+  animationSpeed: 1,           // 全局动画倍速：1=正常，0.1=极慢（慢放观察），3=极快
   easingStart: 0,              // 起步快慢：负=更柔缓，正=起步更陡（映射 x1）
   easingEnd: 0,                // 收尾快慢：负=收尾更干脆，正=收尾更慢停（映射 x2）
-  stretchInset: 32,            // 拉伸后两端留白（px）
-  expandedOptionWidth: 76,     // 展开态按钮宽度（px）
-  collapsedOptionWidth: 44,    // 收缩态按钮宽度（px）
-  collapsedCapsuleWidth: 44,   // 收缩态胶囊直径（px，正圆）
 }
 
 const numericRanges = {
@@ -19,10 +16,6 @@ const numericRanges = {
   animationSpeed: [0.1, 3],
   easingStart: [-0.6, 0.6],
   easingEnd: [-0.6, 0.6],
-  stretchInset: [8, 64],
-  expandedOptionWidth: [56, 96],
-  collapsedOptionWidth: [36, 56],
-  collapsedCapsuleWidth: [36, 56],
 }
 
 function clamp(value, [min, max]) {
@@ -79,7 +72,7 @@ export function easingFromControls(start, end) {
 }
 
 // 全局动画倍速 → 实际过渡时长。
-// animationSpeed=1 时用 stretchDuration 原值；0.2 时时长 ×5（慢放），3 时 ÷3（快进）。
+// animationSpeed=1 时用 stretchDuration 原值；0.1 时时长 ×10（慢放），3 时 ÷3（快进）。
 export function scaledDuration(duration, speed) {
   const s = clamp(speed, [0.1, 3])
   return `${(Number(duration) / s).toFixed(3)}s`

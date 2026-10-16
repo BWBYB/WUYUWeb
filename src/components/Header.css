@@ -1,3 +1,35 @@
+/* ═══════════════════════════════════════
+   WUYUWeb 导航栏 — 液态玻璃 + 下滑分裂
+   ═══════════════════════════════════════
+   结构：
+     header.site-header
+       ├─ .logo-pill ── Link.site-header-logo（W + UYU）
+       └─ .nav-pill ─── fieldset.switcher--navigation
+
+   分裂序列（下滑超阈值触发，单布尔态 is-split，阶段靠分层时长制造）：
+     1. 胶囊变宽、logo/nav 贴两端（space-between）
+     2. 父级玻璃断开（background/border/shadow → 透明）
+     3. 两个 pill 各自玻璃显现，中间露出背景
+     4. logo WUYU → 圆形 W；导航 图标+标签 → 纯图标
+   ═══════════════════════════════════════ */
+
+/* 注册 --logo-width / --mask-fade 为可插值长度，让 width 与 mask 渐变带随它平滑过渡 */
+@property --logo-width {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 65px;
+}
+
+@property --mask-fade {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 8px;
+}
+
+/* 合并态：只有父级 .site-header 是唯一的胶囊（带玻璃）。
+   两个 pill 只是布局容器，不带任何玻璃外观。
+   玻璃统一放在 ::before 伪元素上，用 opacity 淡入淡出——
+   避免 backdrop-filter 在嵌套/插值时产生接缝与闪烁。 */
 .site-header {
   position: fixed;
   top: 16px;
@@ -9,12 +41,22 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  box-sizing: border-box;
   padding: 0 14px 0 18px;
   overflow: visible;
   transform: translateX(-50%);
   border: none;
   border-radius: 999px;
+  transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* 父级玻璃表面：合并态可见，分裂态淡出 */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
   -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
   backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
@@ -29,32 +71,116 @@
     inset 2px -6.5px 1px -4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
     0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
     0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
-  transition: background-color 0.4s cubic-bezier(1, 0, 0.4, 1),
-    box-shadow 0.4s cubic-bezier(1, 0, 0.4, 1),
-    width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+  opacity: 1;
+  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
 }
 
-/* 下滑拉伸：胶囊变宽，两端各留 --nav-stretch-inset。
-   logo 与按钮由 space-between 自动推到两端，中间露出空玻璃。
-   缓动由 --nav-stretch-easing 驱动（默认快出慢停）。 */
-.is-stretched {
-  width: calc(100vw - var(--nav-stretch-inset, 32px) * 2);
+/* 分裂态：父级胶囊变宽贴两端，玻璃淡出，中间露出背景 */
+.site-header.is-split {
+  width: calc(100vw - 64px); /* 两端各留 32px */
+}
+
+.site-header.is-split::before {
+  opacity: 0;
+}
+
+/* ── 左 logo 胶囊 ─────────────────────────── */
+.logo-pill {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 999px;
+  /* 用明确 width 过渡（72px = logo 的 min-width，分裂 44px = 正圆）。
+     不能用 max-width：它是上限，实际宽度由内容撑开，
+     分裂后内容只剩 W（约12px），会缩成 12×44 的窄椭圆。 */
+  width: 72px;
+  height: 40px;
+  /* 玻璃圆角由 ::before 的 border-radius 负责，文字裁切交给 .site-header-logo
+     自己的 overflow:hidden + width 过渡（单字符串方案） */
+  overflow: visible;
+  transition:
+    width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    height var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* logo 胶囊玻璃：分裂态淡入 */
+.logo-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
+    0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
+  opacity: 0;
+  /* 玻璃淡出与主时长一致（--nav-stretch-duration），和文字、尺寸同步过渡，
+     避免玻璃「提前消失」显得突兀 */
+  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
+}
+
+.site-header.is-split .logo-pill {
+  width: 44px;
+  height: 44px;
+  /* 保持 999px（完全圆角）而非 50%：999px 在任意尺寸下都渲染成「短边一半」，
+     从胶囊→正圆是连续过渡；50% 在矩形中间态只有半圆角，会产生变形。 */
+  border-radius: 999px;
+}
+
+.site-header.is-split .logo-pill::before {
+  opacity: 1;
 }
 
 .site-header-logo {
   position: relative;
   z-index: 2;
   display: inline-flex;
-  min-width: 72px;
   height: 40px;
   align-items: center;
+  /* 左对齐（不能 center）：center 会让裁切从两侧对称收缩，露出的是文字中间的字符；
+     flex-start 让内容靠左，overflow:hidden 收缩时只裁右边，始终露出最左边的 W */
   justify-content: flex-start;
+  /* 单一字符串 WUYU：用明确 width 过渡 + overflow:hidden 从右往左裁切，
+     分裂时只露 W（15px），合并时露完整 WUYU（57px）。
+     不再拆 W/UYU 两个 span —— 那样在 flex 里父容器会随内容瞬跳重排，
+     打断 max-width 抽屉过渡，导致「突变」。 */
+  width: var(--logo-width, 65px); /* 合并态 = 文字宽 57px + 8px 软边余量，让 mask 渐变带落在文字外 */
+  --logo-width: 65px; /* 基础态（合并态）宽度，供 @property 过渡 */
+  --mask-fade: 8px; /* 合并态渐变带 8px，落在文字(57px)外的 57~65px 空白区，Y 清晰 */
+  overflow: hidden;
+  /* 软裁切（交界处渐变带）：
+     渐变带 = [--logo-width - --mask-fade, --logo-width]，透明起点随 --logo-width 平滑左移：
+     - 合并态 --logo-width=65px/--mask-fade=8px：渐变带 57~65px（文字外），Y 完整清晰
+     - 过渡中 --logo-width 65→15、--mask-fade 8→2：UYU 交界处持续柔和淡出
+     - 分裂态 --logo-width=15px/--mask-fade=2px：渐变带 13~15px（仅 W 右端 2px 轻微淡，基本清晰） */
+  -webkit-mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
+  mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
+  white-space: nowrap;
   color: var(--nav-content-color);
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: .16em;
+  letter-spacing: .16em; /* 四字母等距 */
   text-decoration: none;
-  transition: color .2s ease, transform .2s ease;
+  transition: color .2s ease, transform .2s ease,
+    --logo-width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    --mask-fade var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    letter-spacing var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .site-header-logo:hover,
@@ -69,33 +195,79 @@
   border-radius: 8px;
 }
 
-.site-header > .switcher--navigation {
+/* 分裂态：宽度收到 W 单字（15px），字距归零（单字无字距），
+   UYU 被 overflow:hidden 从右往左裁掉。
+   --mask-fade 收到 2px（渐变带很窄，仅轻微柔化 W 右端，不模糊 W 本体） */
+.site-header.is-split .site-header-logo {
+  --logo-width: 15px; /* 实测 W=14.91px（无字距） */
+  --mask-fade: 2px;
+  letter-spacing: 0;
+}
+
+/* ── 右导航胶囊 ─────────────────────────── */
+.nav-pill {
+  position: relative;
   z-index: 2;
-  margin-left: auto !important;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  flex: 0 1 auto;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 999px;
+}
+
+/* 导航胶囊玻璃：分裂态淡入 */
+.nav-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
+    0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
+  opacity: 0;
+  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
+}
+
+.site-header.is-split .nav-pill::before {
+  opacity: 1;
+}
+
+.site-header > .nav-pill > .switcher--navigation {
+  z-index: 2;
   align-self: center;
   flex: 0 1 auto;
 }
 
 /* ═══════════════════════════════════════
-   下滑拉伸：右侧导航按钮缩小 + 胶囊变圆
+   分裂态：导航按钮缩小 + 胶囊变圆
    ═══════════════════════════════════════
-   触发态复用 is-stretched（下滑阈值由 navSettings.stretchThreshold 控制）。
    按钮从「图标+标签」缩成「纯图标」，选中胶囊从小胶囊变正圆。
-   尺寸/时长/缓动全部由 Header.jsx 注入的 --nav-* 变量驱动。
    变量在 fieldset 上被 inline style 注入，故这里用 !important 覆盖。 */
 
-/* 展开态：导航按钮用独立宽度（--nav-expanded-option-width），避免「CD机」标签截断。
-   胶囊 = 按钮宽 + 16px（两侧各宽 8px），left 恒为 4px 居中。 */
-.site-header > .switcher--navigation {
-  --switcher-option-width: var(--nav-expanded-option-width, 76px) !important;
+/* 展开态：导航按钮独立宽度，避免「CD机」标签截断 */
+.site-header .nav-pill > .switcher--navigation {
+  --switcher-option-width: 76px !important;
   --switcher-gap: 8px !important;
-  --switcher-capsule-width: calc(var(--nav-expanded-option-width, 76px) + 16px) !important;
+  --switcher-capsule-width: 92px !important;
   width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
-/* 胶囊：展开态，left 4px + 宽（按钮宽+16px），圆心对准第一个按钮中心 */
-.site-header > .switcher--navigation::after {
+/* 胶囊：展开态过渡（left/translate/width/height/border-radius 同步，圆心始终对准按钮） */
+.site-header .nav-pill > .switcher--navigation::after {
   transition: left var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     top var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
@@ -105,14 +277,14 @@
     border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
-/* 按钮：宽度收缩 + 标签淡出（max-width + opacity，不用 display 以免跳变） */
-.is-stretched > .switcher--navigation {
-  --switcher-option-width: var(--nav-collapsed-option-width, 44px) !important;
-  --switcher-gap: var(--nav-collapsed-gap, 4px) !important;
-  --switcher-capsule-width: var(--nav-collapsed-capsule-width, 44px) !important;
+/* 分裂态：按钮缩成纯图标，胶囊变正圆 */
+.site-header.is-split .nav-pill > .switcher--navigation {
+  --switcher-option-width: 44px !important;
+  --switcher-gap: 4px !important;
+  --switcher-capsule-width: 44px !important;
 }
 
-.is-stretched > .switcher--navigation .switcher__option {
+.site-header.is-split .nav-pill > .switcher--navigation .switcher__option {
   gap: 0 !important;
   padding: 0 6px !important;
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
@@ -120,24 +292,24 @@
     gap var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
-.is-stretched > .switcher--navigation .navigation-option-label {
+.site-header.is-split .nav-pill > .switcher--navigation .navigation-option-label {
   max-width: 0 !important;
   opacity: 0 !important;
   transition: max-width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     opacity var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
-/* 胶囊：收缩态，left 由 --nav-collapsed-capsule-left 计算（圆心对准按钮中心），正圆罩住按钮。
-   left / translate / width / height / border-radius 同步过渡，圆心始终对准。 */
-.is-stretched > .switcher--navigation::after {
-  left: var(--nav-collapsed-capsule-left, 12px) !important;
+/* 胶囊：分裂态，left 对齐按钮中心（44px 圆罩住 44px 按钮），正圆 */
+.site-header.is-split .nav-pill > .switcher--navigation::after {
+  left: 12px !important;
   width: var(--switcher-capsule-width) !important;
-  height: var(--nav-collapsed-capsule-width, 44px) !important;
+  height: 44px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
   border-radius: 50% !important;
 }
 
+/* ── 移动端 ─────────────────────────────── */
 @media (max-width: 760px) {
   .site-header {
     width: calc(90vw - 34px);
@@ -145,28 +317,37 @@
     padding: 0 6px 0 8px;
   }
 
+  .site-header.is-split {
+    width: calc(100vw - 32px);
+  }
+
   .site-header-logo {
-    min-width: 48px;
+    /* 移动端字号缩小，WUYU 实际宽度变小，但宽度由单字符串方案的
+       width 明确值控制，这里只缩字号、不动 width/letter-spacing 结构 */
     font-size: 12px;
-    letter-spacing: .1em;
   }
 }
 
+/* ── 降低动效 ───────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .site-header-logo {
     transition: none;
   }
 
-  /* 降级：关掉宽度弹性，改成快速线性切换 */
   .site-header {
     transition: width 0.2s linear;
   }
 
-  /* 按钮缩小 / 胶囊变圆的过渡也一并降级为即时切换 */
-  .is-stretched > .switcher--navigation,
-  .is-stretched > .switcher--navigation .switcher__option,
-  .is-stretched > .switcher--navigation .navigation-option-label,
-  .is-stretched > .switcher--navigation::after {
+  .logo-pill,
+  .logo-pill::before,
+  .site-header-logo,
+  .nav-pill,
+  .nav-pill::before,
+  .site-header::before,
+  .site-header.is-split .nav-pill > .switcher--navigation,
+  .site-header.is-split .nav-pill > .switcher--navigation .switcher__option,
+  .site-header.is-split .nav-pill > .switcher--navigation .navigation-option-label,
+  .site-header.is-split .nav-pill > .switcher--navigation::after {
     transition: none !important;
   }
 }
