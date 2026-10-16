@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
 import { easingFromControls, scaledDuration } from './ui/nav-settings'
 import NavigationSwitcher from './ui/NavigationSwitcher'
 import './Header.css'
 
 export default function Header() {
+  const location = useLocation()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const { navSettings } = useNavSettings()
   const [isSplit, setIsSplit] = useState(false)
+
+  // 「关于」页（点 logo 进入）：logo 文字亮起、导航选中胶囊淡出。
+  const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
 
   useEffect(() => {
     let ticking = false
@@ -53,6 +57,7 @@ export default function Header() {
     <header
       className={isSplit ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
+      data-on-about={isAboutPage ? 'true' : undefined}
     >
       <div className="logo-pill">
         <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">

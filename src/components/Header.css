@@ -274,7 +274,21 @@
     translate var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     height var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
-    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+    border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--nav-stretch-duration, 0.5s) ease !important;
+}
+
+/* 「关于」页（点 logo 进入）：导航没有对应按钮，选中胶囊完全淡出隐藏；
+   合并态 logo 文字用 action 色高亮。分裂态 logo 圆形胶囊玻璃保留
+   （分裂态下 logo 需要玻璃撑起液态外观，淡出会导致 W 裸露无边框），只靠文字变色提示。
+   离开时全部淡入/恢复。 */
+.site-header[data-on-about="true"] .nav-pill > .switcher--navigation::after {
+  opacity: 0 !important;
+}
+
+/* 关于页：logo 文字用 action 色高亮（合并态 WUYU 亮 / 分裂态 W 亮） */
+.site-header[data-on-about="true"] .site-header-logo {
+  color: var(--nav-action-color);
 }
 
 /* 分裂态：按钮缩成纯图标，胶囊变正圆 */
