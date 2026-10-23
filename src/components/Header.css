@@ -49,6 +49,13 @@
   transform: translateX(-50%);
   border: none;
   border-radius: 999px;
+  /* ── 设置面板的分层时序 ──
+     三者都从主轴 --nav-stretch-duration 派生，所以设置页调「动画倍速」时
+     整套时序等比缩放，不会出现某一层不跟着走。
+     倍速 1×（0.5s）时：delay 80ms / fade 200ms / icon 140ms。 */
+  --nav-panel-delay: calc(var(--nav-stretch-duration, 0.5s) * 0.16);
+  --nav-panel-fade: calc(var(--nav-stretch-duration, 0.5s) * 0.4);
+  --nav-icon-exit: calc(var(--nav-stretch-duration, 0.5s) * 0.28);
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
@@ -317,7 +324,12 @@
   padding: 0 6px !important;
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     padding var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
-    gap var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
+    gap var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    /* 关闭方向：图标等面板淡出（--nav-panel-fade）之后再飘回来，
+       避免容器还在 280px 高处、图标就已经蹦出来。
+       打开方向的延迟在下面的 [data-settings-open] 规则里归零。 */
+    opacity var(--nav-icon-exit) ease var(--nav-panel-fade),
+    transform var(--nav-icon-exit) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--nav-panel-fade) !important;
 }
 
 .site-header.is-split .nav-pill > .switcher--navigation .navigation-option-label {
@@ -366,6 +378,11 @@
    而不是锚定到垂直居中的 fieldset——否则 ⚙ 会落在面板中部而非右上角。 */
 .nav-pill[data-settings-open="true"] .switcher--navigation {
   position: static !important;
+  /* 顶部对齐，防止 4 个图标跟随容器长高而下移：
+     fieldset 自身高 63px，被 align-items:center 居中在 280px 的 nav-pill 里时会落到
+     108px 处，图标淡出过程中看起来像「往下掉」。
+     未展开时容器也是 63px，居中与顶部对齐位置完全重合，所以这一跳无位移。 */
+  align-self: flex-start !important;
 }
 
 /* 设置面板：铺满变大的胶囊，淡入（不是从底部挂出独立浮层） */
@@ -384,8 +401,10 @@
   pointer-events: none;
   transform: translateY(10px) scale(0.94);
   transform-origin: top right;
+  /* 关闭方向：透明度只用 --nav-panel-fade（200ms），比容器收回（主轴 500ms）早结束，
+     避免「壳已经在收、字还糊在上面」。visibility 等 transform 收完才 hidden。 */
   transition:
-    opacity var(--nav-stretch-duration, 0.5s) ease,
+    opacity var(--nav-panel-fade) ease,
     transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     visibility 0s linear var(--nav-stretch-duration, 0.5s);
 }
@@ -395,8 +414,11 @@
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0) scale(1);
+  /* 打开方向：透明度延迟 --nav-panel-delay（80ms）才启动，让容器先长一点；
+     200ms 就全亮，剩下约 300ms 靠容器的 overflow 裁切把内容逐层「揭开」，
+     这正是 Legacy 下拉感的来源。 */
   transition:
-    opacity var(--nav-stretch-duration, 0.5s) ease,
+    opacity var(--nav-panel-fade) ease var(--nav-panel-delay),
     transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     visibility 0s linear 0s;
 }
@@ -440,10 +462,12 @@
 }
 
 /* 面板打开时：4 个导航图标淡出上移隐藏（保留 ⚙） */
-.nav-pill[data-settings-open="true"] .switcher--navigation .switcher__option:not(.navigation-settings-link) {
+.site-header.is-split .nav-pill[data-settings-open="true"] .switcher--navigation .switcher__option:not(.navigation-settings-link) {
   opacity: 0 !important;
   transform: translateY(-10px) scale(0.86);
   pointer-events: none !important;
+  /* 打开方向：立即退场，不等面板（延迟归零覆盖基础规则里的 --nav-panel-fade） */
+  transition-delay: 0s !important;
 }
 
 /* 面板打开时：⚙ 锚定到右上角，固定 30px 圆形 + 玻璃底座（不再孤立浮在玻璃上） */
@@ -510,7 +534,9 @@
   .site-header.is-split .nav-pill > .switcher--navigation,
   .site-header.is-split .nav-pill > .switcher--navigation .switcher__option,
   .site-header.is-split .nav-pill > .switcher--navigation .navigation-option-label,
-  .site-header.is-split .nav-pill > .switcher--navigation::after {
+  .site-header.is-split .nav-pill > .switcher--navigation::after,
+  .nav-settings-panel,
+  .nav-pill[data-settings-open="true"] .nav-settings-panel {
     transition: none !important;
   }
 }
