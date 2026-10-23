@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
 import { easingFromControls, scaledDuration } from './ui/nav-settings'
 import NavigationSwitcher from './ui/NavigationSwitcher'
+import NavSettingsPanel from './NavSettingsPanel'
 import './Header.css'
 
 export default function Header() {
@@ -108,16 +109,7 @@ export default function Header() {
         />
 
         {/* 设置小窗口：分裂态点 ⚙ 展开，右侧导航条向下拉伸 */}
-        <div className="nav-settings-panel" data-open={isSettingsOpen ? 'true' : undefined}>
-          <div className="nav-settings-list">
-            <div className="nav-settings-item">动画快慢</div>
-            <div className="nav-settings-item">主题</div>
-            <div className="nav-settings-item">其他</div>
-          </div>
-          <Link to="/settings" className="nav-settings-detail">
-            详细设置 <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        <NavSettingsPanel open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       </div>
     </header>
   )
