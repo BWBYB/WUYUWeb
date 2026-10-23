@@ -4,8 +4,6 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Blog from './pages/Blog'
 import Post from './pages/Post'
-import Lab from './pages/Lab'
-import Player from './pages/Player'
 import About from './pages/About'
 import Settings from './pages/Settings'
 import Archive from './pages/Archive'
@@ -14,6 +12,9 @@ import { getPostByLegacyId } from './lib/content/posts'
 import './styles/effects.css'
 import './App.css'
 
+// 重交互页（three.js / 音频）路由级懒加载，避免首屏为它们买单
+const Lab = lazy(() => import('./pages/Lab'))
+const Player = lazy(() => import('./pages/Player'))
 const UpdatesEditor = import.meta.env.DEV
   ? lazy(() => import('./pages/UpdatesEditor'))
   : null
@@ -41,8 +42,8 @@ function App() {
               element={<Suspense fallback={<div className="route-loading">正在加载编辑器…</div>}><UpdatesEditor /></Suspense>}
             />
           )}
-          <Route path="/lab" element={<Lab />} />
-          <Route path="/player" element={<Player />} />
+          <Route path="/lab" element={<Suspense fallback={<div className="route-loading">正在加载探索页…</div>}><Lab /></Suspense>} />
+          <Route path="/player" element={<Suspense fallback={<div className="route-loading">正在加载播放器…</div>}><Player /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
