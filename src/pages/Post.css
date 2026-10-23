@@ -131,6 +131,7 @@
 
 /* Post Content */
 .post-content {
+  grid-column: 2;
   padding: 40px;
 }
 
