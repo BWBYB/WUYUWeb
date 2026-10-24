@@ -83,6 +83,5 @@ public/         favicon 与图标 sprite
 | 文件 | 用途 |
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | 给 AI agent 的命令、约定与已知陷阱 |
-| [docs/status.md](docs/status.md) | 当前进度快照与下一步 |
+| `docs/status.md`（本地文件，不入库） | 当前进度快照与下一步 |
 | [content/README.md](content/README.md) | 内容目录职责与写作规则 |
-| [llms.txt](llms.txt) | 供 LLM 检索的文档索引 |

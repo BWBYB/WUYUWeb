@@ -28,3 +28,6 @@ dist-ssr
 
 # Local browser automation artifacts
 .playwright-cli/
+
+# 本地工作状态，只保留在本机，不入库
+/docs/status.md
