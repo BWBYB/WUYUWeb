@@ -15,6 +15,12 @@ export default function Header() {
   // 设置小窗口（分裂态点 ⚙ 展开，右侧导航条向下拉伸）
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const navPillRef = useRef(null)
+  // 滚动回调里要读「面板是否开着」，但 effect 的闭包拿不到最新 state，用 ref 同步
+  const isSettingsOpenRef = useRef(false)
+
+  useEffect(() => {
+    isSettingsOpenRef.current = isSettingsOpen
+  }, [isSettingsOpen])
 
   // 「关于」页（点 logo 进入）：logo 文字亮起。
   const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
@@ -23,13 +29,75 @@ export default function Header() {
 
   useEffect(() => {
     let ticking = false
+    // 方向判定滞回：小于 8px 的位移不改变方向，过滤触控板与惯性滚动的抖动
+    const DIRECTION_HYSTERESIS = 8
+    // 上滑累计多少像素才合并：避免阅读时手指轻蹭就收起整条导航
+    const MERGE_UP_DISTANCE = 40
+    // 面板收起后延迟多久再开始合并：等面板淡出结束（约 200ms），避免「边收边长」
+    const PANEL_CLOSE_BEFORE_MERGE = 220
+
+    let lastY = window.scrollY
+    // 初屏就在深处时按「向下」处理，刷新后保持分裂态，不会突然合并
+    let dir = window.scrollY >= navSettings.stretchThreshold ? 1 : 0
+    // 净上滑距离：向上累加、向下抵扣，最低 0；用于判断「是否真的在往回滑」
+    let upAccum = 0
+    let mergeTimer = null
+
+    const clearMergeTimer = () => {
+      if (mergeTimer !== null) {
+        window.clearTimeout(mergeTimer)
+        mergeTimer = null
+      }
+    }
 
     const update = () => {
       ticking = false
-      const nextSplit = window.scrollY >= navSettings.stretchThreshold
-      setIsSplit(nextSplit)
-      // 分裂→合并时自动关闭设置小窗口（合并态下不展示面板）
-      if (!nextSplit) setIsSettingsOpen(false)
+      const y = window.scrollY
+      const dy = y - lastY
+      lastY = y
+
+      if (dy >= DIRECTION_HYSTERESIS) dir = 1
+      else if (dy <= -DIRECTION_HYSTERESIS) dir = -1
+
+      upAccum = Math.max(0, upAccum - dy)
+
+      const beyondThreshold = y >= navSettings.stretchThreshold
+
+      // 回到阈值以内：直接合并，并确保面板关闭
+      if (!beyondThreshold) {
+        upAccum = 0
+        clearMergeTimer()
+        setIsSplit(false)
+        setIsSettingsOpen(false)
+        return
+      }
+
+      // 向下滑：分裂，面板保持不动
+      if (dir === 1) {
+        clearMergeTimer()
+        setIsSplit(true)
+        return
+      }
+
+      // 上滑位移太小（方向还没明确）：不做任何切换
+      if (dir !== -1) return
+
+      // 向上滑：面板开着就先收起（8px 即响应，遮挡物早收早好），等它淡出后再合并
+      if (isSettingsOpenRef.current) {
+        clearMergeTimer()
+        setIsSettingsOpen(false)
+        mergeTimer = window.setTimeout(() => {
+          mergeTimer = null
+          setIsSplit(false)
+        }, PANEL_CLOSE_BEFORE_MERGE)
+        return
+      }
+
+      // 面板已关：净上滑要累计到 MERGE_UP_DISTANCE，避免阅读时轻蹭就收起导航。
+      // 有定时器在等时不要提前合并，否则会绕开「先收起再合并」的节奏。
+      if (upAccum >= MERGE_UP_DISTANCE && mergeTimer === null) {
+        setIsSplit(false)
+      }
     }
 
     const onScroll = () => {
@@ -40,7 +108,10 @@ export default function Header() {
 
     update()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      clearMergeTimer()
+    }
   }, [navSettings.stretchThreshold])
 
   // 点面板外部关闭（点击目标不在 nav-pill 内则关闭）

@@ -69,7 +69,7 @@ export default function NavCustomizer() {
           <span>Trigger</span>
         </div>
         <div className="theme-customizer-grid">
-          <NavRangeControl label="触发阈值" description="下滑多少像素开始分裂" setting="stretchThreshold" min={40} max={300} step={1} value={navSettings.stretchThreshold} update={updateNavSetting} />
+          <NavRangeControl label="触发阈值" description="下滑超过该距离才分裂，上滑即合并" setting="stretchThreshold" min={40} max={300} step={1} value={navSettings.stretchThreshold} update={updateNavSetting} />
         </div>
       </div>
 
