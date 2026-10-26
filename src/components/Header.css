@@ -41,7 +41,9 @@
      打开设置面板时 nav-pill 长高，header 跟随变高，顶部（fixed top:16px）不动。
      之前写死 height + align-items:center 会让长高的 nav-pill 上下同时凸出。 */
   width: min(945px, calc(90vw - 49px));
-  align-items: center;
+  /* 恒顶部对齐：合并/分裂都在 flex-start，两个子项的垂直位置全交给 margin-top。
+     用 center ↔ flex-start 切换会让 logo 瞬跳（align-items 不可插值）。 */
+  align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
   padding: 0 14px 0 18px;
@@ -122,6 +124,9 @@
      分裂后内容只剩 W（约12px），会缩成 12×44 的窄椭圆。 */
   width: 72px;
   height: 40px;
+  /* 合并态垂直居中：header 高 63，logo 高 40 → 上边距 11.5。
+     与分裂态的 9.5 一起过渡，logo 中心恒在 31.5，只长大不位移。 */
+  margin-top: calc((var(--nav-height, 63px) - 40px) / 2);
   /* 玻璃圆角由 ::before 的 border-radius 负责，文字裁切交给 .site-header-logo
      自己的 overflow:hidden + width 过渡（单字符串方案） */
   overflow: visible;
@@ -143,14 +148,8 @@
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
   -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
   backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
-    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
-    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
-    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
-    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
-    0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
-    0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
+  /* 与外壳、导航胶囊同一份配方；logo 没有 overflow 裁切，外投影直接由这里画 */
+  box-shadow: var(--glass-shadow-inset), var(--glass-shadow-outer);
   opacity: 0;
   /* 玻璃淡出与主时长一致（--nav-stretch-duration），和文字、尺寸同步过渡，
      避免玻璃「提前消失」显得突兀 */
@@ -163,8 +162,8 @@
   /* 保持 999px（完全圆角）而非 50%：999px 在任意尺寸下都渲染成「短边一半」，
      从胶囊→正圆是连续过渡；50% 在矩形中间态只有半圆角，会产生变形。 */
   border-radius: 999px;
-  /* 分裂态 header 顶部对齐，logo（44px）需下移 (63-44)/2=9.5px 以保持
-     原本 center 对齐下的视觉位置。此值恒定，不随面板开关变化 → 不抽搐。 */
+  /* 分裂态：logo 长成 44 正圆，上边距收到 (63-44)/2=9.5。
+     与合并态的 11.5 一起插值，中心恒在 31.5 → 只长大、不跳位。 */
   margin-top: calc((var(--nav-height, 63px) - 44px) / 2);
 }
 
@@ -207,6 +206,17 @@
     --mask-fade var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     letter-spacing var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* UYU 独立一层：分裂时整体淡出，保证终点完全不可见。
+   宽度裁切只负责收回盒子，字母消失由 opacity 兜底，避免亚像素残留。 */
+.logo-rest {
+  opacity: 1;
+  transition: opacity calc(var(--nav-stretch-duration, 0.5s) * 0.6) ease;
+}
+
+.site-header.is-split .logo-rest {
+  opacity: 0;
 }
 
 .site-header-logo:hover,

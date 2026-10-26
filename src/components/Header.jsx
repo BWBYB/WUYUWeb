@@ -94,7 +94,7 @@ export default function Header() {
     >
       <div className="logo-pill">
         <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">
-          WUYU
+          W<span className="logo-rest">UYU</span>
         </Link>
       </div>
 
