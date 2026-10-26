@@ -327,6 +327,11 @@
 
 /* 分裂态：按钮缩成纯图标，胶囊变正圆 */
 .site-header.is-split .nav-pill > .switcher--navigation {
+  /* 分裂态恒顶部对齐（打开/关闭都不变）：
+     nav-pill 的高度会在 63 ↔ 280 之间变化，若此时靠 align-items:center 居中，
+     字段集（63 高）会被放到 108.5px 处，关闭面板时整组图标随容器收缩一路往上滑。
+     写在分裂态而不是「仅打开时」，关闭瞬间才不会重新居中。 */
+  align-self: flex-start !important;
   --switcher-option-width: 44px !important;
   --switcher-gap: 4px !important;
   --switcher-capsule-width: 44px !important;
@@ -392,16 +397,10 @@
   /* 圆角保持 calc(var(--nav-height)/2) 不变，上圆角不动、只向下拉伸 */
 }
 
-/* 打开面板时：fieldset 改为 static，让 ⚙ 的 absolute 锚定到 .nav-pill（position:relative），
-   而不是锚定到垂直居中的 fieldset——否则 ⚙ 会落在面板中部而非右上角。 */
-.nav-pill[data-settings-open="true"] .switcher--navigation {
-  position: static !important;
-  /* 顶部对齐，防止 4 个图标跟随容器长高而下移：
-     fieldset 自身高 63px，被 align-items:center 居中在 280px 的 nav-pill 里时会落到
-     108px 处，图标淡出过程中看起来像「往下掉」。
-     未展开时容器也是 63px，居中与顶部对齐位置完全重合，所以这一跳无位移。 */
-  align-self: flex-start !important;
-}
+/* 打开面板时不再改 fieldset 的定位方式。
+   以前为了让设置按钮的 absolute 锚定到 .nav-pill 而把它改成 static，副作用是
+   导航选中胶囊（fieldset::after，top:4/left:4）也失去定位基准、改锚到 nav-pill。
+   现在设置按钮留在文档流里（见下方），字段集保持自己的 relative 即可。 */
 
 /* 设置面板：铺满变大的胶囊，淡入（不是从底部挂出独立浮层） */
 .nav-settings-panel {
@@ -671,20 +670,37 @@
   transition-delay: 0s !important;
 }
 
-/* 面板打开时：⚙ 锚定到右上角，固定 30px 圆形 + 玻璃底座（不再孤立浮在玻璃上） */
+/* 面板打开时的设置按钮：盒子完全不改，只换装饰。
+   —— 关闭态是流内的 44×45（字段集 padding 8/10，顶部对齐），
+   打开态继续用同一个 44×45、同一位置，图标居中，因此几何上不可能动。
+   玻璃圆退化成 30px 的 ::before，圆心与盒子中心重合，视觉上「圆圈收拢、图标不动」。
+   之前用 absolute + 30×30 + top:15.5 去对同一个中心，但宽度 30→44 是过渡的、
+   右边缘被 right:12 锚住，左边缘一路内收，图标会横向滑 7px（实测 1190→1197）。
+   注：position:relative 只作 ::before 的定位基准。.switcher__option 基础态用
+   一条覆盖全部属性的过渡，不锁住 width/height 就会抖。 */
 .nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link {
-  position: absolute !important;
-  top: 12px;
-  right: 12px;
+  position: relative !important;
   z-index: 16;
-  width: 30px !important;
-  height: 30px !important;
-  padding: 0 !important;
+  border-radius: 50%;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1; /* 让图标压在圆上 */
+  width: 30px;
+  height: 30px;
+  translate: -50% -50%;
   border-radius: 50%;
   background-color: color-mix(in srgb, var(--nav-glass-color) calc(var(--nav-glass-opacity) * 0.9), transparent);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
     inset 1px 1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent);
+  pointer-events: none;
 }
 
 /* 打开态隐藏 ⚙ 的标签（只留图标） */
