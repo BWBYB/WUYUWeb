@@ -697,6 +697,18 @@
   opacity: 0 !important;
 }
 
+/* 面板打开时 fieldset 变成 static，胶囊的定位基准从 63px 的 fieldset
+   换成 280px 的 nav-pill，top:50% 会瞬间从 31.5 跳到 140（下坠 108.5px）。
+   这里把展开前的几何值钉住 —— (63-44)/2 = 9.5，与 top:50% + translateY(-50%) 等价，
+   让它只在原地淡出。关闭时这条失效，落点同为 9.5，两个方向都不跳。 */
+.site-header.is-split .nav-pill[data-settings-open="true"] .switcher--navigation::after {
+  top: calc((var(--nav-height, 63px) - 44px) / 2) !important;
+  transform: none !important;
+  /* 两个端点视觉位置相同，top/transform 直接跳变也看不出来；
+     只让 opacity 过渡，避免两套 easing 不同步导致的 1–2px 漂移。 */
+  transition: opacity var(--nav-stretch-duration, 0.5s) ease !important;
+}
+
 /* ── 移动端 ─────────────────────────────── */
 @media (max-width: 760px) {
   .site-header {
