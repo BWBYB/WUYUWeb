@@ -60,7 +60,20 @@ export function ThemeSwitcherProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    document.documentElement.dataset.siteTheme = resolvedTheme
+    const root = document.documentElement
+    root.dataset.siteTheme = resolvedTheme
+
+    // 切主题时给文字色一次 0.55s 过渡，只在 700ms 内挂这个属性 ——
+    // 常驻 transition 会把按钮 hover 也拖慢，这里用完就摘。
+    const reduce =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return undefined
+
+    root.setAttribute('data-theme-anim', '')
+    const id = window.setTimeout(() => root.removeAttribute('data-theme-anim'), 700)
+    return () => window.clearTimeout(id)
   }, [resolvedTheme])
 
   const setTheme = (nextTheme) => {

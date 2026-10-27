@@ -104,3 +104,45 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ASCII 字符背景层
+   与极光同一套层级约定：fixed + z-index:-1。
+   注意：z-index:-1 依赖 .layout 不设 z-index —— 一旦给 .layout 加 z-index，
+   这层会整块消失。桌面宽度下字符格约 8px，手机上 7px（更密才像雾）。 */
+.ascii-bg {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 极光此前没有降级：reduced-motion 下停掉位移，只留静止的光斑 */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none;
+  }
+}
+
+/* 主题切换时的文字过渡
+   只在 <html data-theme-anim> 存在的约 700ms 内生效：
+   常驻 transition 会让按钮 hover 变钝，所以由 Provider 挂上再摘掉。
+   限定在标题与正文元素，避免波及 transform 类动画。 */
+html[data-theme-anim] body,
+html[data-theme-anim] :where(h1, h2, h3, h4, h5, h6, p, a, li, dt, dd, blockquote, figcaption, span, strong, em) {
+  transition:
+    color 0.55s ease,
+    background-color 0.55s ease,
+    border-color 0.55s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme-anim] body,
+  html[data-theme-anim] :where(h1, h2, h3, h4, h5, h6, p, a, li, dt, dd, blockquote, figcaption, span, strong, em) {
+    transition: none;
+  }
+}
