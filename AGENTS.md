@@ -17,10 +17,10 @@ npm run preview   # 预览 dist/
 
 ## 工作区
 
-- 本目录是 **git worktree**，分支 `agent/navigation-experiment`，`.git` 是指向主仓库的 76 字节指针文件。
-- 主仓库 `/Users/Admin/Documents/ChatGPT/WUYUWeb` 在 `main`，通常保持只读，不要往那里提交。
-- 两个 worktree 不能同时 checkout 同一分支。
-- 删除本目录必须用 `git worktree remove`；`rm -rf` 会在主仓库 `.git/worktrees/` 留下失效记录。
+- 本目录是当前工作副本：完整 Git 仓库（`.git` 为目录），分支 `main`，当前 HEAD `01dc388`，与 `origin/main` 同步。
+- 另有两处目录：`/Users/Admin/Documents/ChatGPT/WUYUWeb`（完整仓库，`main`）及其 worktree `WUYUWeb-agent`（`agent/navigation-experiment`）；两者当前都停在 `01dc388`，不要在两处同时改。
+- 实验性代码改动先开分支或 worktree，不要把未确认的改动直接落在 `main`；提交与推送需用户明确授权。
+- 本目录按普通仓库处理，删除时不需要 `git worktree remove`。
 
 ## 内容管线（最容易踩的地方）
 
