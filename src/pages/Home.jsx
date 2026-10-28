@@ -1,110 +1,53 @@
-import { useState, useEffect } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { posts } from '../lib/content/posts'
 import '../styles/effects.css'
 import './Home.css'
 
-/* ─── Typing Animation ─── */
-function TypedText({ texts, speed = 80, pause = 2000 }) {
-  const [textIndex, setTextIndex] = useState(0)
-  const [charIndex, setCharIndex] = useState(0)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  useEffect(() => {
-    const current = texts[textIndex]
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        if (charIndex < current.length) {
-          setCharIndex(charIndex + 1)
-        } else {
-          setTimeout(() => setIsDeleting(true), pause)
-        }
-      } else {
-        if (charIndex > 0) {
-          setCharIndex(charIndex - 1)
-        } else {
-          setIsDeleting(false)
-          setTextIndex((textIndex + 1) % texts.length)
-        }
-      }
-    }, isDeleting ? 40 : speed)
-    return () => clearTimeout(timeout)
-  }, [charIndex, isDeleting, textIndex])
-
-  return (
-    <span>
-      {texts[textIndex].slice(0, charIndex)}
-      <span className="typed-cursor">|</span>
-    </span>
-  )
-}
-
 export default function Home() {
   const recentPosts = posts.slice(0, 3)
+  const bentoRef = useRef(null)
+
+  function scrollToContent() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    bentoRef.current?.scrollIntoView({
+      behavior: reduce ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
 
   return (
     <div className="home">
       {/* Hero Section */}
-      <section className="hero-section fade-in fade-in-1">
-        <div className="hero-glow hero-glow-1"></div>
-        <div className="hero-glow hero-glow-2"></div>
-
-        <div className="hero-inner">
-          <div className="hero-avatar-wrap" data-water-dim data-water-avoid>
-            <div className="hero-avatar">
-              <span className="hero-avatar-emoji">&#x1f680;</span>
-              <div className="hero-avatar-ring"></div>
-            </div>
-            <div className="hero-status">
-              <span className="hero-status-dot"></span>
-              在线
-            </div>
+      <section className="hero-section" aria-labelledby="hero-title">
+        <div className="hero-label" data-water-avoid>
+          <div className="hero-label__name">
+            <span className="hero-label__dot" aria-hidden="true" />
+            <h1 id="hero-title" className="hero-label__title">WUYUWEB</h1>
           </div>
-
-          <h1 className="hero-main-title" data-water-dim data-water-avoid>
-            你好，我是 <span className="gradient-text">开发者</span>
-          </h1>
-
-          <p className="hero-typed-line" data-water-dim data-water-avoid>
-            <TypedText texts={['正在探索 AI Agent 的世界', '记录技术与生活的点滴', '用代码创造有趣的东西']} />
-          </p>
-
-          <p className="hero-desc" data-water-dim data-water-avoid>
-            一个即将毕业的 CS 学生，热爱前端设计与人工智能。<br />
-            在这里分享学习笔记、项目实践和生活感悟。
-          </p>
-
-          <div className="hero-actions" data-water-avoid>
-            <Link to="/blog" className="hero-btn hero-btn-primary">
-              <span>浏览文章</span>
-              <span className="hero-btn-arrow">&rarr;</span>
+          <p className="hero-label__sub">
+            前端 · AI · 观察笔记
+            <Link to="/about" className="hero-label__link" data-water-dim>
+              关于
             </Link>
-            <Link to="/lab" className="hero-btn hero-btn-secondary">
-              前端实验室
-            </Link>
-          </div>
-
-          <div className="hero-social" data-water-avoid>
-            <a href="https://github.com" target="_blank" className="hero-social-link" title="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            </a>
-            <a href="#" className="hero-social-link" title="Twitter">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href="#" className="hero-social-link" title="Email">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </a>
-          </div>
-
-          <div className="hero-scroll-hint" data-water-avoid>
-            <span>向下滚动</span>
-            <div className="hero-scroll-arrow"></div>
-          </div>
+          </p>
         </div>
+
+        <button
+          type="button"
+          className="hero-scroll-float"
+          aria-label="向下滚动"
+          data-water-avoid
+          onClick={scrollToContent}
+        >
+          <span className="hero-scroll-float__dot" aria-hidden="true" />
+          <span className="hero-scroll-float__line" aria-hidden="true" />
+          <span className="hero-scroll-float__chevron" aria-hidden="true" />
+        </button>
       </section>
 
       {/* Bento Grid */}
-      <div className="bento-grid">
+      <div className="bento-grid" ref={bentoRef}>
         {/* Latest Posts - Large Card */}
         <div className="bento-card bento-large glass-card fade-in fade-in-2">
           <div className="card-header">
