@@ -94,14 +94,14 @@ const DIM_SELECTOR = [
 const DEFAULT_OPTIONS = {
   theme: 'dark',
   brush: 'gradient',
-  waveMode: 'drift',
+  waveMode: 'cross',
   waveSpeed: 1,
   amplitude: 1,
-  wavelength: 1,
+  wavelength: 1.25,
   direction: 0,
   turbulence: 1,
   waterDensity: 0.36,
-  waterLimit: 8,
+  waterLimit: 7,
   presence: 1,
   ripple: true,
   rippleSize: 1,
@@ -410,9 +410,9 @@ export function createAsciiBackground(canvas, options = {}) {
     const t = THEMES[name] || THEMES.dark
     const k = t.alpha / 0.8
 
-    const waterInk = name === 'light' ? [72, 68, 64] : t.white
+    const waterInk = name === 'light' ? [58, 72, 86] : t.white
     // 浅色页没有 hero 鱼尾推高的亮区，环境场本身要再多一点对比才不显得空。
-    const waterK = k * (name === 'light' ? 1.5 : 1)
+    const waterK = k * (name === 'light' ? 1.6 : 1)
     waterColors.length = 0
     for (let i = 0; i < WATER_ALPHA.length; i++) {
       waterColors.push(rgba(waterInk, Math.min(0.9, WATER_ALPHA[i] * waterK)))
@@ -509,7 +509,7 @@ export function createAsciiBackground(canvas, options = {}) {
       // 静水：只留极慢的底噪，适合把注意力完全交给鱼
       v = fbm(nx * 1.15 + tt * 0.004, ny * 0.95 - tt * 0.003) * 0.72 + 0.04
     } else {
-      // 漂移流：默认。低频团块 + 细纹，像整片水在缓慢换气
+      // 漂移流：低频团块 + 细纹，像整片水在缓慢换气
       const flow = fbm(
         nx * 0.62 + warp * 0.35 * turb + tt * 0.011,
         ny * 0.5 - warp * 0.18 * turb - tt * 0.006,
@@ -518,13 +518,20 @@ export function createAsciiBackground(canvas, options = {}) {
       v = flow * 0.68 + fine * 0.32 * turb
     }
 
+    // 波峰内部再打碎一层细粒：没有这层，正弦带会整行同字符，像网点纸。
+    if (mode !== 'drift' && mode !== 'still') {
+      const grain = fbm(nx * 2.6 + tt * 0.02, ny * 2.2 - tt * 0.014) - 0.5
+      const ripple = 0.5 + 0.5 * Math.sin((nx * 5.4 - ny * 4.2 + warp * 1.2) * Math.PI * 2 - tt * 0.85)
+      v += grain * 0.24 * turb + Math.pow(ripple, 5) * 0.17
+    }
+
     // 一片缓慢游移的宽光，给整页一个不聚光的明暗重心
     const lx = 0.62 + 0.18 * Math.sin(tt * 0.035)
     const ly = 0.42 + 0.1 * Math.sin(tt * 0.027 + 1.7)
     v += 0.22 * Math.exp(-((nx - lx) * (nx - lx) * 2.4 + (ny - ly) * (ny - ly) * 3.4))
     if (mode !== 'drift' && mode !== 'still') v += 0.03
 
-    // 密度：0 时整层关闭；0.35 只保留中高能区
+    // 密度：0 时整层关闭；数值越大保留的低能区越多
     const cutoff = 0.6 - S.effDensity * 0.175
     v = (v - cutoff) / (1 - cutoff)
     // 波幅：以中灰为轴放大/收拢对比，不改变水纹覆盖率
@@ -1590,7 +1597,7 @@ export function createAsciiBackground(canvas, options = {}) {
         const wb = boost[idx]
         if (wb > 0.001) v += wb * (1 - v)
         if (v > 1) v = 1
-        let lv = Math.round(v * 9 + jitter[idx] * 0.6)
+        let lv = Math.round(v * 9 + jitter[idx] * 1.0)
         if (lv <= 0) {
           levels[idx] = 0
         } else {

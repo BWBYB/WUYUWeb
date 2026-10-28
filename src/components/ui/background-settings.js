@@ -55,14 +55,14 @@ const ADVANCED_INTEGER_KEYS = new Set(['fbmOctaves'])
 export const DEFAULT_BACKGROUND_SETTINGS = {
   mode: 'ascii', // 字符水体 / 极光 / 无 —— 同一时刻只渲染一层
   brush: 'gradient', // 梯度（十级明暗）/ 积木（块面）
-  waveMode: 'drift', // 五种波动方式
+  waveMode: 'cross', // 五种波动方式
   waveSpeed: 1,
   amplitude: 1,
-  wavelength: 1,
+  wavelength: 1.25,
   direction: 0,
   turbulence: 1,
   waterDensity: 0.36,
-  waterLimit: 8,
+  waterLimit: 7,
   presence: 1,
   ripple: true,
   rippleSize: 1,

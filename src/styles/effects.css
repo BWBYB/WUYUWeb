@@ -83,6 +83,15 @@ html[data-water-bg='on'] .main .glass-card {
   backdrop-filter: blur(2px);
 }
 
+/* 浅色卡片底太白会把水挡没；降到 0.4 让水纹透上来，文字区仍由局部压暗兜底 */
+html[data-site-theme='light'][data-water-bg='on'] .main .glass-card {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+html[data-site-theme='light'][data-water-bg='on'] .main .glass-card:hover {
+  background: rgba(255, 255, 255, 0.52);
+}
+
 /* Fade in animation */
 .fade-in {
   opacity: 0;
