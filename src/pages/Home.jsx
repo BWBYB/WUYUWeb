@@ -1,107 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { posts } from '../lib/content/posts'
 import '../styles/effects.css'
 import './Home.css'
-
-/* ─── Particle Background ─── */
-function HeroParticles() {
-  const canvasRef = useRef(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    let w, h
-    let animationId = null
-    let isVisible = true
-    const particles = []
-    const PARTICLE_COUNT = 50
-
-    const resize = () => {
-      const rect = canvas.parentElement.getBoundingClientRect()
-      w = rect.width
-      h = rect.height
-      canvas.width = w * 2
-      canvas.height = h * 2
-      ctx.setTransform(1, 0, 0, 1, 0, 0)
-      ctx.scale(2, 2)
-    }
-
-    const init = () => {
-      resize()
-      particles.length = 0
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          size: Math.random() * 2 + 0.5,
-          alpha: Math.random() * 0.5 + 0.1,
-        })
-      }
-    }
-
-    const draw = () => {
-      if (!isVisible) {
-        animationId = null
-        return
-      }
-
-      ctx.clearRect(0, 0, w, h)
-      particles.forEach((p, i) => {
-        p.x += p.vx
-        p.y += p.vy
-        if (p.x < 0) p.x = w
-        if (p.x > w) p.x = 0
-        if (p.y < 0) p.y = h
-        if (p.y > h) p.y = 0
-
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.alpha})`
-        ctx.fill()
-
-        // Draw connections
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = p.x - particles[j].x
-          const dy = p.y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 120) {
-            ctx.beginPath()
-            ctx.moveTo(p.x, p.y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(99, 102, 241, ${0.06 * (1 - dist / 120)})`
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
-        }
-      })
-      animationId = requestAnimationFrame(draw)
-    }
-
-    init()
-    draw()
-    const visibilityObserver = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting
-      if (isVisible && animationId === null) draw()
-      if (!isVisible && animationId !== null) {
-        cancelAnimationFrame(animationId)
-        animationId = null
-      }
-    }, { threshold: 0.01 })
-    visibilityObserver.observe(canvas)
-    window.addEventListener('resize', init)
-    return () => {
-      cancelAnimationFrame(animationId)
-      visibilityObserver.disconnect()
-      window.removeEventListener('resize', init)
-    }
-  }, [])
-
-  return <canvas ref={canvasRef} className="hero-particles" />
-}
 
 /* ─── Typing Animation ─── */
 function TypedText({ texts, speed = 80, pause = 2000 }) {
@@ -145,12 +46,11 @@ export default function Home() {
     <div className="home">
       {/* Hero Section */}
       <section className="hero-section fade-in fade-in-1">
-        <HeroParticles />
         <div className="hero-glow hero-glow-1"></div>
         <div className="hero-glow hero-glow-2"></div>
 
         <div className="hero-inner">
-          <div className="hero-avatar-wrap">
+          <div className="hero-avatar-wrap" data-water-dim data-water-avoid>
             <div className="hero-avatar">
               <span className="hero-avatar-emoji">&#x1f680;</span>
               <div className="hero-avatar-ring"></div>
@@ -161,20 +61,20 @@ export default function Home() {
             </div>
           </div>
 
-          <h1 className="hero-main-title">
+          <h1 className="hero-main-title" data-water-dim data-water-avoid>
             你好，我是 <span className="gradient-text">开发者</span>
           </h1>
 
-          <p className="hero-typed-line">
+          <p className="hero-typed-line" data-water-dim data-water-avoid>
             <TypedText texts={['正在探索 AI Agent 的世界', '记录技术与生活的点滴', '用代码创造有趣的东西']} />
           </p>
 
-          <p className="hero-desc">
+          <p className="hero-desc" data-water-dim data-water-avoid>
             一个即将毕业的 CS 学生，热爱前端设计与人工智能。<br />
             在这里分享学习笔记、项目实践和生活感悟。
           </p>
 
-          <div className="hero-actions">
+          <div className="hero-actions" data-water-avoid>
             <Link to="/blog" className="hero-btn hero-btn-primary">
               <span>浏览文章</span>
               <span className="hero-btn-arrow">&rarr;</span>
@@ -184,7 +84,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="hero-social">
+          <div className="hero-social" data-water-avoid>
             <a href="https://github.com" target="_blank" className="hero-social-link" title="GitHub">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             </a>
@@ -196,7 +96,7 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="hero-scroll-hint">
+          <div className="hero-scroll-hint" data-water-avoid>
             <span>向下滚动</span>
             <div className="hero-scroll-arrow"></div>
           </div>

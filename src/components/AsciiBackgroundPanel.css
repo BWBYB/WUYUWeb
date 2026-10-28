@@ -2,7 +2,7 @@
   position: fixed;
   right: 16px;
   bottom: 14px;
-  z-index: 900;
+  z-index: 1100;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -43,7 +43,7 @@
 
 .bgp__panel {
   pointer-events: auto;
-  width: min(288px, calc(100vw - 32px));
+  width: min(300px, calc(100vw - 32px));
   max-height: calc(100vh - 112px);
   overflow-y: auto;
   padding: 14px 15px 12px;
@@ -59,6 +59,28 @@
   letter-spacing: 0.04em;
   color: var(--text);
   animation: bgp-in 0.18s ease-out both;
+}
+
+.bgp__group {
+  margin: 16px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+}
+
+.bgp__panel > .bgp__group:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.bgp__hint {
+  margin: -2px 0 10px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 .bgp__row {
@@ -141,10 +163,68 @@
 }
 
 .bgp__meter output {
-  min-width: 34px;
+  min-width: 46px;
   text-align: right;
   color: var(--text-h);
   font-variant-numeric: tabular-nums;
+}
+
+.bgp__advanced {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.bgp__advanced summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.bgp__advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.bgp__advanced summary::after {
+  content: '+';
+  font-size: 12px;
+  line-height: 1;
+}
+
+.bgp__advanced[open] summary::after {
+  content: '−';
+}
+
+.bgp__advanced summary:hover,
+.bgp__advanced summary:focus-visible {
+  color: var(--text-h);
+}
+
+.bgp__reset {
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.bgp__reset:hover,
+.bgp__reset:focus-visible {
+  color: var(--text-h);
+  border-color: var(--border-hover);
 }
 
 @keyframes bgp-in {

@@ -77,6 +77,12 @@
   transform: translateY(-2px);
 }
 
+/* 水层开启时把卡片模糊降到 2px：12px 会把 8px 的字符水纹糊成一片灰，水就透不出来 */
+html[data-water-bg='on'] .main .glass-card {
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
 /* Fade in animation */
 .fade-in {
   opacity: 0;

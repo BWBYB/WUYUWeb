@@ -38,17 +38,28 @@ function BackgroundLayer() {
 
   const update = useCallback(patch => {
     setSettings(current => {
-      const next = normalizeBackgroundSettings({ ...current, ...patch })
+      const next = normalizeBackgroundSettings({
+        ...current,
+        ...patch,
+        fish: patch.fish ? { ...current.fish, ...patch.fish } : current.fish,
+        advanced: patch.advanced ? { ...current.advanced, ...patch.advanced } : current.advanced,
+      })
       saveBackgroundSettings(next)
       return next
     })
+  }, [])
+
+  const reset = useCallback(() => {
+    const next = normalizeBackgroundSettings()
+    saveBackgroundSettings(next)
+    setSettings(next)
   }, [])
 
   return (
     <>
       {settings.mode === 'ascii' && <AsciiBackground settings={settings} />}
       {settings.mode === 'aurora' && <AuroraBackground />}
-      <AsciiBackgroundPanel settings={settings} onChange={update} />
+      <AsciiBackgroundPanel settings={settings} onChange={update} onReset={reset} />
     </>
   )
 }

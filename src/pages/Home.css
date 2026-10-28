@@ -19,12 +19,13 @@
   background: rgba(10, 10, 15, 0.8);
 }
 
-.hero-particles {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+/* 水体背景开启时，hero 让出底色，让固定画布上的水直接透进来 */
+html[data-water-bg="on"] .hero-section {
+  background: transparent;
+}
+
+html[data-site-theme="light"][data-water-bg="on"] .hero-section {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .hero-glow {
