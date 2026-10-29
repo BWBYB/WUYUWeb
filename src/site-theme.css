@@ -62,10 +62,6 @@ html[data-site-theme="light"] .hero-section {
   background: rgba(255, 255, 255, 0.76);
 }
 
-html[data-site-theme="light"] .hero-social-link {
-  background: rgba(23, 25, 35, 0.04);
-}
-
 html[data-site-theme="light"] .three-hero {
   background: radial-gradient(ellipse at center, #f7f8fc 0%, #e8ebf5 100%);
 }
