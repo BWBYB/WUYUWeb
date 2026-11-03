@@ -6,7 +6,7 @@ import { marked } from 'marked'
 import fs from 'node:fs'
 import path, { resolve } from 'node:path'
 
-const contentDirectories = ['content/posts', 'content/notion']
+const contentDirectories = ['content/posts', 'content/notion', 'content/reports']
 const virtualContentModule = 'virtual:wuyu-content'
 const resolvedContentModule = `\0${virtualContentModule}`
 const virtualUpdatesModule = 'virtual:wuyu-updates'
@@ -195,7 +195,11 @@ function buildMarkdownPost(filePath) {
     cover: data.cover ? String(data.cover) : null,
     wordCount: plainText ? plainText.split(/\s+/).length : 0,
     toc,
-    source: relativePath.startsWith('content/notion/') ? 'notion' : 'obsidian',
+    source: relativePath.startsWith('content/notion/')
+      ? 'notion'
+      : relativePath.startsWith('content/reports/')
+        ? 'reports'
+        : 'obsidian',
   }
 }
 

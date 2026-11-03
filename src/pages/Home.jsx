@@ -5,7 +5,8 @@ import '../styles/effects.css'
 import './Home.css'
 
 export default function Home() {
-  const recentPosts = posts.slice(0, 3)
+  // 日报每天一篇，混进最新文章会把手写文章挤出首页
+  const recentPosts = posts.filter(post => post.category !== '日报').slice(0, 3)
   const bentoRef = useRef(null)
 
   function scrollToContent() {
