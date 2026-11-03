@@ -42,9 +42,9 @@ WUYUWeb/content/reports/YYYY-MM-DD.md   ← 最终日报的唯一产出位置（
 | `data/` `insights/` 快照与解读稿 | `reports-tool/__pycache__/`、`**/__pycache__/` |
 | `adaptive_fingerprints.db`（改了能复现的算力，丢了要冷启动） | `logs/`（`.log` 规则已覆盖，日志属运行痕迹） |
 
-**入库后仍要守住的一条**：`content/reports/README.md:104` 禁止在本目录 `git init`。
-该目录一旦出现 `.git/`，父仓库就不再跟踪里面的文件，上线时平台拿不到日报。
-现在该目录没有 `.git/`，也没有嵌套仓库。
+**入库后仍要守住的一条**：`content/reports/README.md:104` 明确禁止在**那个目录**（`content/reports/`）里 `git init`。
+它一旦出现 `.git/`，父仓库就不再跟踪里面的文件，上线时平台拿不到日报。
+现在 `content/reports/` 没有 `.git/`，也没有嵌套仓库。
 
 > 提交与推送按站点 `AGENTS.md:22` 走「用户明确授权」——本次迁移的提交已获授权，后续照旧。
 
@@ -188,8 +188,8 @@ Scrapling 要求 **Python ≥3.10**，系统自带的是 3.9，装不了：
 
 ### adaptive 指纹库放哪
 
-`adaptive_fingerprints.db`（项目根目录）。Scrapling 默认把它塞在
-`site-packages/scrapling/` 里面，**venv 一重建学到的东西就全丢**，所以显式指定到项目内。
+`adaptive_fingerprints.db`（本目录，即 `reports-tool/adaptive_fingerprints.db`）。Scrapling 默认把它塞在
+`site-packages/scrapling/` 里面，**venv 一重建学到的东西就全丢**，所以显式指定到工具目录内。
 这个库是跨进程持久化的——今天存指纹，明天新进程照样认得出错位的元素。
 
 ### 已知限制
