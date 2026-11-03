@@ -32,6 +32,22 @@ WUYUWeb/content/reports/YYYY-MM-DD.md   ← 最终日报的唯一产出位置（
 目录不存在或不可写就**报错退出**，不回退到本地——静默回退会让定时任务看起来跑通、
 实际站点里却没有当天日报。目录规范见 `content/reports/README.md`（属站点资产，勿改）。
 
+### 版本跟踪范围
+
+日报与工具**随站点仓库一起提交**（`content/reports/*.md` 不再 untracked，用户已于 2026-11-03 确认纳入）。
+
+| 纳入 | 不纳入（`.gitignore`） |
+|---|---|
+| `fetch.py` `lint.py` `render.py` `run-daily.sh` | `reports-tool/.venv/`（400MB+，`pyvenv.cfg` 与 shebang 写死本机绝对路径，换机器必须重建） |
+| `data/` `insights/` 快照与解读稿 | `reports-tool/__pycache__/`、`**/__pycache__/` |
+| `adaptive_fingerprints.db`（改了能复现的算力，丢了要冷启动） | `logs/`（`.log` 规则已覆盖，日志属运行痕迹） |
+
+**入库后仍要守住的一条**：`content/reports/README.md:104` 禁止在本目录 `git init`。
+该目录一旦出现 `.git/`，父仓库就不再跟踪里面的文件，上线时平台拿不到日报。
+现在该目录没有 `.git/`，也没有嵌套仓库。
+
+> 提交与推送按站点 `AGENTS.md:22` 走「用户明确授权」——本次迁移的提交已获授权，后续照旧。
+
 ## 日常使用
 
 ```bash
@@ -221,6 +237,13 @@ summary: "今天 6 篇论文里 3 篇围绕 harness，Wave Forcing 把流式视�
 | 编码 | UTF-8、LF、**无 BOM**（`render.py` 用 `newline="\n"` 强制，不随平台变） |
 | 禁用 | 裸 HTML（`<div>` `<br>` `<img>`…会被丢）、本地图片引用、`|` / `>` 多行块标量 |
 | 链接 | 只用 Markdown 语法；允许 `https://`、`mailto:`；外链由站点自动加 `target="_blank"` |
+
+> **summary 是本项目的加固规则，比站点规范更严。** 站点 `content/reports/README.md:47` 说
+> summary 可省略（缺省取正文前 160 字），但本项目**强制要求 40–80 字、单行、缺一即 ERROR**。
+> 这是**用户已确认保留**的决定（2026-11-03）：日报的列表摘要要由写作者主动提炼，
+> 而不是让构建回退到截断正文——截断出来的摘要经常在半句话处断掉。
+> 边界行为已实测：39 字 / 81 字 / 缺失 / 原始文件折成两行（即使解析后总长合规）全部拦截，
+> 40 字与 80 字放行。
 
 ### 三个容易踩的坑（写在这里，省得下次再踩）
 
