@@ -24,27 +24,27 @@ YYYY-MM-DD.md
 
 ## 二、frontmatter
 
-每篇必须有下面这些字段，缺任何一个都会让 `npm run dev` 与 `npm run build` **直接报错中断**：
+下面六个字段是日报工具的交付要求，缺一项就可能出问题。站点构建本身只强制 `title`、`slug`、`date`；其余三项缺失不一定报错，但会导致分类缺失、摘要被截断或被静默过滤，所以一律按必填处理。
 
 ```yaml
 ---
-title: 2026-11-03 日报
-slug: report-2026-11-03
-date: 2026-11-03
-category: 日报
-status: published
-summary: 一句话说明今天这份日报覆盖了什么。
+title: "AI 与计算机日报 · 2026-11-03（周二）"
+slug: "report-2026-11-03"
+date: "2026-11-03"
+category: "日报"
+status: "published"
+summary: "今天 6 篇论文里 3 篇围绕 harness，Wave Forcing 把流式视频生成吞吐做到单卡 7.07 倍。"
 ---
 ```
 
 | 字段 | 规则 |
 | --- | --- |
-| `title` | 自由文本，建议「YYYY-MM-DD 日报」 |
-| `slug` | **必须**是 `report-YYYY-MM-DD`，日期取自文件名；全站唯一，重复会中断构建 |
-| `date` | `YYYY-MM-DD`，与文件名日期一致 |
-| `category` | 固定写 `日报`，站点按这个分类筛选 |
+| `title` | 人类可读，保留日期与星期；日期用 `YYYY-MM-DD`，不要用斜杠 |
+| `slug` | **必须**是 `report-YYYY-MM-DD`，日期与 `date` 一致；全站唯一，重复会中断构建 |
+| `date` | `YYYY-MM-DD`，与 `slug` 中的日期一致 |
+| `category` | 固定写 `日报`；缺失时不会报错，但文章不会进「日报」分类 |
 | `status` | 必须是 `published`；写成 `draft` 会被**静默过滤**，不报错也看不到 |
-| `summary` | 列表摘要，建议 40–80 字；缺省时取正文前 160 字 |
+| `summary` | **必须** 40–80 字、单行；缺失或超长会被 `lint.py` 判为 ERROR |
 
 可选字段：`updated`、`tags`（数组）、`cover`。
 
@@ -84,15 +84,18 @@ summary: 一句话说明今天这份日报覆盖了什么。
 
 **不需要为每篇日报单独构建。** 站点构建只在发布时统一执行一次，日常落盘不触发构建，也不要求 agent 跑 `npm run build`。
 
-写完后按第二节核对字段即可，重点五项：
+写完后按第二节核对字段即可，重点六项：
 
 1. 第 1 行是 `---`，字段列表之后有闭合的 `---`
 2. `title`、`slug`、`date` 三个字段都存在，且日期一致
 3. `slug` 等于 `report-` 加 `date`
-4. `status` 是 `published`
-5. 正文没有任何以 `# ` 开头的行
+4. `category` 是 `日报`，`status` 是 `published`
+5. `summary` 是单行，长度 40–80 字
+6. 正文没有任何以 `# ` 开头的行
 
-格式错误不会在落盘时报错，但会在下一次发布构建时暴露，并导致整站构建失败，所以上面五项必须逐条确认。
+`reports-tool/run-daily.sh` 会在交付前自动跑一遍 `lint.py`，上面六项以那份结果为准。
+
+格式错误不会在落盘时报错，但会在下一次发布构建时暴露，并导致整站构建失败，所以上面六项必须逐条确认。
 
 需要本地预览时，运行一次 `npm run dev`，日报会出现在 `/blog` 的「日报」分类下，详情页是 `/blog/report-YYYY-MM-DD`。dev 模式下保存 md 会自动刷新，同样不需要手动构建。
 
