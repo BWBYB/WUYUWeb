@@ -29,5 +29,13 @@ dist-ssr
 # Local browser automation artifacts
 .playwright-cli/
 
+# reports-tool：日报工具的本地资产
+# .venv 是 400MB+ 的 Python 3.11 环境（pyvenv.cfg 与 shebang 写死本机绝对路径，
+# 搬机器也不可用），必须本地重建：python3.11 -m venv .venv && ./.venv/bin/python -m pip install "scrapling[all]" pyyaml
+# 日志由上面的 `logs` 规则覆盖，这里不重复。
+reports-tool/.venv/
+reports-tool/__pycache__/
+**/__pycache__/
+
 # 本地工作状态，只保留在本机，不入库
 /docs/status.md
