@@ -174,15 +174,30 @@ Scrapling 只做它真正擅长的事（解析 + 重定位）。
 
 ### venv 是必需的
 
-Scrapling 要求 **Python ≥3.10**，系统自带的是 3.9，装不了：
+Scrapling 要求 **Python ≥3.10**，而 `command -v python3` 命中的是 Apple 命令行工具的 3.9，装不了：
 
 ```bash
 /opt/homebrew/bin/python3.11 -m venv .venv
-./.venv/bin/python -m pip install "scrapling[all]"
+./.venv/bin/python -m pip install "scrapling[all]" pyyaml
 ```
 
-`run-daily.sh` 会自动优先使用 `.venv/bin/python`；没有 venv 就退回系统 python3，
-那条路径自动降级为正则解析（不会崩，只是失去改版免疫力）。
+> **本机为什么装了 3.11 还要单独开 venv？** 这不是「不肯升级」，两件事得分开看：
+>
+> 1. `/usr/bin/python3`（3.9.6）是 **macOS Command Line Tools 的系统组件**，root 所有，
+>    挂在 Xcode 工具链上。替换或升级它会波及系统工具，Apple 也不建议动。
+> 2. Homebrew 已装 `python@3.11`，但 **没有提供 `python3` 这个软链**
+>    （`/opt/homebrew/bin/python3` 不存在），所以 `python3` 仍落到 `/usr/bin` 的 3.9。
+>    **升级 Homebrew 的 Python 不会让 `python3` 自动变新**，除非手动加软链或改 PATH。
+>
+> 而且即便将来本机 Python 升到更高版本，本项目**仍应留在 venv 里**：venv 解决的不只是
+> 版本，还有**项目间包隔离**（`include-system-site-packages = false`，见 `pyvenv.cfg`）。
+> 全局装包会让不同项目互相踩踏。
+>
+> 结论：**不要改全局 `python3` 软链**。流水线一律显式调用 `./.venv/bin/python`。
+
+`run-daily.sh` 会自动优先使用 `.venv/bin/python`。若 venv 不在，退回系统 python3：
+抓取降级为正则解析，而 `lint.py` 会因缺 PyYAML 判 **ERROR**（闸门不会静默失效），
+整条流水线以退出码 1 结束——这是刻意的：**能出稿，但不能假装验过了**。
 
 不需要跑 `scrapling install --force` 装浏览器——只用它的解析器，不用浏览器抓取。
 
@@ -283,6 +298,8 @@ summary: "今天 6 篇论文里 3 篇围绕 harness，Wave Forcing 把流式视�
 | **交付闸门（真阳性）** | 把 `render.py` 的 status 改成 `draft` 再跑流水线 | 交付前自检报 ERROR，退出码 1，提示「不要发布」 ✅ |
 | **交付闸门（防假警报）** | 手工把报告文件改成 `draft` 再跑流水线 | 渲染修好它，退出码 **0**（不误报） ✅ |
 | 标准 YAML 可解析 | 用真 PyYAML（不是肉眼）解析 frontmatter | 6 字段解析成功 ✅ |
+| **缺 PyYAML 不再静默降级** | 用系统 python3（无 pyyaml）跑 `lint.py --all` | 每天各报 1 个 **ERROR**，退出码 1 ✅（此前只报 WARN 且退出码 0） |
+| 该闸门不误杀正常路径 | venv 内跑 `--all` 与 `run-daily.sh 2026-11-03` | 0 ERROR 0 WARN，退出码 0 ✅ |
 
 ### 迁移到站点仓库后的验证（2026-11-03）
 

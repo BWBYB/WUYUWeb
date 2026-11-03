@@ -10,8 +10,9 @@ set -uo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR" || exit 1
 
-# 优先用项目 venv：Scrapling 要求 Python ≥3.10，系统自带的 3.9 装不了。
-# venv 不存在就退回系统 python3——那条路径会自动降级为正则解析。
+# 优先用项目 venv：Scrapling 要求 Python ≥3.10，而 `python3` 命中的是 Apple CLT 的 3.9。
+# venv 不存在时退回系统 python3：抓取降级为正则解析，但 lint.py 会因缺 PyYAML 判 ERROR，
+# 于是本脚本以退出码 1 结束——能出稿，但不假装验过。不要为此放宽闸门。
 PY="$(command -v python3)"
 if [ -x "$DIR/.venv/bin/python" ]; then
   PY="$DIR/.venv/bin/python"

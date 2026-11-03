@@ -23,8 +23,16 @@ import re
 import sys
 from datetime import datetime
 
+PYYAML_MISSING_HINT = (
+    "PyYAML 缺失——frontmatter 真实的 YAML 合法性无法校验。\n"
+    "  这道验证是交付闸门的一部分（上一会话专门自测过「用真 PyYAML 解析」），\n"
+    "  降级成文本级检查等于闸门静默失效，所以这里判 ERROR 而不是 WARN。\n"
+    "  修法：用项目 venv 跑（./.venv/bin/python lint.py …）；\n"
+    "        重建 venv：python3.11 -m venv .venv && ./.venv/bin/python -m pip install \"scrapling[all]\" pyyaml"
+)
+
 try:
-    import yaml          # 有就用真解析器验 frontmatter，没有则降级为文本级校验
+    import yaml          # 有就用真解析器验 frontmatter；缺失时闸门判 ERROR（不静默降级）
 except ImportError:      # pragma: no cover
     yaml = None
 
@@ -299,7 +307,9 @@ def lint_report_file(day, errors, warns):
             errors.append("frontmatter 不是合法 YAML：%s" % str(e).replace("\n", " ")[:120])
             return
     else:
-        warns.append("环境无 pyyaml，frontmatter 只做了文本级校验（建议在 venv 里跑）")
+        # 不再降级：缺 PyYAML 说明没在 venv 里跑，这道闸门已经失效一半。
+        # 判 ERROR 才能让 run-daily.sh 的退出码反映「这次没真正验过 YAML」。
+        errors.append(PYYAML_MISSING_HINT)
         fm = {}
         for ln in fm_text.split("\n"):
             m = re.match(r'^([A-Za-z_]+):\s*"(.*)"$', ln)
