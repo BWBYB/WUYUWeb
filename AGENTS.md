@@ -7,7 +7,8 @@
 ```bash
 npm run dev       # Vite dev server，默认 5173
 npm run build     # 生产构建 → dist/
-npm run lint      # oxlint，唯一的自动检查
+npm run lint      # oxlint
+npm run check:styles  # 字号/负字距/裸色的样式守门
 npm run preview   # 预览 dist/
 ```
 
@@ -39,6 +40,7 @@ npm run preview   # 预览 dist/
 - `src/components/ui/` 是共享组件。为单个页面定制样式时写在页面 CSS 里，不要改共享组件源码。
 - 导航动效的所有时长挂在 CSS 变量 `--nav-stretch-duration` 上（设置页的「动画倍速」是全局缩放）。新增时序时从该变量派生，不要写死毫秒。
 - 中文排版：大标题字距 0~+0.01em、行高 1.1~1.2，正文行高 1.7~1.9。
+- 样式规范见 `docs/style-guide.md`：字号只用 `var(--fs-*)`，颜色只用语义变量；新增裸值会被 `npm run check:styles` 拦下。
 
 ## 已知陷阱
 
