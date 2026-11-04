@@ -68,7 +68,7 @@ export default function Post() {
             {post.tags.map((tag) => <span key={tag}>#{tag}</span>)}
           </div>
         )}
-        {post.cover && <img className="post-cover" src={post.cover} alt="" />}
+        {post.cover && <img className="post-cover media media--wide" src={post.cover} alt="" />}
       </header>
 
       <div className="post-layout">

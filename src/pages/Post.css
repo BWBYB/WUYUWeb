@@ -76,13 +76,8 @@
 }
 
 .post-cover {
-  display: block;
-  width: 100%;
-  max-height: 360px;
-  object-fit: cover;
+  max-width: var(--measure);
   margin-top: var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
 }
 
 .post-layout {

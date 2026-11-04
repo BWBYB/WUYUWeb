@@ -1,0 +1,31 @@
+/* 图片比例：封面、卡片、头像三档；正文插图用 prose-image 保留原比例 */
+.media {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.media--wide {
+  aspect-ratio: var(--ratio-wide);
+}
+
+.media--card {
+  aspect-ratio: var(--ratio-card);
+}
+
+.media--square {
+  aspect-ratio: var(--ratio-square);
+}
+
+/* 架构图、截图、公式：不裁切，按原比例缩放 */
+.prose-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: var(--space-5) auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
