@@ -14,7 +14,7 @@
   margin-bottom: var(--space-3);
   color: rgba(180, 195, 255, 0.68);
   font-size: var(--fs-micro);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.18em;
 }
 
@@ -22,8 +22,8 @@
   margin: 0;
   color: var(--text-h);
   font-size: var(--fs-display);
-  font-weight: 600;
-  line-height: var(--lh-heading);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
   letter-spacing: 0;
 }
 

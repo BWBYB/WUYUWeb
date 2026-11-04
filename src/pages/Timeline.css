@@ -24,8 +24,8 @@
   margin: 0 0 var(--space-2);
   color: var(--text-h);
   font-size: var(--fs-display);
-  font-weight: 600;
-  line-height: var(--lh-heading);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
 }
 
 .timeline-desc {
@@ -133,7 +133,7 @@
 .timeline-record-heading strong {
   color: var(--text-h);
   font-size: var(--fs-heading-sm);
-  font-weight: 550;
+  font-weight: var(--fw-semibold);
 }
 
 .timeline-record-arrow {
@@ -147,7 +147,7 @@
   margin-top: var(--space-3);
   color: var(--text);
   font-size: var(--fs-ui);
-  line-height: 1.7;
+  line-height: var(--lh-body);
 }
 
 .timeline-record-summary a,
@@ -162,7 +162,7 @@
   border-top: 0;
   color: var(--text);
   font-size: var(--fs-ui);
-  line-height: 1.8;
+  line-height: var(--lh-body);
   animation: timeline-details-in .25s ease both;
 }
 

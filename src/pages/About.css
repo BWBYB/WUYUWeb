@@ -11,9 +11,9 @@
 
 .about-title {
   font-size: var(--fs-display);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--text-h);
-  line-height: var(--lh-heading);
+  line-height: var(--lh-tight);
   margin: 0;
   letter-spacing: 0;
 }
@@ -35,7 +35,7 @@
 
 .about-card-title {
   font-size: var(--fs-body);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--text-h);
   margin: 0 0 var(--space-4);
 }
@@ -66,13 +66,13 @@
   align-items: center;
   justify-content: center;
   font-size: var(--fs-heading-sm);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--text);
 }
 
 .about-intro {
   font-size: var(--fs-ui);
-  line-height: 1.7;
+  line-height: var(--lh-body);
   color: var(--text);
   margin: 0;
 }
@@ -86,7 +86,7 @@
 
 .about-list li {
   font-size: var(--fs-ui);
-  line-height: 1.5;
+  line-height: var(--lh-ui);
   color: var(--text);
   padding: var(--space-2) 0;
   padding-left: var(--space-4);
@@ -148,7 +148,7 @@
 
 .contact-icon {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   width: 28px;
   height: 28px;
   display: flex;
@@ -162,7 +162,7 @@
 /* About Site */
 .about-site-desc {
   font-size: var(--fs-ui);
-  line-height: 1.7;
+  line-height: var(--lh-body);
   color: var(--text);
   margin: 0;
 }

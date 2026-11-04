@@ -18,10 +18,10 @@
 
 .blog-title {
   font-size: var(--fs-display);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--text-h);
   margin: 0 0 var(--space-2);
-  line-height: var(--lh-heading);
+  line-height: var(--lh-tight);
   letter-spacing: 0;
 }
 
@@ -114,10 +114,10 @@
 
 .blog-post-title {
   font-size: var(--fs-heading-sm);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
   color: var(--text-h);
   margin: 0 0 var(--space-3);
-  line-height: var(--lh-snug);
+  line-height: var(--lh-heading);
   transition: color 0.2s;
 }
 
@@ -135,7 +135,7 @@
 .read-more {
   font-size: var(--fs-ui);
   color: var(--accent-2);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 
 .blog-post-tags {
