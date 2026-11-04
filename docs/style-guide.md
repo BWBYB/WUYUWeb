@@ -230,13 +230,51 @@ npm run build
 | 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
 | 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
+| 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
+| 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |
 | 阴影 / 边框强度 | `src/components/ui/surface-settings.js`、`src/components/ui/SurfaceCustomizer.jsx` | 全局唯一入口；组件只读 `--shadow-1/2/3` 与 `--border-*` |
 | 导航 / 切换器玻璃 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 内部高光保留，外部投影走全局阴影层级 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
 | 新增页面 | 页面 CSS + 语义 token | 不写裸 hex、字号、间距；跑 `npm run check:styles` |
 | 检查规则 / 例外 | `scripts/check-styles.mjs`、`scripts/style-baseline.json` | baseline 必须 review，不要整体刷新 |
 
-## 十、文档分工
+## 十、图片与图标
+
+### 图片比例
+
+| Token | 比例 | 用途 |
+| --- | --- | --- |
+| `--ratio-wide` | 16:9 | 文章封面、日报头图、列表缩略图 |
+| `--ratio-card` | 4:3 | 卡片配图、编辑器预览 |
+| `--ratio-square` | 1:1 | 头像、作者图 |
+
+规则：
+
+1. 图片一律走 `.media` + `.media--wide/card/square`，不直接写 `width` / `max-height`。
+2. 需要保留完整构图的图（架构图、截图、公式）用 `.prose-image`，按原比例缩放，不裁切。
+3. 所有图片必须有比例占位（`aspect-ratio` 或 `width`/`height`），避免 CLS。
+4. 封面固定 16:9，素材 1600×900，至少 1200×675，≤ 300 KB。
+5. 图片路径写站点绝对路径，文件放 `public/` 下（现有 `public/content-images/` 可用）。
+
+### 图标
+
+| 项 | 规则 |
+| --- | --- |
+| 网格 | 24 × 24 |
+| 描边 | 1.75，round cap / join |
+| 尺寸 | 16 / 20 / 24 |
+| 颜色 | `currentColor`，不写死 |
+| 实现 | `src/components/ui/Icon.jsx`，本地 path 表 |
+
+规则：
+
+1. 导航与操作图标用线性图标，不再使用 Unicode 字符或 emoji。
+2. 主题切换器的填充 SVG 是控件材质例外，保留填充；重绘时必须维持 36 网格与现有选中态。
+3. Player 的 `←` / `✕` 属于实体设备语言，保留。
+4. 纯装饰图标 `aria-hidden="true"`；只有图标的按钮必须有 `aria-label`。
+5. 新增图标先加进 `Icon.jsx`，不要在组件里散装 `<svg>`。
+
+## 十一、文档分工
 
 | 文件 | 管什么 |
 | --- | --- |
