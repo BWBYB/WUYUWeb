@@ -13,8 +13,8 @@ export const DEFAULT_THEME_SWITCHER_SETTINGS = {
   glassColor: '#bbbbbc',
   lightColor: '#ffffff',
   darkColor: '#000000',
-  contentColor: '#222244',
-  actionColor: '#0052f5',
+  contentColor: '#1f1c18',
+  actionColor: '#a4502a',
   height: 70,
   optionWidth: 68,
   gap: 8,
@@ -106,6 +106,10 @@ export function normalizeThemeSwitcherSettings(candidate = {}) {
       next[key] = candidate[key]
     }
   })
+
+  // 旧版蓝色默认值迁移：只替换未改过的默认色，用户自定义的其他颜色保留
+  if (next.contentColor === '#222244') next.contentColor = DEFAULT_THEME_SWITCHER_SETTINGS.contentColor
+  if (next.actionColor === '#0052f5') next.actionColor = DEFAULT_THEME_SWITCHER_SETTINGS.actionColor
 
   return next
 }

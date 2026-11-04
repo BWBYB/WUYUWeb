@@ -1,6 +1,7 @@
 .post-page {
   padding-top: var(--space-4);
-  max-width: 980px;
+  /* 目录列 190 + 列间距 32 + 正文栏宽 + 卡片左右内边距 */
+  max-width: calc(190px + var(--space-6) + var(--measure) + 2 * var(--space-7));
   margin: 0 auto;
 }
 
@@ -32,7 +33,7 @@
 .post-header-category {
   font-size: var(--fs-micro);
   color: var(--accent-2);
-  background: rgba(139, 92, 246, 0.1);
+  background: var(--accent-soft);
   padding: var(--space-1) var(--space-2);
   border-radius: 10px;
 }
@@ -52,7 +53,7 @@
 }
 
 .post-header-summary {
-  max-width: 680px;
+  max-width: var(--measure);
   margin: var(--space-4) 0 var(--space-3);
   color: var(--text);
   font-size: var(--fs-body);
@@ -86,7 +87,7 @@
 
 .post-layout {
   display: grid;
-  grid-template-columns: minmax(140px, 190px) minmax(0, 720px);
+  grid-template-columns: minmax(140px, 190px) minmax(0, calc(var(--measure) + 2 * var(--space-7)));
   align-items: start;
   gap: var(--space-6);
 }
@@ -317,6 +318,8 @@
 
   .post-content {
     padding: var(--space-5);
+    max-width: calc(var(--measure) + 2 * var(--space-5));
+    margin-inline: auto;
   }
 
   .post-navigation {

@@ -30,11 +30,11 @@ const THEMES = {
     inkAlpha: 0.42,
   },
   light: {
-    bg: [245, 244, 241],
+    bg: [248, 245, 238],
     white: [112, 108, 104],
     red: [204, 62, 28],
-    sumi: [54, 49, 58],
-    ink: [36, 33, 40],
+    sumi: [58, 52, 46],
+    ink: [40, 36, 30],
     fin: [138, 132, 126],
     food: [176, 88, 30],
     alpha: 0.9,
@@ -68,7 +68,7 @@ function mixTheme(from, to, t) {
   return out
 }
 
-const LIGHT_WATER_INK = [58, 72, 86]
+const LIGHT_WATER_INK = [96, 86, 72]
 
 const WATER_ALPHA = [0, 0.07, 0.1, 0.14, 0.19, 0.25, 0.33, 0.43, 0.55, 0.68]
 
