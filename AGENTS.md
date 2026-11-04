@@ -40,7 +40,7 @@ npm run preview   # 预览 dist/
 - `src/components/ui/` 是共享组件。为单个页面定制样式时写在页面 CSS 里，不要改共享组件源码。
 - 导航动效的所有时长挂在 CSS 变量 `--nav-stretch-duration` 上（设置页的「动画倍速」是全局缩放）。新增时序时从该变量派生，不要写死毫秒。
 - 中文排版：大标题字距 0~+0.01em、行高 1.1~1.2，正文行高 1.7~1.9。
-- 样式规范见 `docs/style-guide.md`：改页面骨架、颜色、字号、间距、圆角、栏宽前先看「修改入口」；页面宽度只用 `var(--page-*)`，字号只用 `var(--fs-*)`，间距只用 `var(--space-*)`，圆角只用 `var(--radius-*)`，颜色只用语义变量；新增裸值会被 `npm run check:styles` 拦下。
+- 样式规范见 `docs/style-guide.md`：改页面骨架、颜色、字号、字重、行高、间距、圆角、阴影、栏宽前先看「修改入口」；页面宽度只用 `var(--page-*)`，字号只用 `var(--fs-*)`，字重只用 `var(--fw-*)`，行高只用 `var(--lh-*)`，间距只用 `var(--space-*)`，圆角只用 `var(--radius-*)`，阴影只用 `var(--shadow-1/2/3)`，颜色只用语义变量；新增裸值会被 `npm run check:styles` 拦下。
 
 ## 已知陷阱
 

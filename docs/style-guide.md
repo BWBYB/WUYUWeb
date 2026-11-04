@@ -25,23 +25,36 @@
 | `--fs-heading` | 28px | 大区块标题、移动端页面标题 |
 | `--fs-display` | 36px | 桌面页面标题、文章标题 |
 
-配套行高：
+### 字重
 
-```css
---lh-tight: 1.15;    /* 展示级标题 */
---lh-heading: 1.25;  /* 页面/文章标题 */
---lh-snug: 1.4;      /* 卡片标题 */
---lh-body: 1.7;      /* 正文 */
-```
+只使用已加载的三档，不声明 700（`font-synthesis: none` 下会静默回退到 600）：
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--fw-regular` | 400 | 正文、摘要、引用 |
+| `--fw-medium` | 500 | 标签、按钮、卡片次级标题 |
+| `--fw-semibold` | 600 | 页面标题、文章标题、强调 |
+
+`index.html` 实际加载 Inter 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
+
+### 行高
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--lh-tight` | 1.15 | 36px 展示标题 |
+| `--lh-heading` | 1.3 | 页面/文章/卡片标题 |
+| `--lh-ui` | 1.5 | 控件、标签、短说明 |
+| `--lh-body` | 1.7 | 正文、长文、列表 |
 
 规则：
 
 1. 只写 `font-size: var(--fs-*)`，不写裸 px。
-2. 响应式只改 token（`@media (max-width: 768px)` 里覆盖 `--fs-*`），页面不各自调字号。
-3. 中文标题字距 0~+0.01em，**禁止负字距**；正文行高 1.7，标题 1.1–1.25。
-4. 确实需要新档位时，先改本文件和 `index.css`，不要在组件里临时加。
+2. 字重只写 `var(--fw-*)`；行高只写 `var(--lh-*)`，且必须无单位。
+3. 响应式只改 token（`@media (max-width: 768px)` 里覆盖 `--fs-*`），页面不各自调字号。
+4. 中文标题字距 0~+0.01em，**禁止负字距**；正文行高 1.7，标题 1.15–1.3。
+5. 确实需要新档位时，先改本文件和 `index.css`，不要在组件里临时加。
 
-例外：图标字形（导航图标、emoji、面板圆点）、Player 磁带上的装饰标签。它们不是排版文本，保留裸值，并由 baseline 记录。
+例外：图标字形与单行控件允许 `line-height: 1`（几何对齐）；Player 磁带的装饰字重与行高保留裸值。它们由 baseline 记录。
 
 ## 三、颜色
 
@@ -107,6 +120,30 @@
 3. 响应式不单独调间距 token；需要压缩时改容器与流式布局，避免同一组件出现第二套间距。
 4. 例外：`Header.css`、`navigation-switcher.css`、`theme-switcher.css` 的胶囊几何，`Layout.css` 的 72px 顶栏偏移，`Player.css` 的磁带物理布局。
 
+### 阴影与边框（已落地）
+
+阴影分三层，共用一组几何参数：
+
+| Token | 用于 | 几何 |
+| --- | --- | --- |
+| `--shadow-1` | 卡片、列表项 | 基准 × 0.35 |
+| `--shadow-2` | 下拉、面板、主题切换器 | 基准 × 0.7 |
+| `--shadow-3` | 导航胶囊、浮层 | 基准 × 1 |
+
+边框分两套强度：
+
+| 变量 | 作用 |
+| --- | --- |
+| `--border-strength` | 普通边框（卡片、分隔、输入框） |
+| `--glass-strength` | 玻璃边框（胶囊、玻璃卡片边缘） |
+
+规则：
+
+1. 组件不写裸 `box-shadow`；卡片用 `--shadow-1`，浮层用 `--shadow-2`，导航用 `--shadow-3`。
+2. 玻璃的内部高光（inset）属于材质例外，可以保留；外部投影必须走层级 token。
+3. 设置页「阴影与边框」卡片是唯一入口，导航与主题切换器不再各自提供阴影滑块。
+4. Player、Lab 的物理阴影豁免。
+
 ### 圆角（已落地）
 
 | Token | 值 | 用途 |
@@ -144,6 +181,8 @@ npm run check:styles
 | 负字距 | 中文标题的主要退化方式 |
 | 裸间距 | `padding` / `margin` / `gap` 中新增 px |
 | 裸圆角 | 新增 px / % 圆角；胶囊与正圆必须用 token |
+| 裸字重 | 新增数字字重即失败 |
+| 裸行高 | 新增无单位 / px 行高即失败（`1` 的图标例外走 baseline） |
 | 裸 hex | `src/index.css` 之外新增颜色即失败 |
 
 确认是合理例外时：
@@ -185,12 +224,14 @@ npm run build
 | 新增一个语义色 | 同上，三种模式都要给值 | 深色、暖白、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
 | 字号 | `src/index.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
-| 行高 | `src/index.css` 的 `--lh-*` | 标题 1.15–1.25，正文 1.7 |
+| 字重 | `src/index.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
+| 行高 | `src/index.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
 | 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
 | 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
 | 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
-| 导航 / 切换器玻璃、阴影 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 几何参数另有设置面板，不要改死值 |
+| 阴影 / 边框强度 | `src/components/ui/surface-settings.js`、`src/components/ui/SurfaceCustomizer.jsx` | 全局唯一入口；组件只读 `--shadow-1/2/3` 与 `--border-*` |
+| 导航 / 切换器玻璃 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 内部高光保留，外部投影走全局阴影层级 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
 | 新增页面 | 页面 CSS + 语义 token | 不写裸 hex、字号、间距；跑 `npm run check:styles` |
 | 检查规则 / 例外 | `scripts/check-styles.mjs`、`scripts/style-baseline.json` | baseline 必须 review，不要整体刷新 |

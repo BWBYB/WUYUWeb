@@ -80,8 +80,8 @@ function parseRules(css) {
 }
 
 function scan() {
-  const stats = { fontSize: {}, negativeTracking: {}, spacing: {}, radius: {}, hex: {} }
-  const samples = { fontSize: {}, negativeTracking: {}, spacing: {}, radius: {}, hex: {} }
+  const stats = { fontSize: {}, negativeTracking: {}, spacing: {}, radius: {}, weights: {}, lineHeight: {}, hex: {} }
+  const samples = { fontSize: {}, negativeTracking: {}, spacing: {}, radius: {}, weights: {}, lineHeight: {}, hex: {} }
   const files = walk(path.join(ROOT, 'src')).filter(file => !skipped(file))
 
   for (const file of files) {
@@ -117,6 +117,24 @@ function scan() {
         stats.radius[file] = (stats.radius[file] || 0) + radius.length
         samples.radius[file] = samples.radius[file] || []
         for (const hit of radius) samples.radius[file].push(`${selector || '(root)'} → ${hit}`)
+      }
+
+      const weights = body.match(/font-weight:\s*\d+/g) || []
+      if (weights.length) {
+        stats.weights[file] = (stats.weights[file] || 0) + weights.length
+        samples.weights[file] = samples.weights[file] || []
+        for (const hit of weights) samples.weights[file].push(`${selector || '(root)'} → ${hit}`)
+      }
+
+      const lineHeight = []
+      for (const match of body.matchAll(/line-height:\s*([^;]+)/g)) {
+        const value = match[1].trim()
+        if (!value.startsWith('var(--lh-')) lineHeight.push(`line-height: ${value}`)
+      }
+      if (lineHeight.length) {
+        stats.lineHeight[file] = (stats.lineHeight[file] || 0) + lineHeight.length
+        samples.lineHeight[file] = samples.lineHeight[file] || []
+        for (const hit of lineHeight) samples.lineHeight[file].push(`${selector || '(root)'} → ${hit}`)
       }
 
       if (file !== COLOR_TOKEN_SOURCE) {
@@ -168,6 +186,8 @@ const groups = [
   ['负字距', compare('negativeTracking', stats.negativeTracking, baseline.negativeTracking || {}, samples.negativeTracking)],
   ['裸间距', compare('spacing', stats.spacing, baseline.spacing || {}, samples.spacing)],
   ['裸圆角', compare('radius', stats.radius, baseline.radius || {}, samples.radius)],
+  ['裸字重', compare('weights', stats.weights, baseline.weights || {}, samples.weights)],
+  ['裸行高', compare('lineHeight', stats.lineHeight, baseline.lineHeight || {}, samples.lineHeight)],
   ['裸 hex 颜色', compare('hex', stats.hex, baseline.hex || {}, samples.hex)],
 ]
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T11:23:08.994Z",
+  "generatedAt": "2026-11-04T14:30:34.834Z",
   "fontSize": {
     "src/components/AsciiBackgroundPanel.css": 1,
     "src/components/ui/navigation-switcher.css": 1,
@@ -23,6 +23,15 @@
   "radius": {
     "src/components/Header.css": 1,
     "src/pages/Player.css": 39
+  },
+  "weights": {
+    "src/pages/Player.css": 14
+  },
+  "lineHeight": {
+    "src/components/AsciiBackgroundPanel.css": 2,
+    "src/components/Header.css": 5,
+    "src/components/ui/navigation-switcher.css": 3,
+    "src/pages/Player.css": 3
   },
   "hex": {
     "src/components/Header.css": 1,
