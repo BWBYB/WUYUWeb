@@ -45,23 +45,26 @@
 
 ## 三、颜色
 
-组件只引用语义变量，不判断当前是深色、冷白还是纸色：
+颜色按用途分六组，组件只引用语义 token，不判断当前模式：
 
-```
---bg / --bg-card / --bg-card-hover
---text / --text-h / --text-muted
---border / --border-hover
---glass / --glass-border
---accent-1..3
---paper-mix
-```
+| 组 | Token |
+| --- | --- |
+| 表面 | `--surface-canvas` / `--surface-card` / `--surface-card-hover` / `--surface-inset` / `--surface-glass` |
+| 内容 | `--content-strong` / `--content-default` / `--content-muted` / `--content-inverse` / `--content-on-accent` |
+| 描边 | `--border-subtle` / `--border-strong` / `--border-glass` |
+| 行动 | `--accent` / `--accent-secondary` / `--accent-tertiary` / `--accent-soft` / `--focus-ring` |
+| 状态 | `--danger` |
+| 选择 | `--selection-bg` / `--selection-fg` |
+
+旧名 `--bg`、`--text-h`、`--accent-1..3` 等只作为迁移别名保留在 `index.css`，新代码不要使用。
 
 规则：
 
 1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/index.css`。
-2. 玻璃高光、内阴影、折射边缘是材质例外，允许裸 `rgba`；新增前先看 `Header.css` 与 `theme-switcher.css` 的现有配方。
-3. 主题差异只通过 `[data-site-theme]`、`[data-paper]`、`--paper-mix` 改变量，组件里禁止 `if (paper)` 分支。
-4. 纸色强度用 `--paper-mix` 在冷白与暖纸之间插值，不要把两套颜色写两遍。
+2. 主题差异只通过 `[data-site-theme]`、`[data-paper]`、`--paper-mix` 改变量，组件里禁止 `if (paper)` 分支。
+3. 纸色用 `--paper-mix` 在暖白与暖纸之间插值；强调色整组切换，不参与混合。
+4. 全站不引入蓝、紫、青作为强调色；需要新颜色时先判断它属于六组中的哪一组。
+5. 对比度：正文对画布/卡片 ≥ 4.5:1，弱文字 ≥ 3:1，强调色作为文字 ≥ 4.5:1，焦点圈对相邻色 ≥ 3:1。
 
 ## 四、间距与圆角
 
@@ -136,12 +139,31 @@ npm run build
 | 项 | 说明 |
 | --- | --- |
 | `site-theme.css` | 浅色与纸色各写一套元素级覆盖，应改为变量切换 |
+| 旧颜色别名 | 组件仍在用 `--bg` / `--text-h` 等旧名，需按区域迁移到语义 token |
 | 圆角 | 33 种取值，尚未 token 化 |
 | 几何间距 | Header / 导航 / 切换器 / Player 的胶囊与磁带尺寸仍用裸 px |
 | `Player.css` | 20 处装饰字号、56 处物理间距保留，等装饰 token 方案 |
 | `Lab` | 永久豁免，不参与统一 |
 
-## 九、文档分工
+## 九、修改入口
+
+改样式前先查这张表，不要直接在页面里加裸值。
+
+| 想改什么 | 入口 | 注意 |
+| --- | --- | --- |
+| 全局颜色 / 语义 | `src/index.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
+| 新增一个语义色 | 同上，三种模式都要给值 | 深色、暖白、纸色缺一不可；纸色用 `--paper-mix` 插值 |
+| 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
+| 字号 | `src/index.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
+| 行高 | `src/index.css` 的 `--lh-*` | 标题 1.15–1.25，正文 1.7 |
+| 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
+| 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
+| 导航 / 切换器玻璃、阴影 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 几何参数另有设置面板，不要改死值 |
+| 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
+| 新增页面 | 页面 CSS + 语义 token | 不写裸 hex、字号、间距；跑 `npm run check:styles` |
+| 检查规则 / 例外 | `scripts/check-styles.mjs`、`scripts/style-baseline.json` | baseline 必须 review，不要整体刷新 |
+
+## 十、文档分工
 
 | 文件 | 管什么 |
 | --- | --- |
