@@ -66,7 +66,24 @@
 4. 全站不引入蓝、紫、青作为强调色；需要新颜色时先判断它属于六组中的哪一组。
 5. 对比度：正文对画布/卡片 ≥ 4.5:1，弱文字 ≥ 3:1，强调色作为文字 ≥ 4.5:1，焦点圈对相邻色 ≥ 3:1。
 
-## 四、间距与圆角
+## 四、页面骨架、间距与圆角
+
+### 页面骨架（已落地）
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--page-max` | 1100px | 首页、文章列表、关于、设置 |
+| `--page-compact` | 820px | 归档、时间线 |
+| `--page-top` | 16px | 所有页面统一顶部留白 |
+| `--page-header-gap` | 48px | 页头与正文之间 |
+
+规则：
+
+1. 页面外框统一 `width: 100%; max-width: var(--page-*); margin-inline: auto; padding-top: var(--page-top)`。
+2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`，并限制在 `--measure`。
+3. 页头与正文间距统一 `--page-header-gap`，不再各页写 32 / 40 / 64。
+4. 文章页宽度由目录列 + `--measure` + 内边距推导，不直接套 `--page-max`。
+5. Player 与 Lab 不参与页面骨架。
 
 ### 间距（已落地）
 
@@ -157,6 +174,7 @@ npm run build
 | 字号 | `src/index.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
 | 行高 | `src/index.css` 的 `--lh-*` | 标题 1.15–1.25，正文 1.7 |
 | 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
+| 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
 | 导航 / 切换器玻璃、阴影 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 几何参数另有设置面板，不要改死值 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
