@@ -14,7 +14,7 @@
   display: inline-block;
   margin-bottom: 8px;
   color: rgba(180, 195, 255, 0.68);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   letter-spacing: 0.18em;
 }
@@ -22,7 +22,7 @@
 .theme-customizer-heading h2 {
   margin: 0;
   color: var(--text-h);
-  font-size: 24px;
+  font-size: var(--fs-heading-sm);
   font-weight: 600;
   letter-spacing: -0.03em;
 }
@@ -31,7 +31,7 @@
   max-width: 520px;
   margin: 8px 0 0;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-ui);
   line-height: 1.6;
 }
 
@@ -51,7 +51,7 @@
   background: rgba(222, 217, 207, 0.04);
   color: var(--text);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-micro);
 }
 
 .theme-customizer-preset {
@@ -123,7 +123,7 @@
   top: 12px;
   left: 16px;
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -152,13 +152,13 @@
 .theme-customizer-section-heading h3 {
   margin: 0;
   color: var(--text-h);
-  font-size: 15px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
 .theme-customizer-section-heading span {
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -196,13 +196,13 @@
 
 .theme-customizer-control-copy > span {
   color: var(--text-h);
-  font-size: 13px;
+  font-size: var(--fs-ui);
 }
 
 .theme-customizer-control-copy small {
   overflow: hidden;
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -270,7 +270,7 @@
   min-width: 42px;
   color: var(--text-h);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-micro);
   text-align: right;
   white-space: nowrap;
 }
@@ -309,7 +309,7 @@
   background: rgba(0, 0, 0, 0.16);
   color: var(--text-h);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-micro);
 }
 
 @media (max-width: 880px) {

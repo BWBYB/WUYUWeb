@@ -59,7 +59,7 @@ html[data-site-theme="light"] .home .hero-section {
   margin: 0;
   color: var(--text-h);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   letter-spacing: 0.16em;
   line-height: 1.2;
@@ -69,7 +69,7 @@ html[data-site-theme="light"] .home .hero-section {
   margin: 0;
   color: var(--text);
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: var(--fs-ui);
   line-height: 1.5;
   opacity: 0.7;
 }
@@ -78,7 +78,7 @@ html[data-site-theme="light"] .home .hero-section {
   margin-left: 12px;
   color: inherit;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-decoration: none;
   border-bottom: 1px solid transparent;
@@ -205,14 +205,14 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 500;
   color: var(--text-h);
   margin: 0;
 }
 
 .card-link {
-  font-size: 13px;
+  font-size: var(--fs-ui);
   color: var(--text-muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -257,7 +257,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-post-category {
-  font-size: 11px;
+  font-size: var(--fs-micro);
   color: var(--accent-2);
   background: rgba(139, 92, 246, 0.1);
   padding: 2px 8px;
@@ -265,12 +265,12 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-post-date {
-  font-size: 12px;
+  font-size: var(--fs-micro);
   color: var(--text-muted);
 }
 
 .card-post-title {
-  font-size: 15px;
+  font-size: var(--fs-body);
   font-weight: 500;
   color: var(--text-h);
   margin: 0;
@@ -284,14 +284,14 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-small-title {
-  font-size: 14px;
+  font-size: var(--fs-ui);
   font-weight: 500;
   color: var(--text-h);
   margin: 0 0 8px;
 }
 
 .card-small-text {
-  font-size: 14px;
+  font-size: var(--fs-ui);
   color: var(--text);
   margin: 0 0 12px;
 }
@@ -313,7 +313,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .progress-label {
-  font-size: 12px;
+  font-size: var(--fs-micro);
   color: var(--text-muted);
 }
 
@@ -326,7 +326,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .tech-pill {
-  font-size: 12px;
+  font-size: var(--fs-micro);
   padding: 4px 10px;
   border-radius: 12px;
   background: var(--bg-card-hover);
@@ -342,7 +342,7 @@ html[data-site-theme="light"] .home .hero-section {
 
 .bento-quote {
   font-family: var(--serif);
-  font-size: 20px;
+  font-size: var(--fs-heading-sm);
   color: var(--text-h);
   line-height: 1.6;
   margin: 0 0 12px;
@@ -350,7 +350,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .quote-author {
-  font-size: 13px;
+  font-size: var(--fs-ui);
   color: var(--text-muted);
   margin: 0;
 }
@@ -376,7 +376,7 @@ html[data-site-theme="light"] .home .hero-section {
     grid-column: span 1;
   }
   .bento-quote {
-    font-size: 17px;
+    font-size: var(--fs-heading-sm);
   }
 }
 

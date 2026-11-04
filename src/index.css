@@ -44,6 +44,21 @@
   --serif: 'Noto Serif SC', Georgia, serif;
   --mono: 'SF Mono', 'Fira Code', monospace;
 
+  /* ── 字号阶梯（6 档）──
+     组件与页面只引用这些变量，不再写裸 px。
+     中文正文最小 12px；标题字距 0~+0.01em，禁止负字距。 */
+  --fs-micro: 0.75rem;      /* 12 元信息、标签、面板说明 */
+  --fs-ui: 0.875rem;        /* 14 导航、页脚、次要正文 */
+  --fs-body: 1rem;          /* 16 正文、卡片标题 */
+  --fs-heading-sm: 1.25rem; /* 20 区块标题、文章 h2/h3 */
+  --fs-heading: 1.75rem;    /* 28 大区块标题、移动端页面标题 */
+  --fs-display: 2.25rem;    /* 36 桌面页面标题、文章标题 */
+
+  --lh-tight: 1.15;
+  --lh-heading: 1.25;
+  --lh-snug: 1.4;
+  --lh-body: 1.7;
+
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.6;
@@ -132,4 +147,12 @@ html {
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 3px;
+}
+
+/* 移动端只调 token，不让页面各自改字号 */
+@media (max-width: 768px) {
+  :root {
+    --fs-heading: 1.5rem;   /* 28 → 24 */
+    --fs-display: 1.75rem;  /* 36 → 28 */
+  }
 }

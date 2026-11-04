@@ -15,14 +15,14 @@
 .timeline-eyebrow {
   margin: 0 0 8px;
   color: var(--accent-2);
-  font-size: 12px;
+  font-size: var(--fs-micro);
   letter-spacing: .08em;
 }
 
 .timeline-title {
   margin: 0 0 8px;
   color: var(--text-h);
-  font-size: 36px;
+  font-size: var(--fs-display);
   font-weight: 600;
 }
 
@@ -34,7 +34,7 @@
 .timeline-back-link {
   flex: none;
   color: var(--accent-2);
-  font-size: 13px;
+  font-size: var(--fs-ui);
   text-decoration: none;
 }
 
@@ -49,7 +49,7 @@
 
 .timeline-editor-link {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: var(--fs-ui);
   text-decoration: none;
 }
 
@@ -122,26 +122,26 @@
 .timeline-record-meta {
   margin-bottom: 9px;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--fs-micro);
 }
 
 .timeline-record-heading strong {
   color: var(--text-h);
-  font-size: 19px;
+  font-size: var(--fs-heading-sm);
   font-weight: 550;
 }
 
 .timeline-record-arrow {
   flex: none;
   color: var(--accent-2);
-  font-size: 17px;
+  font-size: var(--fs-heading-sm);
 }
 
 .timeline-record-summary {
   display: block;
   margin-top: 10px;
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--fs-ui);
   line-height: 1.7;
 }
 
@@ -156,7 +156,7 @@
   border: 1px solid transparent;
   border-top: 0;
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--fs-ui);
   line-height: 1.8;
   animation: timeline-details-in .25s ease both;
 }
@@ -183,8 +183,8 @@
 
 @media (max-width: 600px) {
   .timeline-header { align-items: flex-start; flex-direction: column; margin-bottom: 36px; }
-  .timeline-title { font-size: 28px; }
+  .timeline-title { font-size: var(--fs-heading); }
   .timeline-record-trigger { padding: 17px; }
-  .timeline-record-heading strong { font-size: 17px; }
+  .timeline-record-heading strong { font-size: var(--fs-heading-sm); }
 }
 

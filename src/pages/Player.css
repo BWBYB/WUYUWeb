@@ -676,7 +676,7 @@
 }
 
 .library-title {
-  font-size: 18px;
+  font-size: var(--fs-heading-sm);
   font-weight: 500;
   color: var(--text-h);
   margin: 0;
@@ -725,7 +725,7 @@
 }
 
 .nav-title {
-  font-size: 16px;
+  font-size: var(--fs-body);
   font-weight: 500;
   color: var(--text-h);
   letter-spacing: 1px;
@@ -768,7 +768,7 @@
 }
 
 .edit-label {
-  font-size: 11px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -788,7 +788,7 @@
 }
 
 .color-picker-group span {
-  font-size: 10px;
+  font-size: var(--fs-micro);
   color: var(--text-muted);
 }
 
@@ -816,7 +816,7 @@
   background: rgba(196, 113, 63, 0.12);
   border: 1px solid rgba(196, 113, 63, 0.25);
   color: var(--accent-1);
-  font-size: 12px;
+  font-size: var(--fs-micro);
   padding: 6px 14px;
   border-radius: 12px;
   cursor: pointer;
@@ -833,7 +833,7 @@
   background: rgba(196, 113, 63, 0.12);
   border: 1px solid rgba(196, 113, 63, 0.25);
   color: var(--accent-1);
-  font-size: 12px;
+  font-size: var(--fs-micro);
   padding: 6px 14px;
   border-radius: 12px;
   cursor: pointer;
@@ -863,14 +863,14 @@
 }
 
 .edit-track-num {
-  font-size: 11px;
+  font-size: var(--fs-micro);
   color: var(--text-muted);
   font-family: 'Courier New', monospace;
   min-width: 20px;
 }
 
 .edit-track-name {
-  font-size: 13px;
+  font-size: var(--fs-ui);
   color: var(--text-h);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -882,7 +882,7 @@
   border: 1px solid rgba(222, 217, 207, 0.08);
   border-radius: 8px;
   padding: 8px 12px;
-  font-size: 13px;
+  font-size: var(--fs-ui);
   color: var(--text-h);
   font-family: inherit;
   transition: border-color 0.2s ease;
@@ -898,7 +898,7 @@
 }
 
 .cover-custom-badge {
-  font-size: 10px;
+  font-size: var(--fs-micro);
   color: var(--accent-1);
   background: rgba(196, 113, 63, 0.15);
   padding: 1px 6px;
@@ -1075,7 +1075,7 @@
 }
 
 .add-text {
-  font-size: 12px;
+  font-size: var(--fs-micro);
   color: rgba(222, 217, 207, 0.3);
   letter-spacing: 1px;
 }
@@ -1115,7 +1115,7 @@
 }
 
 .cover-label-title {
-  font-size: 12px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   color: white;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
@@ -1185,7 +1185,7 @@
 }
 
 .cover-artist {
-  font-size: 14px;
+  font-size: var(--fs-ui);
   color: var(--text-h);
   font-weight: 500;
   white-space: nowrap;
@@ -1206,7 +1206,7 @@
 }
 
 .drag-hint span {
-  font-size: 13px;
+  font-size: var(--fs-ui);
   color: var(--text-muted);
   letter-spacing: 1px;
 }

@@ -33,7 +33,7 @@
   padding: 0 6px;
   gap: 4px;
   color: var(--c);
-  font-size: 14px;
+  font-size: var(--fs-ui);
   line-height: 1;
   text-align: center;
   transform: none;
@@ -76,7 +76,7 @@
   overflow: hidden;
   max-width: 64px;
   color: var(--c);
-  font-size: 14px;
+  font-size: var(--fs-ui);
   line-height: 1;
   text-align: center;
   transform: none;
