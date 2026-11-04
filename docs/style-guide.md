@@ -3,6 +3,22 @@
 > 状态：现行。由 `scripts/check-styles.mjs` 守门，存量例外记在 `scripts/style-baseline.json`。
 > 适用范围：`src/` 下的 CSS 与组件样式。
 
+## 索引
+
+| 想查什么 | 章节 |
+| --- | --- |
+| 哪些文件受约束、哪些豁免 | 一、适用范围与豁免 |
+| 字号、字重、行高 | 二、字号 |
+| 语义颜色与三种模式 | 三、颜色 |
+| 页面骨架、间距、圆角 | 四、页面骨架、间距与圆角 |
+| 动效时长与降级 | 五、动效 |
+| 自动检查与 baseline | 六、检查 |
+| 提交前跑什么 | 七、提交前 |
+| 已知债务 | 八、已知债务 |
+| 改某个决定该动哪个文件 | 九、修改入口 |
+| 图片比例与图标 | 十、图片与图标 |
+| 各 md 的职责 | 十一、文档分工 |
+
 ## 一、适用范围与豁免
 
 | 区域 | 约束 |
@@ -232,6 +248,8 @@ npm run build
 | 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
 | 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |
+| favicon | `public/favicon.svg` | 32 网格、无渐变无滤镜、≤ 2 KB |
+| 动效时长 / 缓动 | `src/components/ui/nav-settings.js`、`src/components/ui/theme-switcher-settings.js`、组件 CSS | 导航时长与缓动走设置；主题过渡 700ms 在 Provider |
 | 阴影 / 边框强度 | `src/components/ui/surface-settings.js`、`src/components/ui/SurfaceCustomizer.jsx` | 全局唯一入口；组件只读 `--shadow-1/2/3` 与 `--border-*` |
 | 导航 / 切换器玻璃 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 内部高光保留，外部投影走全局阴影层级 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
