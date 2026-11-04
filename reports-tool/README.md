@@ -9,6 +9,98 @@
 
 ---
 
+## 给接手的新会话（先读这一节）
+
+**这一节是为「专职维护日报流程的新对话」写的。** 你看不到之前那 25 轮折腾的对话历史，
+所以这里把必须知道的事压缩成三块：现状、流程、红线。
+
+### 你要接手的是什么
+
+```
+WUYUWeb/
+├── reports-tool/          ← 日报系统的全部代码与数据（本目录）
+└── content/reports/       ← 交付物，站点构建从这里读
+    ├── 2026-11-02.md
+    ├── 2026-11-03.md
+    ├── 2026-11-04.md
+    └── README.md          ← 站点自己的规范，**禁止修改**
+```
+
+**定时任务**：每天 12:00（Asia/Shanghai）触发，工作目录 `…/WUYUWeb/reports-tool`。
+任务是 **prompt 驱动**的：它给 agent 一套步骤，agent 照做。任务本身的 id 会变
+（历史上换过 4 次，每次都因为直接改存储文件被运行时清空，见「红线」第 2 条）。
+
+### 一条命令跑完整流程
+
+```bash
+cd /Users/Admin/Projects/WUYUWeb/reports-tool
+
+1) ./run-daily.sh                      # 抓取（内置两道体检 + 并发锁）
+2) ./.venv/bin/python prepare.py --date $(date +%F)          # 一次拿全信息
+3) ./.venv/bin/python prepare.py --date $(date +%F) --template > insights/$(date +%F).json
+   #   ↑ 然后往骨架里填中文内容（这是唯一需要「创作」的一步）
+4) ./.venv/bin/python usage.py --date $(date +%F) --auto     # 记录本轮耗时与 token
+5) ./.venv/bin/python render.py --date $(date +%F)           # 渲染到站点
+6) ./.venv/bin/python verify.py --date $(date +%F)           # 一条命令验 20 项
+7) present 报告，并在回复里用 3 句话概括今天
+```
+
+**目标是整条流程 ≤10 次模型调用。** 为什么强调这个：每多一次调用就要重付一次完整上下文。
+实测过一次用了 **25 次调用、433 万 token**，其中 19 次是在查「lint 要什么字段」「格式对不对」，
+这些本该由 `prepare.py` 和 `verify.py` 一次性给出。
+
+### 两个脚本是你的主要工具
+
+| 命令 | 作用 |
+|---|---|
+| `prepare.py --date X` | 一次输出 8 节：精读/速览论文全文摘要、精读/速览仓库、**必须给的 plain 清单**、insights 结构、写作要求、下一步 |
+| `prepare.py --date X --template` | 生成 insights 骨架，**每个需要 plain 的 ID 都摆好（含速览区）** |
+| `verify.py --date X` | 一条命令验 20 项，**一次性列出所有问题**，不用修一个跑一次 |
+
+`--template` 是防 `[EN]` 的根本手段：骨架里没有的 ID 不存在，有的漏填立刻暴露。
+
+### 三条红线（违反会出真事故）
+
+**1. 不要用 `FORCE=1` 碰真实日期的数据。**
+`FORCE=1` 会重抓并**覆盖当天完好快照**，而解读稿是照着旧快照写的，覆盖后榜单漂移、
+体检立刻报「N 篇缺少解读」。2026-11-04 我就这么毁过一次当天数据，靠 git 才还原。
+测流程请用临时日期（如 `2026-11-20`），跑完删干净。
+
+**2. 不要直接编辑 `~/.dsh/storages/schedule.json`。**
+那个文件由运行时管理，外部改动会被覆盖成空。想改定时任务只能用 `schedule_create` /
+`schedule_delete`；`schedule_update` 跨会话不可用，所以改任务 = 先删后建（id 会变，正常）。
+
+**3. 不要改站点资产。**
+`content/reports/README.md`、`content/updates.md`、`src/` 下任何文件都不属于本工具。
+`content/reports/` 里也不要 `git init`——一旦出现 `.git/`，父仓库就不再跟踪日报文件，
+上线时平台拿不到内容。
+
+### 已知的架构限制（别想着「优化掉」）
+
+- **定时任务跑在当前会话的延续里**（`deliveryMode` 未生效，实际投递到会话）。
+  所以每天日报会继承这个会话的历史——这是 token 大头，且**无法通过改脚本消除**。
+  唯一办法是「换一个干净的会话专门跑日报」（也就是你现在接手的这个）。
+- **subagent 不能用来跑日报**：能创建（干净起点约 19,351 token）、但**不能中断**
+  （`interrupt_agent` / `send_message` 都只认 teammate）、**不能删除**、且有数量上限。
+  每天新建会耗尽配额并导致日报中断，所以**不要用**。
+- 优惠：真正能降成本的是**压调用次数**（已做），不是换运行载体。
+
+### 第一次上手建议
+
+```bash
+# 1. 先确认环境健康（不该有报错）
+./.venv/bin/python lint.py --all
+./.venv/bin/python verify.py --all
+
+# 2. 看看最近的产出
+ls ../content/reports/
+
+# 3. 确认定时任务还活着
+#    （本会话里 schedule_list 能看到本会话创建的任务）
+```
+
+---
+
 ## 目录结构
 
 本工具位于站点仓库内：`WUYUWeb/reports-tool/`。
