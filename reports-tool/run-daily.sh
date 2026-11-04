@@ -10,6 +10,32 @@ set -uo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR" || exit 1
 
+# ---------------------------------------------------------------- 并发锁
+# 为什么需要：定时任务 12:00 触发，若此时人又手动跑一次，两份流程会同时
+# 写同一份 data/<day>.json、同一天报告和 logs/run.log。快照冻结逻辑只看
+# 「文件是否存在且完整」，两进程并发时可能都判定不存在，于是互相覆盖，
+# 产出解读稿所依据的数据和最终落盘的数据对不上——是静默的数据损坏。
+#
+# 用 mkdir 而不是 flock：mkdir 是原子的（同一目录同一名字只能建一次），
+# 且在 Git Bash / macOS / Linux 上行为一致；flock 在 Git Bash 里不存在。
+#
+# 锁目录里写 pid，便于判断「是真在跑」还是「上次崩溃留下的僵尸锁」。
+LOCK="$DIR/.run-daily.lock"
+if ! mkdir "$LOCK" 2>/dev/null; then
+  holder="$(cat "$LOCK/pid" 2>/dev/null || echo '?')"
+  if [ "$holder" != "?" ] && ! kill -0 "$holder" 2>/dev/null; then
+    echo "!! 发现僵尸锁（pid $holder 已不在运行），清理后继续。" >&2
+    rm -rf "$LOCK"
+    mkdir "$LOCK" 2>/dev/null || { echo "!! 抢占锁失败，另一个实例正在跑。中止。" >&2; exit 1; }
+  else
+    echo "!! 另一个 run-daily.sh 正在运行（pid ${holder}），本次跳过。" >&2
+    echo "!! 这不是成功：什么都没做。确认那个进程结束后再重跑。" >&2
+    exit 0
+  fi
+fi
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT INT TERM HUP
+
 # 优先用项目 venv：Scrapling 要求 Python ≥3.10，而 `python3` 命中的是 Apple CLT 的 3.9。
 # venv 不存在时退回系统 python3：抓取降级为正则解析，但 lint.py 会因缺 PyYAML 判 ERROR，
 # 于是本脚本以退出码 1 结束——能出稿，但不假装验过。不要为此放宽闸门。
