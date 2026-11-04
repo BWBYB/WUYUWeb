@@ -107,9 +107,21 @@
 3. 响应式不单独调间距 token；需要压缩时改容器与流式布局，避免同一组件出现第二套间距。
 4. 例外：`Header.css`、`navigation-switcher.css`、`theme-switcher.css` 的胶囊几何，`Layout.css` 的 72px 顶栏偏移，`Player.css` 的磁带物理布局。
 
-### 圆角（尚未落地）
+### 圆角（已落地）
 
-现状 33 种取值。目标只保留 6 / 12 / 999 三档；正圆用 `50%`（几何事实，不算设计档位）。新代码不要引入 8px、10px、14px 这类值，旧代码随页面迁移收敛。
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--radius-sm` | 8px | 控件、输入框、小卡片 |
+| `--radius-md` | 12px | 常规卡片、标签 |
+| `--radius-lg` | 16px | 大卡片、面板 |
+| `--radius-pill` | 999px | 胶囊、导航、标签按钮 |
+| `--radius-circle` | 50% | 正圆 |
+
+规则：
+
+1. 常规圆角只用 sm / md / lg 三档，不写 10px、14px、18px。
+2. 胶囊用 `--radius-pill`，正圆用 `--radius-circle`；`calc(高度 / 2)` 属于几何计算，保留原值并记入 baseline。
+3. Player 磁带的物理圆角豁免，不参与统一。
 
 ## 五、动效
 
@@ -131,6 +143,7 @@ npm run check:styles
 | 裸 `font-size` | 超出 baseline 即失败 |
 | 负字距 | 中文标题的主要退化方式 |
 | 裸间距 | `padding` / `margin` / `gap` 中新增 px |
+| 裸圆角 | 新增 px / % 圆角；胶囊与正圆必须用 token |
 | 裸 hex | `src/index.css` 之外新增颜色即失败 |
 
 确认是合理例外时：
@@ -157,7 +170,7 @@ npm run build
 | --- | --- |
 | `site-theme.css` | 浅色与纸色各写一套元素级覆盖，应改为变量切换 |
 | 旧颜色别名 | 组件仍在用 `--bg` / `--text-h` 等旧名，需按区域迁移到语义 token |
-| 圆角 | 33 种取值，尚未 token 化 |
+| 几何圆角 | Header 的 `calc(高度 / 2)`、Player 的 39 处物理圆角保留裸值 |
 | 几何间距 | Header / 导航 / 切换器 / Player 的胶囊与磁带尺寸仍用裸 px |
 | `Player.css` | 20 处装饰字号、56 处物理间距保留，等装饰 token 方案 |
 | `Lab` | 永久豁免，不参与统一 |
@@ -176,6 +189,7 @@ npm run build
 | 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
 | 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
+| 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 导航 / 切换器玻璃、阴影 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 几何参数另有设置面板，不要改死值 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
 | 新增页面 | 页面 CSS + 语义 token | 不写裸 hex、字号、间距；跑 `npm run check:styles` |
