@@ -70,7 +70,6 @@ export default function Home() {
 
         {/* Currently - Small Card */}
         <div className="bento-card bento-small glass-card fade-in fade-in-3">
-          <div className="card-icon">&#x1f4da;</div>
           <h3 className="card-small-title">正在读</h3>
           <p className="card-small-text">《AI Agent》第四章</p>
           <div className="progress-bar">
@@ -81,7 +80,6 @@ export default function Home() {
 
         {/* Tech Stack - Small Card */}
         <div className="bento-card bento-small glass-card fade-in fade-in-4">
-          <div className="card-icon">&#x1f6e0;</div>
           <h3 className="card-small-title">技术栈</h3>
           <div className="tech-pills">
             {['React', 'Python', 'Dify', 'Docker'].map(tech => (

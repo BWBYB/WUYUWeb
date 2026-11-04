@@ -1,16 +1,17 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useThemeSwitcherTheme } from './theme-switcher-context'
+import Icon from './Icon'
 import './navigation-switcher.css'
 
 const navigationOptions = [
-  { path: '/', label: '首页', icon: '◉' },
-  { path: '/blog', label: '文章', icon: '✎' },
-  { path: '/lab', label: '探索', icon: '◈' },
-  { path: '/player', label: 'CD机', icon: '♫' },
+  { path: '/', label: '首页', icon: 'home' },
+  { path: '/blog', label: '文章', icon: 'pencil' },
+  { path: '/lab', label: '探索', icon: 'compass' },
+  { path: '/player', label: 'CD机', icon: 'disc' },
 ]
 
-const settingsOption = { path: '/settings', label: '设置', icon: '⚙' }
+const settingsOption = { path: '/settings', label: '设置', icon: 'settings' }
 
 function isActivePath(path, pathname) {
   if (path === '/') return pathname === '/'
@@ -146,7 +147,7 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
             readOnly
             tabIndex={-1}
           />
-          <span className="switcher__icon navigation-option-icon" aria-hidden="true">{option.icon}</span>
+          <Icon name={option.icon} size={20} className="navigation-option-icon" />
           <span className="navigation-option-label">{option.label}</span>
         </label>
       ))}
@@ -160,7 +161,7 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
           if (onToggleSettings) onToggleSettings()
         }}
       >
-        <span className="switcher__icon navigation-option-icon" aria-hidden="true">{settingsOption.icon}</span>
+        <Icon name={settingsOption.icon} size={20} className="navigation-option-icon" />
         <span className="navigation-option-label">{settingsOption.label}</span>
       </button>
     </fieldset>
