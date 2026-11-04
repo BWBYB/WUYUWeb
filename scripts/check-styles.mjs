@@ -80,8 +80,8 @@ function parseRules(css) {
 }
 
 function scan() {
-  const stats = { fontSize: {}, negativeTracking: {}, hex: {} }
-  const samples = { fontSize: {}, negativeTracking: {}, hex: {} }
+  const stats = { fontSize: {}, negativeTracking: {}, spacing: {}, hex: {} }
+  const samples = { fontSize: {}, negativeTracking: {}, spacing: {}, hex: {} }
   const files = walk(path.join(ROOT, 'src')).filter(file => !skipped(file))
 
   for (const file of files) {
@@ -100,6 +100,16 @@ function scan() {
         stats.negativeTracking[file] = (stats.negativeTracking[file] || 0) + tracking.length
         samples.negativeTracking[file] = samples.negativeTracking[file] || []
         for (const hit of tracking) samples.negativeTracking[file].push(`${selector || '(root)'} → ${hit}`)
+      }
+
+      const spacing =
+        body.match(
+          /(?<![-\w])(?:padding|margin|gap|row-gap|column-gap)(?:-(?:top|right|bottom|left))?:\s*[^;]*?\d+px/g,
+        ) || []
+      if (spacing.length) {
+        stats.spacing[file] = (stats.spacing[file] || 0) + spacing.length
+        samples.spacing[file] = samples.spacing[file] || []
+        for (const hit of spacing) samples.spacing[file].push(`${selector || '(root)'} → ${hit}`)
       }
 
       if (file !== COLOR_TOKEN_SOURCE) {
@@ -149,6 +159,7 @@ const baseline = loadBaseline()
 const groups = [
   ['裸 font-size', compare('fontSize', stats.fontSize, baseline.fontSize || {}, samples.fontSize)],
   ['负字距', compare('negativeTracking', stats.negativeTracking, baseline.negativeTracking || {}, samples.negativeTracking)],
+  ['裸间距', compare('spacing', stats.spacing, baseline.spacing || {}, samples.spacing)],
   ['裸 hex 颜色', compare('hex', stats.hex, baseline.hex || {}, samples.hex)],
 ]
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T10:45:29.942Z",
+  "generatedAt": "2026-11-04T10:51:47.313Z",
   "fontSize": {
     "src/components/AsciiBackgroundPanel.css": 1,
     "src/components/ui/navigation-switcher.css": 1,
@@ -10,6 +10,15 @@
   },
   "negativeTracking": {
     "src/components/ui/ThemeSwitcherCustomizer.css": 1
+  },
+  "spacing": {
+    "src/components/AsciiBackgroundPanel.css": 1,
+    "src/components/Header.css": 19,
+    "src/components/Layout.css": 1,
+    "src/components/ui/ThemeSwitcherCustomizer.css": 1,
+    "src/components/ui/navigation-switcher.css": 3,
+    "src/components/ui/theme-switcher.css": 3,
+    "src/pages/Player.css": 56
   },
   "hex": {
     "src/components/Header.css": 1,
