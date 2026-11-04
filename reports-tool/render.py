@@ -123,6 +123,40 @@ def yaml_dq(s):
     return "".join(out)
 
 
+def cost_line(cost):
+    """把 cost 字段渲染成报告末尾的一行开销说明。
+
+    数据由 usage.py 写入 data/<day>.json：
+      {"seconds": 690.5, "input_tokens": 4332648, "output_tokens": 12628, "calls": 25, "turn": 11}
+    缺字段就少显示对应的那一段，不编造数字。
+    """
+    parts = []
+    secs = cost.get("seconds")
+    if secs is not None:
+        mins = secs / 60.0
+        if mins >= 1:
+            parts.append("耗时 %.1f 分钟" % mins)
+        else:
+            parts.append("耗时 %.0f 秒" % secs)
+    cin = cost.get("input_tokens")
+    cout = cost.get("output_tokens")
+    if cin is not None or cout is not None:
+        bits = []
+        if cin is not None:
+            bits.append("输入 %s" % format(int(cin), ","))
+        if cout is not None:
+            bits.append("输出 %s" % format(int(cout), ","))
+        tok = "token " + " / ".join(bits)
+        if cin is not None and cout is not None:
+            tok += "，合计 %s" % format(int(cin) + int(cout), ",")
+        parts.append(tok)
+    if cost.get("calls") is not None:
+        parts.append("%s 次模型调用" % format(int(cost["calls"]), ","))
+    if not parts:
+        return ""
+    return "_本次生成开销：%s。_" % " ｜ ".join(parts)
+
+
 def frontmatter(day, dt, summary):
     """按规格生成 frontmatter：字段顺序固定，不加未列出的字段。"""
     title = "AI 与计算机日报 · %s（%s）" % (day, WEEK_CN[dt.weekday()])
@@ -325,6 +359,13 @@ def render(day):
     A("_生成于 %s ｜ 论文数据走 hf-mirror.com 镜像（本机 huggingface.co 直连不通）｜ 存放于 `content/reports/`_"
       % d.get("fetched_at", ""))
     A("")
+
+    # 本次生成的开销（耗时 + token）。数据来自 data/<day>.json 的 cost 字段，
+    # 由 usage.py 写入——token 用量只有跑任务的 agent 自己拿得到，脚本侧抓不到。
+    cost = d.get("cost") or {}
+    if isinstance(cost, dict) and cost.get("seconds") is not None:
+        A(cost_line(cost))
+        A("")
 
     return "\n".join(lines)
 

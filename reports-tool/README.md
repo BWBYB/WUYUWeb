@@ -18,6 +18,7 @@ WUYUWeb/reports-tool/            ← 本目录（工具与数据）
 ├── fetch.py              抓取脚本（HF 走 curl 通道；GitHub 走 Scrapling + 正则兜底）
 ├── lint.py               交付自检：解读稿质量 + 报告文件格式（frontmatter / 正文规格）
 ├── render.py             报告渲染（按站点规格产出 YAML frontmatter + Markdown 正文）
+├── usage.py              记录本次生成的耗时与 token（写进快照，报告末尾展示）
 ├── run-daily.sh          一键：抓取 → 体检解读稿 → 渲染 → 交付前自检（自动优先用 .venv）
 ├── .venv/                Python 3.11 venv，装 Scrapling + PyYAML（本地资产，不入库）
 ├── adaptive_fingerprints.db  Scrapling 的 adaptive 元素指纹库（改版免疫力的来源）
@@ -67,7 +68,50 @@ FORCE=1 ./run-daily.sh
 ./.venv/bin/python render.py
 ```
 
-定时任务：每天 12:00（Asia/Shanghai），`schedule-a004baa9`，工作目录指向本目录。
+定时任务：每天 12:00（Asia/Shanghai），工作目录指向本目录（当前 id `schedule-8c333764`；
+历史上换过两次 id，因为运行时管理存储，用 `schedule_create` 重建而非手改文件）。
+
+## 报告末尾的开销行（耗时 + token）
+
+每篇日报结尾会多一行：
+
+```
+_本次生成开销：耗时 11.5 分钟 ｜ token 输入 4,332,648 / 输出 12,628，合计 4,345,276 ｜ 25 次模型调用。_
+```
+
+### 为什么必须有 `usage.py` 这个独立脚本
+
+**token 用量只有跑这次任务的 agent 自己知道。** `fetch.py` 是纯标准库、不做任何 LLM 调用，
+它抓得到论文和星数，但抓不到「模型花了多少 token」。所以这件事没法塞进 `run-daily.sh`。
+
+`usage.py` 从 DSH 会话日志（`~/.dsh/sessions/*/session*.jsonl.zstd`）取两个东西：
+
+| 事件 | 取什么 |
+|---|---|
+| `assistant/message.data.usage` | 每次模型调用的 `inputTokens` / `outputTokens` |
+| `turn/start` 与 `turn/end` 的 `time` | 这一轮的墙钟耗时 |
+
+```bash
+# 自动：取会话日志里「最后一轮」（定时任务一个 prompt = 一轮，正好对应本次日报）
+./.venv/bin/python usage.py --date 2026-11-04 --auto
+
+# 显式：多轮任务或需要精确数字时手工给（此时最可靠）
+./.venv/bin/python usage.py --date 2026-11-04 \
+    --seconds 690 --input-tokens 4332648 --output-tokens 12628 --calls 25
+```
+
+写进 `data/<day>.json` 的 `cost` 字段，`render.py` 渲染成报告末尾那一行。
+
+### 三条设计约束
+
+1. **必须在渲染之前跑。** `render.py` 直接读快照里的 `cost`，跑完之后再写就没用了。
+2. **不能放进 `run-daily.sh`。** 那个脚本自己在跑，此刻本轮还没结束——取到的会是**上一轮**的数字。
+3. **拿不到就不写，绝不编造。** 历史快照（2026-11-02/03）没有 `cost` 字段，重渲染时不显示这一行，
+   而不是补一个猜的数值。开销行缺失是**可接受降级**，编造数字不是。
+
+> `inputTokens` 是**每次调用累加**，其中包含大量重复的前缀（同一轮里的历史上下文反复计费），
+> 所以数值看起来比正文长很多——这不是 bug，是真实的计费口径。想知道「这篇报告值多少钱」，
+> 看的就是这个累计量。
 
 ## 三条铁律（都是踩过的坑）
 
@@ -300,6 +344,9 @@ summary: "今天 6 篇论文里 3 篇围绕 harness，Wave Forcing 把流式视�
 | 标准 YAML 可解析 | 用真 PyYAML（不是肉眼）解析 frontmatter | 6 字段解析成功 ✅ |
 | **缺 PyYAML 不再静默降级** | 用系统 python3（无 pyyaml）跑 `lint.py --all` | 每天各报 1 个 **ERROR**，退出码 1 ✅（此前只报 WARN 且退出码 0） |
 | 该闸门不误杀正常路径 | venv 内跑 `--all` 与 `run-daily.sh 2026-11-03` | 0 ERROR 0 WARN，退出码 0 ✅ |
+| **开销行自动取数** | `usage.py --date 2026-11-04 --auto` 对着真实会话日志跑 | 取到第 11 轮：690.5s / in 4,332,648 / out 12,628 / 25 次调用 ✅ |
+| 开销行渲染各分支 | 喂 `cost_line()` 五种输入（全字段/秒级/仅耗时/无耗时/空） | 各分支输出正确，空对象返回空串 ✅ |
+| 历史日报不留假数字 | 重渲染 2026-11-02（快照无 `cost`） | 不显示开销行，文件与之前逐字节一致 ✅ |
 
 ### 迁移到站点仓库后的验证（2026-11-03）
 

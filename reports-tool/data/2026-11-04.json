@@ -853,5 +853,12 @@
       "forks": "239",
       "url": "https://github.com/spotify/portal-ai-plugins"
     }
-  ]
+  ],
+  "cost": {
+    "turn": 11,
+    "seconds": 690.5,
+    "input_tokens": 4332648,
+    "output_tokens": 12628,
+    "calls": 25
+  }
 }
