@@ -88,7 +88,7 @@
   width: 13px;
   height: 13px;
   border: 3px solid var(--bg);
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--accent-2);
   box-shadow: 0 0 0 1px var(--accent-secondary), 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
 }
@@ -98,7 +98,7 @@
   width: 100%;
   padding: var(--space-5) var(--space-5);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   background: var(--glass);
   color: inherit;
   font: inherit;

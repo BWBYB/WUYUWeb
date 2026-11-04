@@ -55,7 +55,7 @@
 .category-btn {
   font-size: var(--fs-ui);
   padding: var(--space-2) var(--space-4);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text);
@@ -99,7 +99,7 @@
   color: var(--accent-2);
   background: var(--accent-soft);
   padding: var(--space-1) var(--space-2);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .blog-post-date {

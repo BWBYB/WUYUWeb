@@ -42,7 +42,7 @@
   margin-top: var(--space-5);
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--text);
   font-size: var(--fs-ui);
   text-decoration: none;

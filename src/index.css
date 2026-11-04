@@ -99,6 +99,14 @@
   /* 正文栏宽：35 个汉字（1em ≈ 1 个汉字），30–40 字的中间值 */
   --measure: 35em;
 
+  /* ── 圆角阶梯 ──
+     常规圆角 3 档；胶囊与正圆是形状，不是设计档位，单独给 token。 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
   /* ── 页面骨架 ──
      所有页面共用同一套外框与顶部节奏；文章页另有按栏宽推导的宽度。 */
   --page-max: 1100px;
@@ -200,7 +208,7 @@ html {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
 }
 
 /* 移动端只调 token，不让页面各自改字号 */

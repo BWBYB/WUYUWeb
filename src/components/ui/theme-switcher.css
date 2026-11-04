@@ -86,7 +86,7 @@
   align-items: center;
   gap: var(--switcher-gap);
   border: none;
-  border-radius: 99em;
+  border-radius: var(--radius-pill);
   background-color: color-mix(in srgb, var(--c-glass) var(--switcher-glass-opacity), transparent);
   -webkit-backdrop-filter: blur(var(--switcher-blur)) saturate(var(--switcher-saturation));
   backdrop-filter: blur(var(--switcher-blur)) saturate(var(--switcher-saturation));
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 99em;
+  border-radius: var(--radius-pill);
   opacity: 1;
   transition: all 0.16s;
 }
@@ -176,7 +176,7 @@
   height: calc(100% - 10px);
   display: block;
   content: "";
-  border-radius: 99em;
+  border-radius: var(--radius-pill);
   background-color: color-mix(in srgb, var(--c-glass) var(--switcher-active-opacity), transparent);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),

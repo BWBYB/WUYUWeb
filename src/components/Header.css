@@ -50,7 +50,7 @@
   overflow: visible;
   transform: translateX(-50%);
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   /* ── 设置面板的分层时序 ──
      三者都从主轴 --nav-stretch-duration 派生，所以设置页调「动画倍速」时
      整套时序等比缩放，不会出现某一层不跟着走。
@@ -74,7 +74,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
   -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
@@ -109,7 +109,7 @@
   flex-shrink: 0;
   box-sizing: border-box;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   /* 用明确 width 过渡（72px = logo 的 min-width，分裂 44px = 正圆）。
      不能用 max-width：它是上限，实际宽度由内容撑开，
      分裂后内容只剩 W（约12px），会缩成 12×44 的窄椭圆。 */
@@ -152,7 +152,7 @@
   height: 44px;
   /* 保持 999px（完全圆角）而非 50%：999px 在任意尺寸下都渲染成「短边一半」，
      从胶囊→正圆是连续过渡；50% 在矩形中间态只有半圆角，会产生变形。 */
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   /* 分裂态：logo 长成 44 正圆，上边距收到 (63-44)/2=9.5。
      与合并态的 11.5 一起插值，中心恒在 31.5 → 只长大、不跳位。 */
   margin-top: calc((var(--nav-height, 63px) - 44px) / 2);
@@ -219,7 +219,7 @@
 .site-header-logo:focus-visible {
   outline: 1px solid color-mix(in srgb, var(--nav-action-color) 64%, transparent);
   outline-offset: 4px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 /* 分裂态：宽度收到 W 单字（15px），字距归零（单字无字距），
@@ -241,7 +241,7 @@
   flex: 0 1 auto;
   box-sizing: border-box;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   /* 外投影画在元素自己身上：::before 的外阴影会被父级 overflow:hidden 裁掉。
      基础态用同数量的透明阴影占位，保证分裂/合并时可以插值，不会突然出现。 */
   box-shadow: 0 1px 5px transparent, 0 6px 16px transparent;
@@ -355,7 +355,7 @@
   height: 44px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  border-radius: 50% !important;
+  border-radius: var(--radius-circle) !important;
 }
 
 /* ═══════════════════════════════════════
@@ -472,7 +472,7 @@
   gap: 2px;
   min-width: 0;
   padding: 2px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-content-color) 8%, transparent);
 }
 
@@ -482,7 +482,7 @@
   height: 26px;
   padding: 0 4px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -512,7 +512,7 @@
 
 .nav-setting-range::-webkit-slider-runnable-track {
   height: 3px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: linear-gradient(
     to right,
     var(--nav-action-color) var(--range-progress, 0%),
@@ -527,19 +527,19 @@
   appearance: none;
   -webkit-appearance: none;
   border: 0;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--nav-action-color);
 }
 
 .nav-setting-range::-moz-range-track {
   height: 3px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-content-color) 18%, transparent);
 }
 
 .nav-setting-range::-moz-range-progress {
   height: 3px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--nav-action-color);
 }
 
@@ -547,7 +547,7 @@
   width: 12px;
   height: 12px;
   border: 0;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--nav-action-color);
 }
 
@@ -569,7 +569,7 @@
   margin-left: auto;
   padding: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-content-color) 26%, transparent);
   cursor: pointer;
   transition: background-color .2s ease;
@@ -585,7 +585,7 @@
   left: 2px;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: #fff;
   transition: transform .2s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
@@ -630,7 +630,7 @@
   gap: 4px;
   min-height: 30px;
   padding: 0 12px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-action-color) 10%, transparent);
   color: var(--nav-action-color);
   font-size: var(--fs-micro);
@@ -672,7 +672,7 @@
 .nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link {
   position: relative !important;
   z-index: 16;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background-color: transparent;
   box-shadow: none;
 }
@@ -686,7 +686,7 @@
   width: 30px;
   height: 30px;
   translate: -50% -50%;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background-color: color-mix(in srgb, var(--nav-glass-color) calc(var(--nav-glass-opacity) * 0.9), transparent);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),

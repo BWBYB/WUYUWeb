@@ -10,19 +10,19 @@
 .updates-editor-header p:not(.updates-editor-eyebrow) { max-width: var(--measure); margin: 0; color: var(--text); font-size: var(--fs-body); line-height: var(--lh-body); }
 .updates-editor-header code { color: var(--accent-2); }
 .updates-editor-actions { display: flex; gap: var(--space-3); flex: none; }
-.updates-editor-actions button, .updates-editor-add, .updates-editor-remove { border: 1px solid var(--border); border-radius: 9px; font: inherit; cursor: pointer; }
+.updates-editor-actions button, .updates-editor-add, .updates-editor-remove { border: 1px solid var(--border); border-radius: var(--radius-md); font: inherit; cursor: pointer; }
 .updates-editor-actions button { padding: var(--space-2) var(--space-4); }
 .updates-editor-secondary, .updates-editor-add { background: transparent; color: var(--text); }
 .updates-editor-primary { border-color: var(--accent-1) !important; background: var(--accent-1); color: #fff; }
 .updates-editor-actions button:disabled { cursor: wait; opacity: .6; }
-.updates-editor-status { margin: 0 0 var(--space-5); padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: var(--fs-ui); }
+.updates-editor-status { margin: 0 0 var(--space-5); padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-size: var(--fs-ui); }
 .updates-editor-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .9fr); gap: var(--space-5); align-items: start; }
 .updates-editor-form { display: grid; gap: var(--space-4); }
-.updates-editor-entry { position: relative; display: grid; gap: var(--space-3); min-width: 0; margin: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: 14px; background: var(--glass); }
+.updates-editor-entry { position: relative; display: grid; gap: var(--space-3); min-width: 0; margin: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--glass); }
 .updates-editor-entry legend { padding: 0 var(--space-2); color: var(--text-h); font-size: var(--fs-ui); font-weight: 600; }
 .updates-editor-entry label { display: grid; gap: var(--space-2); color: var(--text); font-size: var(--fs-ui); }
 .updates-editor-entry label span { color: var(--text-muted); font-size: var(--fs-micro); font-weight: 400; }
-.updates-editor-entry input, .updates-editor-entry textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card); color: var(--text-h); font: inherit; outline: none; resize: vertical; }
+.updates-editor-entry input, .updates-editor-entry textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-h); font: inherit; outline: none; resize: vertical; }
 .updates-editor-entry input { height: 38px; padding: 0 var(--space-3); }
 .updates-editor-entry textarea { min-height: 70px; padding: var(--space-2) var(--space-3); line-height: 1.6; }
 .updates-editor-entry input:focus, .updates-editor-entry textarea:focus { border-color: var(--accent-2); }
@@ -31,7 +31,7 @@
 .updates-editor-remove:disabled { cursor: not-allowed; opacity: .4; }
 .updates-editor-add { padding: var(--space-3); }
 .updates-editor-add:hover, .updates-editor-secondary:hover { border-color: var(--border-hover); color: var(--text-h); }
-.updates-editor-preview { position: sticky; top: 92px; min-width: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); }
+.updates-editor-preview { position: sticky; top: 92px; min-width: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); }
 .updates-editor-preview-heading { display: flex; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--text-h); font-size: var(--fs-ui); font-weight: 600; }
 .updates-editor-preview-heading a { color: var(--accent-2); font-size: var(--fs-micro); font-weight: 400; text-decoration: none; }
 
