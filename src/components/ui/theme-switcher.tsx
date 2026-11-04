@@ -25,10 +25,6 @@ export interface ThemeSwitcherSettings {
   optionWidth: number;
   gap: number;
   capsuleWidth: number;
-  switcherShadowStrength: number;
-  switcherShadowY: number;
-  switcherShadowBlur: number;
-  switcherShadowSpread: number;
 }
 
 interface ThemeSwitcherProps {
@@ -138,10 +134,7 @@ export function ThemeSwitcher({
         "--switcher-option-width": `${settings.optionWidth}px`,
         "--switcher-gap": `${settings.gap}px`,
         "--switcher-capsule-width": `${settings.capsuleWidth}px`,
-        "--switcher-shadow-color": `rgba(0, 0, 0, ${(settings.switcherShadowStrength * 0.28).toFixed(3)})`,
-        "--switcher-shadow-y": `${settings.switcherShadowY}px`,
-        "--switcher-shadow-blur": `${settings.switcherShadowBlur}px`,
-        "--switcher-shadow-spread": `${settings.switcherShadowSpread}px`,
+
       } as React.CSSProperties)
     : undefined;
 

@@ -20,10 +20,6 @@ const formatters = {
   optionWidth: value => `${Math.round(Number(value))}px`,
   gap: value => `${Math.round(Number(value))}px`,
   capsuleWidth: value => `${Math.round(Number(value))}px`,
-  switcherShadowStrength: value => `${Math.round(Number(value) * 100)}%`,
-  switcherShadowY: value => `${Math.round(Number(value))}px`,
-  switcherShadowBlur: value => `${Math.round(Number(value))}px`,
-  switcherShadowSpread: value => `${Math.round(Number(value))}px`,
 }
 
 function RangeControl({ label, description, setting, min, max, step, value, updateSetting }) {
@@ -177,19 +173,6 @@ export default function ThemeSwitcherCustomizer() {
           <RangeControl label="胶囊透明度" description="活动指示器" setting="activeOpacity" min={0} max={70} step={1} value={settings.activeOpacity} updateSetting={updateSetting} />
           <RangeControl label="背景模糊" description="backdrop blur" setting="blur" min={0} max={24} step={1} value={settings.blur} updateSetting={updateSetting} />
           <RangeControl label="饱和度" description="背景颜色强度" setting="saturation" min={80} max={240} step={1} value={settings.saturation} updateSetting={updateSetting} />
-        </div>
-      </div>
-
-      <div className="theme-customizer-section">
-        <div className="theme-customizer-section-heading">
-          <h3>阴影</h3>
-          <span>Shadow</span>
-        </div>
-        <div className="theme-customizer-grid">
-          <RangeControl label="浓度" description="黑色投影的透明度" setting="switcherShadowStrength" min={0} max={1} step={0.01} value={settings.switcherShadowStrength} updateSetting={updateSetting} />
-          <RangeControl label="垂直偏移" description="阴影向下偏移的距离" setting="switcherShadowY" min={0} max={40} step={1} value={settings.switcherShadowY} updateSetting={updateSetting} />
-          <RangeControl label="模糊" description="数值越大边缘越软" setting="switcherShadowBlur" min={0} max={80} step={1} value={settings.switcherShadowBlur} updateSetting={updateSetting} />
-          <RangeControl label="扩散" description="正=放大轮廓，负=收紧" setting="switcherShadowSpread" min={-10} max={20} step={1} value={settings.switcherShadowSpread} updateSetting={updateSetting} />
         </div>
       </div>
 

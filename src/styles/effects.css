@@ -66,6 +66,7 @@
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: all 0.3s ease;

@@ -31,9 +31,33 @@
   --content-inverse: #0a0b0b;
   --content-on-accent: #0a0b0b;
 
-  --border-subtle: rgba(222, 217, 207, 0.11);
-  --border-strong: rgba(222, 217, 207, 0.19);
-  --border-glass: rgba(222, 217, 207, 0.11);
+  /* 边框强度由设置面板写根元素，两套描边各自缩放 */
+  --border-strength: 1;
+  --glass-strength: 1;
+  --border-alpha-subtle: 11%;
+  --border-alpha-strong: 19%;
+  --border-alpha-glass: 11%;
+  --border-subtle: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-subtle) * var(--border-strength)), transparent);
+  --border-strong: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-strong) * var(--border-strength)), transparent);
+  --border-glass: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-glass) * var(--glass-strength)), transparent);
+
+  /* 阴影三层：同一组几何参数按倍率推导 */
+  --shadow-strength: 1;
+  --shadow-y: 18px;
+  --shadow-blur: 44px;
+  --shadow-spread: 0px;
+  --shadow-rgb: 0 0 0;
+  --shadow-alpha-base: 0.5;
+  --shadow-alpha: calc(var(--shadow-alpha-base) * var(--shadow-strength));
+  --shadow-1:
+    0 calc(var(--shadow-y) * 0.35) calc(var(--shadow-blur) * 0.35) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / calc(var(--shadow-alpha) * 0.45));
+  --shadow-2:
+    0 calc(var(--shadow-y) * 0.7) calc(var(--shadow-blur) * 0.7) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / calc(var(--shadow-alpha) * 0.75));
+  --shadow-3:
+    0 var(--shadow-y) var(--shadow-blur) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / var(--shadow-alpha));
 
   --accent: #c4713f;
   --accent-secondary: #a4502a;
@@ -80,9 +104,15 @@
   --fs-heading: 1.75rem;    /* 28 大区块标题、移动端页面标题 */
   --fs-display: 2.25rem;    /* 36 桌面页面标题、文章标题 */
 
+  /* 字重只用加载过的三档；700 会回退到 600，不再声明 */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* 行高 4 档；1 只用于图标/单行控件的几何对齐 */
   --lh-tight: 1.15;
-  --lh-heading: 1.25;
-  --lh-snug: 1.4;
+  --lh-heading: 1.3;
+  --lh-ui: 1.5;
   --lh-body: 1.7;
 
   /* ── 间距阶梯（8 档，4px 基准）──
@@ -116,7 +146,7 @@
 
   font-family: var(--sans);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: var(--lh-body);
   color: var(--text);
   background: var(--bg);
 
@@ -140,9 +170,11 @@
   --content-inverse: #f8f5ee;
   --content-on-accent: #ffffff;
 
-  --border-subtle: rgba(35, 30, 24, 0.12);
-  --border-strong: rgba(35, 30, 24, 0.22);
-  --border-glass: rgba(35, 30, 24, 0.12);
+  --border-alpha-subtle: 12%;
+  --border-alpha-strong: 22%;
+  --border-alpha-glass: 12%;
+  --shadow-rgb: 60 45 25;
+  --shadow-alpha-base: 0.16;
 
   --accent: #a4502a;
   --accent-secondary: #8c3f22;
@@ -168,9 +200,10 @@
   --content-muted: color-mix(in srgb, #746c5f var(--paper-mix), #8a8378);
   --content-inverse: color-mix(in srgb, #f4f1ea var(--paper-mix), #f8f5ee);
 
-  --border-subtle: color-mix(in srgb, rgba(27, 26, 23, 0.16) var(--paper-mix), rgba(35, 30, 24, 0.12));
-  --border-strong: color-mix(in srgb, rgba(27, 26, 23, 0.26) var(--paper-mix), rgba(35, 30, 24, 0.22));
-  --border-glass: color-mix(in srgb, rgba(27, 26, 23, 0.14) var(--paper-mix), rgba(35, 30, 24, 0.12));
+  --border-alpha-subtle: 16%;
+  --border-alpha-strong: 26%;
+  --border-alpha-glass: 14%;
+  --shadow-alpha-base: 0.22;
 
   --danger: color-mix(in srgb, #b3402a var(--paper-mix), #c93c3c);
 }

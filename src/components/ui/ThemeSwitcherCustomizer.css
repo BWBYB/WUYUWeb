@@ -15,7 +15,7 @@
   margin-bottom: var(--space-2);
   color: rgba(180, 195, 255, 0.68);
   font-size: var(--fs-micro);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: 0.18em;
 }
 
@@ -23,7 +23,7 @@
   margin: 0;
   color: var(--text-h);
   font-size: var(--fs-heading-sm);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.03em;
 }
 
@@ -32,7 +32,7 @@
   margin: var(--space-2) 0 0;
   color: var(--text);
   font-size: var(--fs-ui);
-  line-height: 1.6;
+  line-height: var(--lh-ui);
 }
 
 .theme-customizer-actions {
@@ -153,7 +153,7 @@
   margin: 0;
   color: var(--text-h);
   font-size: var(--fs-body);
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 
 .theme-customizer-section-heading span {

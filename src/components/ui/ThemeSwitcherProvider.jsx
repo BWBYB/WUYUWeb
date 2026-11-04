@@ -13,6 +13,12 @@ import {
   readNavSettings,
   saveNavSettings,
 } from './nav-settings'
+import {
+  DEFAULT_SURFACE_SETTINGS,
+  normalizeSurfaceSettings,
+  readSurfaceSettings,
+  saveSurfaceSettings,
+} from './surface-settings'
 
 const STORAGE_KEY = 'my-blog-theme-switcher-theme'
 const themes = new Set(['light', 'dark', 'system'])
@@ -39,6 +45,7 @@ export function ThemeSwitcherProvider({ children }) {
   const [systemTheme, setSystemTheme] = useState(readSystemTheme)
   const [settings, setSettingsState] = useState(readThemeSwitcherSettings)
   const [navSettings, setNavSettingsState] = useState(readNavSettings)
+  const [surfaceSettings, setSurfaceSettingsState] = useState(readSurfaceSettings)
   const resolvedTheme = theme === 'system' ? systemTheme : theme
 
   useEffect(() => {
@@ -126,6 +133,31 @@ export function ThemeSwitcherProvider({ children }) {
     saveNavSettings(next)
   }
 
+  const updateSurfaceSetting = (key, value) => {
+    setSurfaceSettingsState((current) => {
+      const next = normalizeSurfaceSettings({ ...current, [key]: value })
+      saveSurfaceSettings(next)
+      return next
+    })
+  }
+
+  const resetSurfaceSettings = () => {
+    const next = { ...DEFAULT_SURFACE_SETTINGS }
+    setSurfaceSettingsState(next)
+    saveSurfaceSettings(next)
+  }
+
+  // 阴影与边框统一写根元素，页面和组件只读 CSS 变量
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty('--shadow-strength', String(surfaceSettings.shadowStrength))
+    root.style.setProperty('--shadow-y', `${surfaceSettings.shadowY}px`)
+    root.style.setProperty('--shadow-blur', `${surfaceSettings.shadowBlur}px`)
+    root.style.setProperty('--shadow-spread', `${surfaceSettings.shadowSpread}px`)
+    root.style.setProperty('--border-strength', String(surfaceSettings.borderStrength))
+    root.style.setProperty('--glass-strength', String(surfaceSettings.glassStrength))
+  }, [surfaceSettings])
+
   return (
     <ThemeSwitcherContext.Provider
       value={{
@@ -139,6 +171,9 @@ export function ThemeSwitcherProvider({ children }) {
         navSettings,
         updateNavSetting,
         resetNavSettings,
+        surfaceSettings,
+        updateSurfaceSetting,
+        resetSurfaceSettings,
       }}
     >
       {children}

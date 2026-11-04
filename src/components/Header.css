@@ -63,8 +63,7 @@
      外壳与导航胶囊共用这一份；分裂后两块玻璃观感与合并态一致。 */
   --glass-shadow-inset:
     inset 0 0 0 1px color-mix(in srgb, var(--nav-content-color) 18%, transparent);
-  --glass-shadow-outer:
-    0 var(--nav-shadow-y, 18px) var(--nav-shadow-blur, 44px) var(--nav-shadow-spread, 0px) var(--nav-shadow-color, rgba(60, 45, 25, 0.22));
+  --glass-shadow-outer: var(--shadow-3);
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
@@ -189,7 +188,7 @@
   white-space: nowrap;
   color: var(--nav-content-color);
   font-size: var(--fs-body);
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
   letter-spacing: .16em; /* 四字母等距 */
   text-decoration: none;
   transition: color .2s ease, transform .2s ease,

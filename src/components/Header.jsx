@@ -228,12 +228,6 @@ export default function Header({ paper = false }) {
     ? (paper ? '#1b1a17' : settings.contentColor)
     : '#ded9cf'
 
-  // 单层投影：主题给基准色，浓度由设置滑块缩放
-  const shadowBase = resolvedTheme === 'light'
-    ? (paper ? [60, 45, 25, 0.22] : [45, 50, 80, 0.16])
-    : [0, 0, 0, 0.5]
-  const shadowAlpha = (shadowBase[3] * navSettings.shadowStrength).toFixed(3)
-
   const headerStyle = {
     '--nav-height': `${settings.height * 0.9}px`,
     '--nav-glass-color': settings.glassColor,
@@ -246,10 +240,6 @@ export default function Header({ paper = false }) {
     '--nav-saturation': `${settings.saturation}%`,
     '--nav-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
     '--nav-reflex-dark': resolvedTheme === 'light' ? 1 : 2,
-    '--nav-shadow-color': `rgba(${shadowBase[0]}, ${shadowBase[1]}, ${shadowBase[2]}, ${shadowAlpha})`,
-    '--nav-shadow-y': `${navSettings.shadowY}px`,
-    '--nav-shadow-blur': `${navSettings.shadowBlur}px`,
-    '--nav-shadow-spread': `${navSettings.shadowSpread}px`,
     // 分裂动效（动画快慢 / 缓动 / 时长）
     '--nav-stretch-duration': scaledDuration(navSettings.stretchDuration, navSettings.animationSpeed),
     '--nav-stretch-easing': easingFromControls(
