@@ -21,6 +21,7 @@ function toEngineOptions(settings) {
     rippleDecay: settings.rippleDecay,
     dimStrength: settings.dimStrength,
     readingDim: settings.readingDim,
+    paperStrength: settings.paperStrength,
     fish: settings.fish,
     advanced: settings.advanced,
   }
@@ -40,7 +41,7 @@ export default function AsciiBackground({ settings }) {
   useEffect(() => {
     const engine = createAsciiBackground(canvasRef.current, {
       ...toEngineOptions(settings),
-      theme: resolvedTheme,
+      theme: resolvedTheme === 'light' && settings.paper ? 'paper' : resolvedTheme,
     })
     engineRef.current = engine
     document.documentElement.dataset.waterBg = 'on'
@@ -61,8 +62,9 @@ export default function AsciiBackground({ settings }) {
   }, [settings])
 
   useEffect(() => {
-    engineRef.current?.setOptions({ theme: resolvedTheme })
-  }, [resolvedTheme])
+    const theme = resolvedTheme === 'light' && settings.paper ? 'paper' : resolvedTheme
+    engineRef.current?.setOptions({ theme })
+  }, [resolvedTheme, settings.paper])
 
   useEffect(() => {
     // 等新页面渲染完再测，否则拿到上一页的矩形

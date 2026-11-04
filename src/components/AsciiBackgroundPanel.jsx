@@ -6,6 +6,7 @@ import {
   WAVE_LABELS,
   WAVE_MODES,
 } from './ui/background-settings'
+import { useThemeSwitcherTheme } from './ui/theme-switcher-context'
 import './AsciiBackgroundPanel.css'
 
 const MODE_LABEL = { ascii: '字符', aurora: '极光', none: '无' }
@@ -298,6 +299,7 @@ function ToggleRow({ row, value, onChange }) {
 
 // 右下角一颗几乎看不见的入口。背景是常驻物，参数不该占用正文空间。
 export default function AsciiBackgroundPanel({ settings, onChange, onReset }) {
+  const { resolvedTheme } = useThemeSwitcherTheme()
   const [open, setOpen] = useState(false)
   const rootRef = useRef(null)
   const dotRef = useRef(null)
@@ -372,6 +374,46 @@ export default function AsciiBackgroundPanel({ settings, onChange, onReset }) {
     <div className="bgp" ref={rootRef}>
       {open && (
         <div className="bgp__panel" role="dialog" aria-label="背景设置">
+          <div className="bgp__group">纸色</div>
+          <div className="bgp__row">
+            <b>仅白天模式</b>
+            <button
+              type="button"
+              onClick={() => onChange({ paper: false })}
+              aria-pressed={!settings.paper}
+              disabled={resolvedTheme !== 'light'}
+            >
+              关闭
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange({ paper: true })}
+              aria-pressed={settings.paper}
+              disabled={resolvedTheme !== 'light'}
+            >
+              纸色
+            </button>
+          </div>
+          <div className="bgp__row">
+            <b>程度</b>
+            <div className="bgp__meter">
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={settings.paperStrength}
+                aria-label="纸色程度"
+                disabled={resolvedTheme !== 'light' || !settings.paper}
+                onChange={event => onChange({ paperStrength: Number(event.target.value) })}
+              />
+              <output>{Math.round(settings.paperStrength * 100)}%</output>
+            </div>
+          </div>
+          {resolvedTheme !== 'light' && (
+            <p className="bgp__hint">仅白天模式生效，切到浅色后再开。</p>
+          )}
+
           <div className="bgp__group">背景</div>
           <div className="bgp__row">
             {BACKGROUND_MODES.map(mode => (

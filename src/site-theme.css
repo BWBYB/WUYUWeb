@@ -111,3 +111,83 @@ html[data-site-theme="light"] .header-pointer-highlight,
 html[data-site-theme="light"] .nav-liquid-highlight {
   mix-blend-mode: multiply;
 }
+
+/* ── 纸色（仅白天）──
+   浅色补丁里写死的冷白在这里全部换成暖白，否则顶栏和面板会像贴上去的一块制冷片。 */
+html[data-site-theme="light"][data-paper="on"] .header-wrapper {
+  background: color-mix(in srgb, rgba(255, 253, 247, 0.74) var(--paper-mix), rgba(255, 255, 255, 0.72));
+  border-color: color-mix(in srgb, rgba(27, 26, 23, 0.14) var(--paper-mix), rgba(23, 25, 35, 0.12));
+  box-shadow:
+    0 8px 32px rgba(80, 62, 40, 0.14),
+    0 2px 8px rgba(80, 62, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(27, 26, 23, 0.05);
+}
+
+html[data-site-theme="light"][data-paper="on"] .separated .header-logo,
+html[data-site-theme="light"][data-paper="on"] .separated .header-nav {
+  background: color-mix(in srgb, rgba(255, 253, 247, 0.8) var(--paper-mix), rgba(255, 255, 255, 0.78));
+  border-color: color-mix(in srgb, rgba(27, 26, 23, 0.14) var(--paper-mix), rgba(23, 25, 35, 0.12));
+  box-shadow:
+    0 8px 32px rgba(80, 62, 40, 0.14),
+    0 2px 8px rgba(80, 62, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(27, 26, 23, 0.05);
+}
+
+html[data-site-theme="light"][data-paper="on"] .separated .header-nav.settings-open {
+  background: color-mix(in srgb, rgba(255, 253, 247, 0.92) var(--paper-mix), rgba(255, 255, 255, 0.9));
+}
+
+html[data-site-theme="light"][data-paper="on"] .header-divider {
+  background: color-mix(in srgb, rgba(27, 26, 23, 0.14) var(--paper-mix), rgba(23, 25, 35, 0.12));
+}
+
+html[data-site-theme="light"][data-paper="on"] .header-nav-link {
+  color: color-mix(in srgb, rgba(27, 26, 23, 0.56) var(--paper-mix), rgba(23, 25, 35, 0.54));
+}
+
+html[data-site-theme="light"][data-paper="on"] .header-nav-link:hover,
+html[data-site-theme="light"][data-paper="on"] .settings-btn:hover {
+  color: color-mix(in srgb, rgba(27, 26, 23, 0.86) var(--paper-mix), rgba(23, 25, 35, 0.86));
+  background: color-mix(in srgb, rgba(27, 26, 23, 0.06) var(--paper-mix), rgba(23, 25, 35, 0.06));
+}
+
+html[data-site-theme="light"][data-paper="on"] .header-nav-link.active,
+html[data-site-theme="light"][data-paper="on"] .settings-btn.is-open {
+  color: var(--text-h);
+  background: color-mix(in srgb, rgba(27, 26, 23, 0.1) var(--paper-mix), rgba(23, 25, 35, 0.1));
+  box-shadow:
+    0 2px 6px rgba(80, 62, 40, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* 水关闭时 hero 会露出底色；纸色下必须是暖纸，不能留冷白 */
+html[data-site-theme="light"][data-paper="on"] .hero-section {
+  background: var(--bg);
+}
+
+html[data-site-theme="light"][data-paper="on"] .three-hero {
+  background: radial-gradient(ellipse at center, #f7f2e7 0%, #e9e0cf 100%);
+}
+
+html[data-site-theme="light"][data-paper="on"] .three-hero-title {
+  color: var(--text-h);
+  text-shadow: 0 0 40px rgba(164, 80, 42, 0.2);
+}
+
+html[data-site-theme="light"][data-paper="on"] .settings-select,
+html[data-site-theme="light"][data-paper="on"] .settings-switch-track {
+  border-color: var(--border);
+  background: color-mix(in srgb, rgba(27, 26, 23, 0.05) var(--paper-mix), rgba(23, 25, 35, 0.05));
+  color: var(--text);
+}
+
+html[data-site-theme="light"][data-paper="on"] .settings-select option {
+  background: color-mix(in srgb, #fffdf7 var(--paper-mix), #ffffff);
+  color: var(--text-h);
+}
+
+html[data-site-theme="light"][data-paper="on"] .settings-switch-thumb {
+  background: color-mix(in srgb, rgba(27, 26, 23, 0.52) var(--paper-mix), rgba(23, 25, 35, 0.52));
+}

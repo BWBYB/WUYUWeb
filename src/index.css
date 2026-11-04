@@ -17,25 +17,28 @@
 }
 
 :root {
-  /* Dark theme */
-  --text: #8b8b9e;
-  --text-h: #f0f0f5;
-  --text-muted: #5a5a6e;
-  --bg: #0a0a0f;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.15);
-  --code-bg: rgba(255, 255, 255, 0.05);
-  --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Dark theme — 暖墨：骨白 + 暖灰，和铜色强调同族 */
+  --text: #8f887c;
+  --text-h: #ded9cf;
+  --text-muted: #857d70;
+  --bg: #0a0b0b;
+  --bg-card: rgba(222, 217, 207, 0.035);
+  --bg-card-hover: rgba(222, 217, 207, 0.065);
+  --border: rgba(222, 217, 207, 0.11);
+  --border-hover: rgba(222, 217, 207, 0.19);
+  --code-bg: rgba(222, 217, 207, 0.06);
+  --glass: rgba(222, 217, 207, 0.045);
+  --glass-border: rgba(222, 217, 207, 0.11);
 
-  /* Accent colors */
-  --accent-1: #6366f1;
-  --accent-2: #8b5cf6;
-  --accent-3: #06b6d4;
-  --gradient-1: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --gradient-2: linear-gradient(135deg, #06b6d4, #6366f1);
+  /* Accent colors — 暗色用暖铜，和纸色的赭石同族 */
+  --accent-1: #c4713f;
+  --accent-2: #a4502a;
+  --accent-3: #d98a5f;
+  --gradient-1: linear-gradient(135deg, #c4713f, #a4502a);
+  --gradient-2: linear-gradient(135deg, #d98a5f, #c4713f);
+
+  /* 纸色强度：0% 冷白，100% 暖纸；由 Layout 按设置写到根元素 */
+  --paper-mix: 0%;
 
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --serif: 'Noto Serif SC', Georgia, serif;
@@ -65,6 +68,34 @@
   --code-bg: rgba(23, 25, 35, 0.06);
   --glass: rgba(255, 255, 255, 0.58);
   --glass-border: rgba(23, 25, 35, 0.12);
+
+  /* 普通冷白浅色仍用靛蓝；纸色会覆盖成赭石 */
+  --accent-1: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-3: #06b6d4;
+  --gradient-1: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-2: linear-gradient(135deg, #06b6d4, #6366f1);
+}
+
+/* 纸色：白天模式下可选，取自 bg-sampler 的暖纸样例。
+   中性色用 --paper-mix 在冷白与暖纸之间插值，强调色整组切换。 */
+:root[data-site-theme="light"][data-paper="on"] {
+  --text: color-mix(in srgb, #6d675e var(--paper-mix), #5a5b6d);
+  --text-h: color-mix(in srgb, #1b1a17 var(--paper-mix), #171923);
+  --text-muted: color-mix(in srgb, #746c5f var(--paper-mix), #858797);
+  --bg: color-mix(in srgb, #f4f1ea var(--paper-mix), #f4f5f8);
+  --bg-card: color-mix(in srgb, rgba(27, 26, 23, 0.045) var(--paper-mix), rgba(23, 25, 35, 0.045));
+  --bg-card-hover: color-mix(in srgb, rgba(27, 26, 23, 0.075) var(--paper-mix), rgba(23, 25, 35, 0.08));
+  --border: color-mix(in srgb, rgba(27, 26, 23, 0.16) var(--paper-mix), rgba(23, 25, 35, 0.12));
+  --border-hover: color-mix(in srgb, rgba(27, 26, 23, 0.26) var(--paper-mix), rgba(23, 25, 35, 0.22));
+  --code-bg: color-mix(in srgb, rgba(27, 26, 23, 0.06) var(--paper-mix), rgba(23, 25, 35, 0.06));
+  --glass: color-mix(in srgb, rgba(255, 253, 247, 0.55) var(--paper-mix), rgba(255, 255, 255, 0.58));
+  --glass-border: color-mix(in srgb, rgba(27, 26, 23, 0.14) var(--paper-mix), rgba(23, 25, 35, 0.12));
+  --accent-1: #a4502a;
+  --accent-2: #8c3f22;
+  --accent-3: #c4713f;
+  --gradient-1: linear-gradient(135deg, #a4502a, #8c3f22);
+  --gradient-2: linear-gradient(135deg, #c4713f, #a4502a);
 }
 
 * {

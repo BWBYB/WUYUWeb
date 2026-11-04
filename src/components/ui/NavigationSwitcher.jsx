@@ -23,7 +23,7 @@ function getRouteIndex(pathname) {
   return navigationOptions.findIndex(option => isActivePath(option.path, pathname))
 }
 
-export default function NavigationSwitcher({ isSplit = false, onToggleSettings }) {
+export default function NavigationSwitcher({ onToggleSettings, paper = false }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
@@ -102,8 +102,12 @@ export default function NavigationSwitcher({ isSplit = false, onToggleSettings }
     '--c-glass': settings.glassColor,
     '--c-light': settings.lightColor,
     '--c-dark': settings.darkColor,
-    '--c-content': resolvedTheme === 'light' ? settings.contentColor : '#e1e1e1',
-    '--c-action': resolvedTheme === 'light' ? settings.actionColor : '#03d5ff',
+    '--c-content': resolvedTheme === 'light'
+      ? (paper ? '#1b1a17' : settings.contentColor)
+      : '#ded9cf',
+    '--c-action': resolvedTheme === 'light'
+      ? (paper ? '#a4502a' : settings.actionColor)
+      : '#c4713f',
     '--glass-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
     '--glass-reflex-dark': resolvedTheme === 'light' ? 1 : 2,
     '--switcher-height': `${settings.height * 0.9}px`,
@@ -152,11 +156,8 @@ export default function NavigationSwitcher({ isSplit = false, onToggleSettings }
         className="switcher__option navigation-settings-link"
         aria-label={settingsOption.label}
         onClick={() => {
-          if (isSplit) {
-            if (onToggleSettings) onToggleSettings()
-          } else {
-            navigate(settingsOption.path)
-          }
+          // 合并态也走这里：Header 会先分裂、再展开小窗
+          if (onToggleSettings) onToggleSettings()
         }}
       >
         <span className="switcher__icon navigation-option-icon" aria-hidden="true">{settingsOption.icon}</span>

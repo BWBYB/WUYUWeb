@@ -15,6 +15,10 @@ const formatters = {
     const v = Number(value)
     return v === 0 ? '标准' : `${v > 0 ? '+' : ''}${Math.round(v * 100)}%`
   },
+  shadowStrength: value => `${Math.round(Number(value) * 100)}%`,
+  shadowY: value => `${Math.round(Number(value))}px`,
+  shadowBlur: value => `${Math.round(Number(value))}px`,
+  shadowSpread: value => `${Math.round(Number(value))}px`,
 }
 
 function NavRangeControl({ label, description, setting, min, max, step, value, update }) {
@@ -92,6 +96,19 @@ export default function NavCustomizer() {
         <div className="theme-customizer-grid">
           <NavRangeControl label="起步快慢" description="负=更柔缓，正=起步更陡" setting="easingStart" min={-0.6} max={0.6} step={0.01} value={navSettings.easingStart} update={updateNavSetting} />
           <NavRangeControl label="收尾快慢" description="负=收尾更干脆，正=更慢停" setting="easingEnd" min={-0.6} max={0.6} step={0.01} value={navSettings.easingEnd} update={updateNavSetting} />
+        </div>
+      </div>
+
+      <div className="theme-customizer-section">
+        <div className="theme-customizer-section-heading">
+          <h3>阴影</h3>
+          <span>Shadow</span>
+        </div>
+        <div className="theme-customizer-grid">
+          <NavRangeControl label="浓度" description="在主题基准色上缩放透明度" setting="shadowStrength" min={0} max={1} step={0.01} value={navSettings.shadowStrength} update={updateNavSetting} />
+          <NavRangeControl label="垂直偏移" description="阴影向下偏移的距离" setting="shadowY" min={0} max={40} step={1} value={navSettings.shadowY} update={updateNavSetting} />
+          <NavRangeControl label="模糊" description="数值越大边缘越软" setting="shadowBlur" min={0} max={80} step={1} value={navSettings.shadowBlur} update={updateNavSetting} />
+          <NavRangeControl label="扩散" description="正=放大轮廓，负=收紧" setting="shadowSpread" min={-10} max={20} step={1} value={navSettings.shadowSpread} update={updateNavSetting} />
         </div>
       </div>
 

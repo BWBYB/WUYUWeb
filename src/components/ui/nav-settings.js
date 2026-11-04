@@ -8,6 +8,10 @@ export const DEFAULT_NAV_SETTINGS = {
   animationSpeed: 1,           // 全局动画倍速：1=正常，0.1=极慢（慢放观察），3=极快
   easingStart: 0,              // 起步快慢：负=更柔缓，正=起步更陡（映射 x1）
   easingEnd: 0,                // 收尾快慢：负=收尾更干脆，正=收尾更慢停（映射 x2）
+  shadowStrength: 1,           // 阴影浓度：在原主题基准上按比例缩放
+  shadowY: 18,                 // 阴影垂直偏移（px）
+  shadowBlur: 44,              // 阴影模糊半径（px）
+  shadowSpread: 0,             // 阴影扩散（px）
 }
 
 const numericRanges = {
@@ -16,6 +20,10 @@ const numericRanges = {
   animationSpeed: [0.1, 3],
   easingStart: [-0.6, 0.6],
   easingEnd: [-0.6, 0.6],
+  shadowStrength: [0, 1],
+  shadowY: [0, 40],
+  shadowBlur: [0, 80],
+  shadowSpread: [-10, 20],
 }
 
 function clamp(value, [min, max]) {

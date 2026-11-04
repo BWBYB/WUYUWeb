@@ -119,6 +119,16 @@
   color: var(--text-h);
 }
 
+.bgp__row button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.bgp__meter input[type='range']:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .bgp__row button[aria-pressed='true'] {
   color: var(--text-h);
   border-bottom-color: var(--accent-1);

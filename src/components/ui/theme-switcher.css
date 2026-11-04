@@ -18,10 +18,16 @@
 
 .theme-provider[data-theme="light"] { background: var(--c-bg); }
 
+/* 纸色：仅白天生效，悬停高亮从蓝换成赭石 */
+.theme-provider[data-theme="light"][data-paper="on"] {
+  --c-action: #a4502a;
+  --c-bg: #efe9dd;
+}
+
 .theme-provider[data-theme="dark"] {
-  --c-content: #e1e1e1;
-  --c-action: #03d5ff;
-  --c-bg: #1b1b1d;
+  --c-content: #ded9cf;
+  --c-action: #c4713f;
+  --c-bg: #141310;
   --glass-reflex-dark: 2;
   --glass-reflex-light: 0.3;
 }
@@ -93,8 +99,7 @@
     inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
     inset 0 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
     inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-    0 1px 5px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-    0 6px 16px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+    0 var(--switcher-shadow-y, 14px) var(--switcher-shadow-blur, 36px) var(--switcher-shadow-spread, 0px) var(--switcher-shadow-color, rgba(0, 0, 0, 0.28));
   transition: background-color 0.4s cubic-bezier(1, 0, 0.4, 1),
     box-shadow 0.4s cubic-bezier(1, 0, 0.4, 1);
 }

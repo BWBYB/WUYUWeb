@@ -40,7 +40,35 @@ const THEMES = {
     alpha: 0.9,
     inkAlpha: 0.45,
   },
+  // 纸色：取自 bg-sampler 的浅色范例（暖纸 + 暖墨 + 赭石）
+  paper: {
+    bg: [244, 241, 234],
+    white: [27, 26, 23],
+    red: [164, 80, 42],
+    sumi: [109, 103, 94],
+    ink: [60, 56, 50],
+    fin: [120, 112, 100],
+    food: [164, 80, 42],
+    alpha: 0.92,
+    inkAlpha: 0.42,
+  },
 }
+
+// 纸色强度插值：0 = 普通浅色，1 = 完整暖纸
+function mixRgb(from, to, t) {
+  return from.map((value, index) => Math.round(value + (to[index] - value) * t))
+}
+
+function mixTheme(from, to, t) {
+  const keys = ['bg', 'white', 'red', 'sumi', 'ink', 'fin', 'food']
+  const out = {}
+  for (const key of keys) out[key] = mixRgb(from[key], to[key], t)
+  out.alpha = from.alpha + (to.alpha - from.alpha) * t
+  out.inkAlpha = from.inkAlpha + (to.inkAlpha - from.inkAlpha) * t
+  return out
+}
+
+const LIGHT_WATER_INK = [58, 72, 86]
 
 const WATER_ALPHA = [0, 0.07, 0.1, 0.14, 0.19, 0.25, 0.33, 0.43, 0.55, 0.68]
 
@@ -93,6 +121,7 @@ const DIM_SELECTOR = [
 
 const DEFAULT_OPTIONS = {
   theme: 'dark',
+  paperStrength: 1,
   brush: 'gradient',
   waveMode: 'cross',
   waveSpeed: 1,
@@ -246,11 +275,22 @@ function mergeInto(cfg, source) {
     cfg.waveMode = source.waveMode
     flags.field = true
   }
-  if (source.theme === 'light' || source.theme === 'dark') {
+  if (source.theme === 'light' || source.theme === 'dark' || source.theme === 'paper') {
     if (source.theme !== cfg.theme) {
       cfg.theme = source.theme
       flags.theme = true
       flags.redraw = true
+    }
+  }
+
+  if (typeof source.paperStrength === 'number' && Number.isFinite(source.paperStrength)) {
+    const strength = Math.min(1, Math.max(0, source.paperStrength))
+    if (strength !== cfg.paperStrength) {
+      cfg.paperStrength = strength
+      if (cfg.theme === 'paper') {
+        flags.theme = true
+        flags.redraw = true
+      }
     }
   }
 
@@ -407,12 +447,22 @@ export function createAsciiBackground(canvas, options = {}) {
 
   // ---------- 主题 ----------
   function applyTheme(name) {
-    const t = THEMES[name] || THEMES.dark
+    const paperMix = name === 'paper' ? cfg.paperStrength : 0
+    // 纸色在浅色与暖纸之间按强度插值，滑动时水和鱼跟着连续过渡
+    const t = name === 'paper'
+      ? mixTheme(THEMES.light, THEMES.paper, paperMix)
+      : (THEMES[name] || THEMES.dark)
     const k = t.alpha / 0.8
 
-    const waterInk = name === 'light' ? [58, 72, 86] : t.white
+    // 纸色用暖墨画水，不能再套浅色那组冷蓝灰
+    const isLightLike = name === 'light' || name === 'paper'
+    const waterInk = name === 'light'
+      ? LIGHT_WATER_INK
+      : name === 'paper'
+        ? mixRgb(LIGHT_WATER_INK, t.ink, paperMix)
+        : t.white
     // 浅色页没有 hero 鱼尾推高的亮区，环境场本身要再多一点对比才不显得空。
-    const waterK = k * (name === 'light' ? 1.6 : 1)
+    const waterK = k * (isLightLike ? 1.6 : 1)
     waterColors.length = 0
     for (let i = 0; i < WATER_ALPHA.length; i++) {
       waterColors.push(rgba(waterInk, Math.min(0.9, WATER_ALPHA[i] * waterK)))

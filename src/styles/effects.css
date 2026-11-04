@@ -92,6 +92,15 @@ html[data-site-theme='light'][data-water-bg='on'] .main .glass-card:hover {
   background: rgba(255, 255, 255, 0.52);
 }
 
+/* 纸色下卡片改用暖白，冷白会像贴上去的塑料片 */
+html[data-site-theme='light'][data-paper='on'][data-water-bg='on'] .main .glass-card {
+  background: color-mix(in srgb, rgba(255, 252, 244, 0.42) var(--paper-mix), rgba(255, 255, 255, 0.4));
+}
+
+html[data-site-theme='light'][data-paper='on'][data-water-bg='on'] .main .glass-card:hover {
+  background: color-mix(in srgb, rgba(255, 252, 244, 0.55) var(--paper-mix), rgba(255, 255, 255, 0.52));
+}
+
 /* Fade in animation */
 .fade-in {
   opacity: 0;

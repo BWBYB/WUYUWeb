@@ -58,22 +58,13 @@
   --nav-panel-delay: calc(var(--nav-stretch-duration, 0.5s) * 0.16);
   --nav-panel-fade: calc(var(--nav-stretch-duration, 0.5s) * 0.4);
   --nav-icon-exit: calc(var(--nav-stretch-duration, 0.5s) * 0.28);
-  /* ── 玻璃配方（单一来源）──
-     外壳与导航胶囊共用这一份；分裂后两块玻璃观感与合并态完全一致。
-     拆成 inset / outer 两组，是因为导航胶囊有 overflow:hidden，
-     它自己 ::before 的外投影会被裁掉，需要在元素上单独再画一次。 */
+  /* ── 玻璃配方（实验：单层大投影 + 单描边）──
+     参考 liquid-glass-js：厚度交给背景模糊与边缘，而不是 8 层 inset 高光。
+     外壳与导航胶囊共用这一份；分裂后两块玻璃观感与合并态一致。 */
   --glass-shadow-inset:
-    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
-    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
-    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
-    inset -3px -8px 1px -6px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
-    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
-    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
-    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
-    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-content-color) 18%, transparent);
   --glass-shadow-outer:
-    0 1px 5px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
-    0 6px 16px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
+    0 var(--nav-shadow-y, 18px) var(--nav-shadow-blur, 44px) var(--nav-shadow-spread, 0px) var(--nav-shadow-color, rgba(60, 45, 25, 0.22));
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
@@ -90,7 +81,7 @@
   backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
   box-shadow: var(--glass-shadow-inset), var(--glass-shadow-outer);
   opacity: 1;
-  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
+  transition: opacity calc(var(--nav-stretch-duration, 0.5s) * 0.4) ease;
 }
 
 /* 分裂态：父级胶囊变宽贴两端，玻璃淡出，中间露出背景 */
@@ -153,7 +144,7 @@
   opacity: 0;
   /* 玻璃淡出与主时长一致（--nav-stretch-duration），和文字、尺寸同步过渡，
      避免玻璃「提前消失」显得突兀 */
-  transition: opacity var(--nav-stretch-duration, 0.5s) ease;
+  transition: opacity calc(var(--nav-stretch-duration, 0.5s) * 0.4) ease;
 }
 
 .site-header.is-split .logo-pill {
@@ -271,7 +262,7 @@
   /* 与外壳共用同一份配方；外投影由 .nav-pill 自己画（父级 overflow:hidden 会裁掉这里的外投影） */
   box-shadow: var(--glass-shadow-inset);
   opacity: 0;
-  transition: opacity var(--nav-stretch-duration, 0.5s) ease,
+  transition: opacity calc(var(--nav-stretch-duration, 0.5s) * 0.4) ease,
     border-radius var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 

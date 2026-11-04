@@ -26,6 +26,7 @@ export const BACKGROUND_RANGES = {
   rippleSpread: [0.5, 2],
   rippleDecay: [0.5, 2],
   dimStrength: [0, 1],
+  paperStrength: [0, 1],
   fish: {
     count: [1, 8],
     lengthMin: [10, 32],
@@ -65,6 +66,9 @@ export const DEFAULT_BACKGROUND_SETTINGS = {
   waterLimit: 7,
   presence: 1,
   ripple: true,
+  // 纸色：仅白天模式生效，取样例 bg-sampler 的暖纸配色
+  paper: false,
+  paperStrength: 1,
   rippleSize: 1,
   rippleSpread: 1,
   rippleDecay: 1,
@@ -155,6 +159,7 @@ export function normalizeBackgroundSettings(candidate = {}) {
 
   if (typeof source.ripple === 'boolean') next.ripple = source.ripple
   if (typeof source.readingDim === 'boolean') next.readingDim = source.readingDim
+  if (typeof source.paper === 'boolean') next.paper = source.paper
 
   return next
 }

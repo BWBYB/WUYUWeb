@@ -48,7 +48,7 @@
   min-height: 42px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(222, 217, 207, 0.04);
   color: var(--text);
   font: inherit;
   font-size: 12px;
@@ -114,8 +114,8 @@
   border: 1px solid var(--border);
   border-radius: 18px;
   background:
-    radial-gradient(circle at 50% 0%, rgba(104, 123, 255, 0.15), transparent 60%),
-    rgba(255, 255, 255, 0.025);
+    radial-gradient(circle at 50% 0%, rgba(196, 113, 63, 0.14), transparent 60%),
+    rgba(222, 217, 207, 0.025);
 }
 
 .theme-customizer-preview-label {
@@ -178,13 +178,13 @@
   gap: 12px;
   border: 1px solid transparent;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(222, 217, 207, 0.035);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .theme-customizer-control:hover {
   border-color: var(--border);
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(222, 217, 207, 0.055);
 }
 
 .theme-customizer-control-copy {
@@ -230,14 +230,14 @@
   background: linear-gradient(
     to right,
     var(--accent-1) var(--range-progress, 0%),
-    rgba(255, 255, 255, 0.12) var(--range-progress, 0%)
+    rgba(222, 217, 207, 0.12) var(--range-progress, 0%)
   );
 }
 
 .theme-customizer-range::-moz-range-track {
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(222, 217, 207, 0.12);
 }
 
 .theme-customizer-range::-moz-range-progress {

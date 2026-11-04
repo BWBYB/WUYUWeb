@@ -19,6 +19,10 @@ export const DEFAULT_THEME_SWITCHER_SETTINGS = {
   optionWidth: 68,
   gap: 8,
   capsuleWidth: 84,
+  switcherShadowStrength: 1,
+  switcherShadowY: 14,
+  switcherShadowBlur: 36,
+  switcherShadowSpread: 0,
 }
 
 export const THEME_SWITCHER_PRESETS = {
@@ -71,6 +75,10 @@ const numericRanges = {
   optionWidth: [48, 96],
   gap: [0, 24],
   capsuleWidth: [48, 120],
+  switcherShadowStrength: [0, 1],
+  switcherShadowY: [0, 40],
+  switcherShadowBlur: [0, 80],
+  switcherShadowSpread: [-10, 20],
 }
 
 const colorKeys = [
