@@ -18,6 +18,8 @@ WUYUWeb/reports-tool/            ← 本目录（工具与数据）
 ├── fetch.py              抓取脚本（HF 走 curl 通道；GitHub 走 Scrapling + 正则兜底）
 ├── lint.py               交付自检：解读稿质量 + 报告文件格式（frontmatter / 正文规格）
 ├── render.py             报告渲染（按站点规格产出 YAML frontmatter + Markdown 正文）
+├── prepare.py            **一次给出写日报需要的全部信息 + 可生成 insights 骨架**
+├── verify.py             **一条命令验完全部交付规格（20 项）**
 ├── usage.py              记录本次生成的耗时与 token（写进快照，报告末尾展示）
 ├── run-daily.sh          一键：抓取 → 体检解读稿 → 渲染 → 交付前自检（自动优先用 .venv）
 ├── .venv/                Python 3.11 venv，装 Scrapling + PyYAML（本地资产，不入库）
@@ -67,6 +69,41 @@ FORCE=1 ./run-daily.sh
 ./.venv/bin/python lint.py --all                     # 查所有天的解读稿 + 报告文件
 ./.venv/bin/python render.py
 ```
+
+### 推荐的三步流程（省 token 的关键）
+
+**这是本目录最重要的一条工程约定。** 实测过一次日报用了 **25 次模型调用**，
+其中只有 **6 次是必要动作**（抓取 / 读快照 / 写 insights / 渲染 / 自检 / 呈现），
+另外 19 次全是 agent 在分头查「lint 要哪些字段」「render 要哪些字段」「[EN] 漏在哪」
+「格式对不对」。
+
+**关键认知：每多一次调用，就要重付一次完整上下文。** 25 次调用重付了 25 遍，
+这才是 token 大头（实测 433 万 token，其中 80% 是重复的会话上下文）。
+
+所以把探索全部前置到脚本，agent 只做三步：
+
+```bash
+# 1. 一次拿到全部信息（论文 + 仓库 + 待写清单 + 写作要求），替代原来 5–6 次探索
+./.venv/bin/python prepare.py --date 2026-11-04
+
+# 2. 生成骨架，把每个 ID 空位都摆好；agent 只填中文内容，不会漏 ID
+./.venv/bin/python prepare.py --date 2026-11-04 --template > insights/2026-11-04.json
+
+# ...填空...
+
+# 3. 一条命令验完 20 项规格，一次列清所有问题（不用修一个再跑一次）
+./.venv/bin/python verify.py --date 2026-11-04
+```
+
+**为什么 `--template` 是关键**：骨架里预置了每一个需要 `plain` 的 ID，**包括速览区的**。
+漏写会立刻在 `verify.py` 里暴露，从根上消灭「渲染后才发现 14 个 `[EN]`」这个坑
+（2026-11-04 第一次跑日报就因为漏了速览区，报告里留了 14 处 `[EN]`）。
+
+**`verify.py` 一次性列出全部问题**，而不是让你修一个、再跑一次、再发现下一个——
+后者每次都要重付一遍上下文。
+
+> 定时任务的 prompt 已按这套三步流程重写。看到 prompt 里出现「先读 lint.py 看规则」
+> 这类指令就是退化了，应该改成调用 `prepare.py`。
 
 定时任务：每天 12:00（Asia/Shanghai），工作目录指向本目录（当前 id `schedule-8c333764`；
 历史上换过两次 id，因为运行时管理存储，用 `schedule_create` 重建而非手改文件）。

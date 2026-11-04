@@ -398,6 +398,16 @@ def lint_report_file(day, errors, warns):
         if not re.match(r"^(https?://|mailto:)", target):
             errors.append("出现了本地图片引用 %r，规格禁止（要给读者看图请给原文链接）" % target[:60])
 
+    # 13) [EN] 残留
+    #     速览区的条目若没给 plain，render.py 会退回英文摘要并标 [EN]。这是 2026-11-02
+    #     的真实遗留：那份报告有 8 处 [EN]，而当时的 lint 不查这个 ——
+    #     等于「体检通过，但报告其实是半英文的」。目标是一条都不剩，所以判 ERROR。
+    #     与 verify.py 的同类检查保持一致，别让两个工具给出不同结论。
+    n_en = body.count("[EN]")
+    if n_en:
+        errors.append("正文残留 %d 处 [EN] —— 这些条目没翻成中文；"
+                      "速览区的条目也必须给 plain（见 README「速览区」一节）" % n_en)
+
 
 def main():
     ap = argparse.ArgumentParser()
