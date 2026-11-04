@@ -114,6 +114,23 @@
 4. 文章页宽度由目录列 + `--measure` + 内边距推导，不直接套 `--page-max`。
 5. Player 与 Lab 不参与页面骨架。
 
+### 响应式断点（已落地）
+
+| 名称 | 值 | 用途 |
+| --- | --- | --- |
+| `wide` | 1200px | 宽屏、浮层避让 |
+| `tablet` | 900px | 平板横向、小桌面 |
+| `mobile` | 768px | 移动端主断点 |
+| `small` | 600px | 窄屏 |
+
+规则：
+
+1. 全站桌面优先，只用 `max-width`，禁止 `min-width`。
+2. 同一文件内断点必须从大到小排列。
+3. CSS 的 `@media` 不能写 `var()`；断点值以本表为准，JS 用 `src/lib/breakpoints.js`。
+4. 不允许新增 1024、992、480 这类近似值；由 `check-styles` 拦截。
+5. `≤600` 时导航常驻分裂态，滚动与回顶部都不再合并；行为在 `Header.jsx` 的 `MEDIA.small` 判断里。
+
 ### 间距（已落地）
 
 8 档，4px 基准：
@@ -244,6 +261,7 @@ npm run build
 | 行高 | `src/index.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
 | 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
 | 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
+| 响应式断点 | `src/lib/breakpoints.js`、各 CSS 的 `@media` | 只用 1200 / 900 / 768 / 600；桌面优先、同文件降序 |
 | 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
 | 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |

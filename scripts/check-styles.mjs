@@ -180,6 +180,38 @@ if (updating) {
   process.exit(0)
 }
 
+const MEDIA_WIDTHS = new Set([1200, 900, 768, 600])
+
+function checkMedia(files) {
+  const problems = []
+
+  for (const file of files) {
+    const css = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    let lastWidth = Infinity
+    let line = 1
+    let cursor = 0
+
+    for (const match of css.matchAll(/@media[^{]*?\((max|min)-width:\s*([\d.]+)px\)/g)) {
+      line += css.slice(cursor, match.index).split('\n').length - 1
+      cursor = match.index
+      const kind = match[1]
+      const width = Number(match[2])
+
+      if (kind === 'min') {
+        problems.push(`${file}:${line}  使用了 min-width，全站统一 max-width`)
+      } else if (!MEDIA_WIDTHS.has(width)) {
+        problems.push(`${file}:${line}  断点 ${width}px 不在白名单（1200 / 900 / 768 / 600）`)
+      } else if (width > lastWidth) {
+        problems.push(`${file}:${line}  断点 ${width}px 写在 ${lastWidth}px 之前，应降序`)
+      }
+
+      if (kind === 'max') lastWidth = width
+    }
+  }
+
+  return problems
+}
+
 const baseline = loadBaseline()
 const groups = [
   ['裸 font-size', compare('fontSize', stats.fontSize, baseline.fontSize || {}, samples.fontSize)],
@@ -192,9 +224,11 @@ const groups = [
 ]
 
 let failed = false
+let hasBaselineProblems = false
 for (const [label, problems] of groups) {
   if (!problems.length) continue
   failed = true
+  hasBaselineProblems = true
   console.error(`\n✗ ${label}：${problems.length} 个文件超出 baseline`)
   for (const item of problems) {
     console.error(`  ${item.file}  ${item.count} > ${item.allowed}`)
@@ -202,10 +236,20 @@ for (const [label, problems] of groups) {
   }
 }
 
+const mediaProblems = checkMedia(files)
+if (mediaProblems.length) {
+  failed = true
+  console.error(`\n✗ 响应式断点：${mediaProblems.length} 处不符合规范`)
+  for (const problem of mediaProblems) console.error(`  ${problem}`)
+}
+
 if (failed) {
-  console.error('\n新增样式必须用 token。确认是合理例外后，运行：')
-  console.error('  node scripts/check-styles.mjs --update')
-  console.error('并把 baseline 的 diff 一起提交。')
+  if (hasBaselineProblems) {
+    console.error('\n新增样式必须用 token。确认是合理例外后，运行：')
+    console.error('  node scripts/check-styles.mjs --update')
+    console.error('并把 baseline 的 diff 一起提交。')
+  }
+  console.error('\n断点只允许 1200 / 900 / 768 / 600，且同文件内必须降序。')
   process.exit(1)
 }
 
