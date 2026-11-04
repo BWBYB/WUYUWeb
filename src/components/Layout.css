@@ -11,15 +11,15 @@
   max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 24px 48px;
+  padding: var(--space-5) var(--space-5) var(--space-7);
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .layout {
-    padding-top: 64px;
+    padding-top: var(--space-8);
   }
   .main {
-    padding: 16px 16px 32px;
+    padding: var(--space-4) var(--space-4) var(--space-6);
   }
 }

@@ -1,7 +1,7 @@
 .home {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 /* ═══════════════════════════════════════
@@ -28,7 +28,7 @@ html[data-site-theme="light"] .home .hero-section {
   bottom: 24px;
   z-index: 1;
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
   max-width: 280px;
   animation: hero-label-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -44,7 +44,7 @@ html[data-site-theme="light"] .home .hero-section {
 .hero-label__name {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .hero-label__dot {
@@ -75,7 +75,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .hero-label__link {
-  margin-left: 12px;
+  margin-left: var(--space-3);
   color: inherit;
   font-family: var(--mono);
   font-size: var(--fs-micro);
@@ -106,7 +106,7 @@ html[data-site-theme="light"] .home .hero-section {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: var(--space-2);
   width: 40px;
   height: 56px;
   padding: 0;
@@ -175,7 +175,7 @@ html[data-site-theme="light"] .home .hero-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto;
-  gap: 20px;
+  gap: var(--space-5);
   scroll-margin-top: 96px;
 }
 
@@ -194,14 +194,14 @@ html[data-site-theme="light"] .home .hero-section {
 
 /* Glass Card Base */
 .bento-card {
-  padding: 28px;
+  padding: var(--space-6);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .card-title {
@@ -230,7 +230,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-post-item {
-  padding: 16px 0;
+  padding: var(--space-4) 0;
   border-bottom: 1px solid var(--border);
   text-decoration: none;
   transition: opacity 0.2s;
@@ -252,15 +252,15 @@ html[data-site-theme="light"] .home .hero-section {
 .card-post-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .card-post-category {
   font-size: var(--fs-micro);
   color: var(--accent-2);
   background: rgba(139, 92, 246, 0.1);
-  padding: 2px 8px;
+  padding: var(--space-1) var(--space-2);
   border-radius: 10px;
 }
 
@@ -280,20 +280,20 @@ html[data-site-theme="light"] .home .hero-section {
 /* Small Card */
 .card-icon {
   font-size: 24px;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .card-small-title {
   font-size: var(--fs-ui);
   font-weight: 500;
   color: var(--text-h);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
 }
 
 .card-small-text {
   font-size: var(--fs-ui);
   color: var(--text);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
 }
 
 /* Progress Bar */
@@ -302,7 +302,7 @@ html[data-site-theme="light"] .home .hero-section {
   background: var(--border);
   border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-2);
 }
 
 .progress-fill {
@@ -321,13 +321,13 @@ html[data-site-theme="light"] .home .hero-section {
 .tech-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .tech-pill {
   font-size: var(--fs-micro);
-  padding: 4px 10px;
+  padding: var(--space-1) var(--space-3);
   border-radius: 12px;
   background: var(--bg-card-hover);
   color: var(--text);
@@ -337,7 +337,7 @@ html[data-site-theme="light"] .home .hero-section {
 /* Quote Card */
 .bento-wide {
   text-align: center;
-  padding: 40px 28px;
+  padding: var(--space-7) var(--space-6);
 }
 
 .bento-quote {
@@ -345,7 +345,7 @@ html[data-site-theme="light"] .home .hero-section {
   font-size: var(--fs-heading-sm);
   color: var(--text-h);
   line-height: 1.6;
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
   font-style: italic;
 }
 

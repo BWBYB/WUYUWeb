@@ -1,16 +1,16 @@
 .settings-page {
   max-width: 980px;
   margin: 0 auto;
-  padding: 24px 0 48px;
+  padding: var(--space-5) 0 var(--space-7);
 }
 
 .settings-page-header {
-  margin-bottom: 28px;
+  margin-bottom: var(--space-6);
 }
 
 .settings-page-kicker {
   display: inline-block;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
   color: rgba(180, 195, 255, 0.68);
   font-size: var(--fs-micro);
   font-weight: 600;
@@ -27,7 +27,7 @@
 
 .settings-page-intro {
   max-width: 480px;
-  margin: 12px 0 0;
+  margin: var(--space-3) 0 0;
   color: var(--text);
   font-size: var(--fs-ui);
   line-height: 1.7;
@@ -36,9 +36,9 @@
 .settings-page-back {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 24px;
-  padding: 10px 14px;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text);
@@ -49,7 +49,7 @@
 
 /* 两个设置模块之间的间距 */
 .settings-page .glass-card + .glass-card {
-  margin-top: 20px;
+  margin-top: var(--space-5);
 }
 
 .settings-page-back:hover,
@@ -66,7 +66,7 @@
 
 @media (max-width: 768px) {
   .settings-page {
-    padding-top: 12px;
+    padding-top: var(--space-3);
   }
 
   .settings-page-title {

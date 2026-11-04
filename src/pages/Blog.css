@@ -1,23 +1,23 @@
 .blog-page {
-  padding-top: 16px;
+  padding-top: var(--space-4);
 }
 
 .blog-header {
-  margin-bottom: 36px;
+  margin-bottom: var(--space-7);
 }
 
 .blog-heading-row {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 .blog-title {
   font-size: var(--fs-display);
   font-weight: 600;
   color: var(--text-h);
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-2);
   line-height: var(--lh-tight);
   letter-spacing: 0;
 }
@@ -43,14 +43,14 @@
 /* Category Filter */
 .category-filter {
   display: flex;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
 .category-btn {
   font-size: var(--fs-ui);
-  padding: 6px 16px;
+  padding: var(--space-2) var(--space-4);
   border-radius: 20px;
   border: 1px solid var(--border);
   background: transparent;
@@ -76,25 +76,25 @@
 .blog-post-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .blog-post-card {
-  padding: 28px;
+  padding: var(--space-6);
 }
 
 .blog-post-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .blog-post-category {
   font-size: var(--fs-micro);
   color: var(--accent-2);
   background: rgba(139, 92, 246, 0.1);
-  padding: 2px 8px;
+  padding: var(--space-1) var(--space-2);
   border-radius: 10px;
 }
 
@@ -112,7 +112,7 @@
   font-size: var(--fs-heading-sm);
   font-weight: 500;
   color: var(--text-h);
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-3);
   line-height: var(--lh-snug);
   transition: color 0.2s;
 }
@@ -125,7 +125,7 @@
   font-size: var(--fs-ui);
   color: var(--text);
   line-height: var(--lh-body);
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-4);
 }
 
 .read-more {
@@ -137,8 +137,8 @@
 .blog-post-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
   color: var(--text-muted);
   font-size: var(--fs-micro);
 }
@@ -146,7 +146,7 @@
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 48px 24px;
+  padding: var(--space-7) var(--space-5);
   color: var(--text-muted);
 }
 
@@ -154,14 +154,14 @@
   .blog-heading-row {
     align-items: flex-start;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-3);
   }
 
   .blog-title {
     font-size: var(--fs-display);
   }
   .blog-post-card {
-    padding: 20px;
+    padding: var(--space-5);
   }
   .blog-post-title {
     font-size: var(--fs-body);
