@@ -1,15 +1,38 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
 import { easingFromControls, scaledDuration } from './ui/nav-settings'
+import { MEDIA } from '../lib/breakpoints'
 import NavigationSwitcher from './ui/NavigationSwitcher'
 import NavSettingsPanel from './NavSettingsPanel'
 import './Header.css'
+
+// ≤600 时导航常驻分裂态，不随滚动合并。
+function subscribeCompact(callback) {
+  if (typeof window === 'undefined' || !window.matchMedia) return () => {}
+  const media = window.matchMedia(MEDIA.small)
+  media.addEventListener('change', callback)
+  return () => media.removeEventListener('change', callback)
+}
+
+function getCompactSnapshot() {
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+  return window.matchMedia(MEDIA.small).matches
+}
+
+function getCompactServerSnapshot() {
+  return false
+}
 
 export default function Header({ paper = false }) {
   const location = useLocation()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const { navSettings } = useNavSettings()
+  const isCompactViewport = useSyncExternalStore(
+    subscribeCompact,
+    getCompactSnapshot,
+    getCompactServerSnapshot,
+  )
   const [isSplit, setIsSplit] = useState(false)
   // 合并态点 ⚙：先强制分裂，再开面板。滚动判定之外的一个临时分裂态。
   const [isForcedSplit, setIsForcedSplit] = useState(false)
@@ -21,7 +44,8 @@ export default function Header({ paper = false }) {
   // 滚动回调里要读「面板是否开着」，但 effect 的闭包拿不到最新 state，用 ref 同步
   const isSettingsOpenRef = useRef(false)
 
-  const splitActive = isSplit || isForcedSplit
+  // 小屏常驻分裂：滚动、回顶部都不再触发合并
+  const splitActive = isCompactViewport || isSplit || isForcedSplit
   // 面板高度收起需要一整个分裂时长；等它收完再合并宽度，否则会边收边缩
   const panelCloseMergeMs = Math.max(
     220,

@@ -715,8 +715,31 @@
   transition: opacity var(--nav-stretch-duration, 0.5s) ease !important;
 }
 
+/* ── 平板：压缩导航密度，保留文字 ─────────── */
+@media (max-width: 900px) {
+  .site-header .nav-pill > .switcher--navigation {
+    --switcher-option-width: 72px !important;
+    --switcher-gap: 6px !important;
+    --switcher-capsule-width: 84px !important;
+  }
+
+  .site-header .nav-pill > .switcher--navigation .switcher__option {
+    padding: 0 4px;
+    gap: 3px;
+  }
+
+  .site-header .nav-pill > .switcher--navigation .navigation-option-label {
+    max-width: 44px;
+    font-size: var(--fs-micro);
+  }
+
+  .site-header .nav-pill > .switcher--navigation::after {
+    left: 6px !important;
+  }
+}
+
 /* ── 移动端 ─────────────────────────────── */
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .site-header {
     width: calc(90vw - 34px);
     gap: 8px;
@@ -731,6 +754,14 @@
     /* 移动端字号缩小，WUYU 实际宽度变小，但宽度由单字符串方案的
        width 明确值控制，这里只缩字号、不动 width/letter-spacing 结构 */
     font-size: var(--fs-micro);
+  }
+}
+
+/* ── 窄屏：常驻分裂，只收紧外壳 ─────────── */
+@media (max-width: 600px) {
+  .site-header {
+    gap: 6px;
+    padding: 0 4px;
   }
 }
 

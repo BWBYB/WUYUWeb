@@ -1,6 +1,8 @@
 // 背景层设置：字符水体 + 锦鲤 / 极光 / 无。
 // 存储键沿用 my-blog-* 约定，读取时一律走 normalize，避免旧版本字段缺省。
 
+import { MEDIA } from '../../lib/breakpoints'
+
 export const BACKGROUND_MODES = ['ascii', 'aurora', 'none']
 export const BACKGROUND_BRUSHES = ['gradient', 'block']
 export const WAVE_MODES = ['drift', 'swell', 'cross', 'rings', 'still']
@@ -188,7 +190,7 @@ export function readInitialBackgroundSettings() {
     return base
   }
 
-  if (window.matchMedia && window.matchMedia('(max-width: 720px)').matches) {
+  if (window.matchMedia && window.matchMedia(MEDIA.mobile).matches) {
     return { ...base, mode: 'none' }
   }
 

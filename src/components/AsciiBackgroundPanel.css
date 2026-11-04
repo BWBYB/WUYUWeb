@@ -254,7 +254,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .bgp {
     right: 12px;
     bottom: 12px;

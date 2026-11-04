@@ -312,7 +312,7 @@
   font-size: var(--fs-micro);
 }
 
-@media (max-width: 880px) {
+@media (max-width: 900px) {
   .theme-customizer-heading {
     flex-direction: column;
   }
@@ -326,7 +326,7 @@
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .theme-customizer {
     padding: var(--space-5);
   }

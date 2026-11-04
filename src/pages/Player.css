@@ -1256,7 +1256,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .cover-cassette-body {
     width: 140px;
     height: 90px;
