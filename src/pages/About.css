@@ -1,15 +1,19 @@
 .about-page {
-  padding-top: var(--space-4);
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-top: var(--page-top);
 }
 
 .about-header {
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--page-header-gap);
 }
 
 .about-title {
   font-size: var(--fs-display);
   font-weight: 600;
   color: var(--text-h);
+  line-height: var(--lh-heading);
   margin: 0;
   letter-spacing: 0;
 }

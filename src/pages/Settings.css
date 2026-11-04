@@ -1,11 +1,12 @@
 .settings-page {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: var(--space-5) 0 var(--space-7);
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding: var(--page-top) 0 var(--space-7);
 }
 
 .settings-page-header {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--page-header-gap);
 }
 
 .settings-page-kicker {
@@ -22,15 +23,16 @@
   color: var(--text-h);
   font-size: var(--fs-display);
   font-weight: 600;
+  line-height: var(--lh-heading);
   letter-spacing: 0;
 }
 
 .settings-page-intro {
-  max-width: 480px;
+  max-width: var(--measure);
   margin: var(--space-3) 0 0;
   color: var(--text);
-  font-size: var(--fs-ui);
-  line-height: 1.7;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 .settings-page-back {

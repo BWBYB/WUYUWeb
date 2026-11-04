@@ -1,5 +1,5 @@
 .post-page {
-  padding-top: var(--space-4);
+  padding-top: var(--page-top);
   /* 目录列 190 + 列间距 32 + 正文栏宽 + 卡片左右内边距 */
   max-width: calc(190px + var(--space-6) + var(--measure) + 2 * var(--space-7));
   margin: 0 auto;

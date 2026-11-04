@@ -1,12 +1,13 @@
 .archive-page {
-  padding-top: var(--space-4);
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: var(--page-compact);
+  margin-inline: auto;
+  padding-top: var(--page-top);
 }
 
-.archive-header { margin-bottom: var(--space-7); }
-.archive-title { margin: 0 0 var(--space-2); color: var(--text-h); font-size: var(--fs-display); }
-.archive-desc { margin: 0; color: var(--text); }
+.archive-header { margin-bottom: var(--page-header-gap); }
+.archive-title { margin: 0 0 var(--space-2); color: var(--text-h); font-size: var(--fs-display); line-height: var(--lh-heading); }
+.archive-desc { max-width: var(--measure); margin: 0; color: var(--text); font-size: var(--fs-body); line-height: var(--lh-body); }
 .archive-groups { display: grid; gap: var(--space-6); }
 .archive-group h2 { margin: 0 0 var(--space-3); color: var(--text-h); font-size: var(--fs-heading-sm); font-weight: 500; }
 .archive-list { display: grid; gap: var(--space-2); }

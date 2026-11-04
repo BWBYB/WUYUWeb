@@ -1,7 +1,8 @@
 .timeline-page {
-  max-width: 820px;
-  margin: 0 auto;
-  padding-top: var(--space-4);
+  width: 100%;
+  max-width: var(--page-compact);
+  margin-inline: auto;
+  padding-top: var(--page-top);
 }
 
 .timeline-header {
@@ -9,7 +10,7 @@
   align-items: end;
   justify-content: space-between;
   gap: var(--space-5);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--page-header-gap);
 }
 
 .timeline-eyebrow {
@@ -24,11 +25,15 @@
   color: var(--text-h);
   font-size: var(--fs-display);
   font-weight: 600;
+  line-height: var(--lh-heading);
 }
 
 .timeline-desc {
+  max-width: var(--measure);
   margin: 0;
   color: var(--text);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 .timeline-back-link {

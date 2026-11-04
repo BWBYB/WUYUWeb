@@ -1,9 +1,12 @@
 .blog-page {
-  padding-top: var(--space-4);
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-top: var(--page-top);
 }
 
 .blog-header {
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--page-header-gap);
 }
 
 .blog-heading-row {
@@ -18,11 +21,12 @@
   font-weight: 600;
   color: var(--text-h);
   margin: 0 0 var(--space-2);
-  line-height: var(--lh-tight);
+  line-height: var(--lh-heading);
   letter-spacing: 0;
 }
 
 .blog-desc {
+  max-width: var(--measure);
   font-size: var(--fs-body);
   color: var(--text);
   line-height: var(--lh-body);
