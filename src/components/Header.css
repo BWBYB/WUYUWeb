@@ -13,17 +13,11 @@
      4. logo WUYU → 圆形 W；导航 图标+标签 → 纯图标
    ═══════════════════════════════════════ */
 
-/* 注册 --logo-width / --mask-fade 为可插值长度，让 width 与 mask 渐变带随它平滑过渡 */
+/* 注册 --logo-width 为可插值长度，让 width 与文字裁切平滑过渡 */
 @property --logo-width {
   syntax: '<length>';
   inherits: false;
   initial-value: 65px;
-}
-
-@property --mask-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 8px;
 }
 
 /* 合并态：只有父级 .site-header 是唯一的胶囊（带玻璃）。
@@ -185,17 +179,10 @@
      分裂时只露 W（15px），合并时露完整 WUYU（57px）。
      不再拆 W/UYU 两个 span —— 那样在 flex 里父容器会随内容瞬跳重排，
      打断 max-width 抽屉过渡，导致「突变」。 */
-  width: var(--logo-width, 65px); /* 合并态 = 文字宽 57px + 8px 软边余量，让 mask 渐变带落在文字外 */
+  width: var(--logo-width, 65px); /* 合并态 = 文字宽 57px + 8px 余量 */
   --logo-width: 65px; /* 基础态（合并态）宽度，供 @property 过渡 */
-  --mask-fade: 8px; /* 合并态渐变带 8px，落在文字(57px)外的 57~65px 空白区，Y 清晰 */
+  padding-inline: 1px;
   overflow: hidden;
-  /* 软裁切（交界处渐变带）：
-     渐变带 = [--logo-width - --mask-fade, --logo-width]，透明起点随 --logo-width 平滑左移：
-     - 合并态 --logo-width=65px/--mask-fade=8px：渐变带 57~65px（文字外），Y 完整清晰
-     - 过渡中 --logo-width 65→15、--mask-fade 8→2：UYU 交界处持续柔和淡出
-     - 分裂态 --logo-width=15px/--mask-fade=2px：渐变带 13~15px（仅 W 右端 2px 轻微淡，基本清晰） */
-  -webkit-mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
-  mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
   white-space: nowrap;
   color: var(--nav-content-color);
   font-size: var(--fs-body);
@@ -204,7 +191,6 @@
   text-decoration: none;
   transition: color .2s ease, transform .2s ease,
     --logo-width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
-    --mask-fade var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     letter-spacing var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
@@ -232,12 +218,10 @@
   border-radius: var(--radius-sm);
 }
 
-/* 分裂态：宽度收到 W 单字（15px），字距归零（单字无字距），
-   UYU 被 overflow:hidden 从右往左裁掉。
-   --mask-fade 收到 2px（渐变带很窄，仅轻微柔化 W 右端，不模糊 W 本体） */
+/* 分裂态：宽度留出 W 的右端余量，避免硬裁切掉最后一个笔画；
+   UYU 仍被 overflow:hidden 从右往左裁掉 */
 .site-header.is-split .site-header-logo {
-  --logo-width: 15px; /* 实测 W=14.91px（无字距） */
-  --mask-fade: 2px;
+  --logo-width: 18px; /* W 约 15px + 左右各 1px 余量 */
   letter-spacing: 0;
 }
 
