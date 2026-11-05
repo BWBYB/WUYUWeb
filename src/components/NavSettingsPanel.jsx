@@ -102,10 +102,10 @@ export default function NavSettingsPanel({ open, onClose }) {
       </div>
 
       <div className="nav-settings-footer">
-        <button type="button" className="nav-settings-reset" onClick={resetNavSettings}>
+        <button type="button" className="nav-settings-reset btn btn--text btn--sm" onClick={resetNavSettings}>
           恢复默认
         </button>
-        <Link to="/settings" className="nav-settings-detail" onClick={onClose}>
+        <Link to="/settings" className="nav-settings-detail btn btn--text btn--sm" onClick={onClose}>
           详细设置 <span aria-hidden="true">→</span>
         </Link>
       </div>

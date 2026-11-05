@@ -403,6 +403,10 @@
   gap: 0;
   box-sizing: border-box;
   padding: 48px 12px 12px; /* 顶部留白给右上角锚定的 ⚙ */
+  /* 密集面板：控件固定 36，不跟随移动端 44；焦点圈跟导航高亮 */
+  --control-h: 36px;
+  --control-h-sm: 36px;
+  --focus-ring: var(--nav-action-color);
   /* 面板自带的极淡底色：浅色主题下玻璃几乎看不见，不加这层小窗口会和页面糊成一片。
      用内容色的低透明度叠加，深浅两个主题都朝「与正文相反」的方向偏一点。 */
   background: color-mix(in srgb, var(--nav-content-color) 6%, transparent);
@@ -437,7 +441,9 @@
 .nav-settings-rows {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-2);
+  /* 主题行离右上角 ⚙ 再让出 8px，行间距保持不变 */
+  padding-top: var(--space-2);
   min-width: 0;
 }
 
@@ -478,8 +484,8 @@
 .nav-setting-segment-btn {
   flex: 1 1 0;
   min-width: 0;
-  height: 26px;
-  padding: 0 4px;
+  height: 32px;
+  padding: 0 var(--space-1);
   border: 0;
   border-radius: var(--radius-pill);
   background: transparent;
@@ -510,7 +516,7 @@
 }
 
 .nav-setting-range::-webkit-slider-runnable-track {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: linear-gradient(
     to right,
@@ -520,9 +526,9 @@
 }
 
 .nav-setting-range::-webkit-slider-thumb {
-  width: 12px;
-  height: 12px;
-  margin-top: -4.5px;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
   appearance: none;
   -webkit-appearance: none;
   border: 0;
@@ -531,20 +537,20 @@
 }
 
 .nav-setting-range::-moz-range-track {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-content-color) 18%, transparent);
 }
 
 .nav-setting-range::-moz-range-progress {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: var(--nav-action-color);
 }
 
 .nav-setting-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border: 0;
   border-radius: var(--radius-circle);
   background: var(--nav-action-color);
@@ -563,7 +569,7 @@
 /* 开关 */
 .nav-setting-switch {
   position: relative;
-  width: 34px;
+  width: 36px;
   height: 20px;
   margin-left: auto;
   padding: 0;
@@ -585,12 +591,12 @@
   width: 16px;
   height: 16px;
   border-radius: var(--radius-circle);
-  background: #fff;
+  background: var(--nav-light-color);
   transition: transform .2s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .nav-setting-switch[aria-checked="true"] .nav-setting-switch-knob {
-  transform: translateX(14px);
+  transform: translateX(16px);
 }
 
 /* 底部操作 */
@@ -605,50 +611,24 @@
   color: var(--nav-content-color);
 }
 
-.nav-settings-reset {
-  padding: 6px 2px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: var(--fs-micro);
-  line-height: 1;
-  white-space: nowrap;
-  opacity: .8;
-  cursor: pointer;
-  transition: opacity .18s ease;
-}
-
-.nav-settings-reset:hover {
-  opacity: 1;
-}
-
-.nav-settings-detail {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--nav-action-color) 10%, transparent);
+/* 面板内的共享按钮：文字色跟导航高亮，不抢主页面 accent */
+.nav-settings-panel .btn {
   color: var(--nav-action-color);
-  font-size: var(--fs-micro);
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background-color .18s ease;
+  opacity: .82;
 }
 
-.nav-settings-detail:hover {
-  background: color-mix(in srgb, var(--nav-action-color) 18%, transparent);
+.nav-settings-panel .btn:hover {
+  background: color-mix(in srgb, var(--nav-action-color) 14%, transparent);
+  color: var(--nav-action-color);
+  opacity: 1;
 }
 
 .nav-setting-segment-btn:focus-visible,
 .nav-setting-switch:focus-visible,
-.nav-settings-reset:focus-visible,
-.nav-settings-detail:focus-visible {
-  outline: 2px solid var(--nav-action-color);
-  outline-offset: 2px;
+.nav-setting-range:focus-visible,
+.nav-settings-panel .btn:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* 面板打开时：4 个导航图标淡出上移隐藏（保留 ⚙） */
