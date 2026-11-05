@@ -192,7 +192,7 @@
 规则：
 
 1. 组件不写裸 `box-shadow`；卡片用 `--shadow-1`，浮层用 `--shadow-2`，导航用 `--shadow-3`。
-2. 玻璃的内部高光（inset）属于材质例外，可以保留；外部投影必须走层级 token。
+2. 玻璃的 8 层 inset 高光属于材质例外，保留在 `Header.css` / `theme-switcher.css`；外投影仍必须走 `--shadow-2/3`。
 3. 设置页「阴影与边框」卡片是唯一入口，导航与主题切换器不再各自提供阴影滑块。
 4. Player、Lab 的物理阴影豁免。
 

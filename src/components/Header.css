@@ -62,11 +62,18 @@
   --nav-panel-delay: calc(var(--nav-stretch-duration, 0.5s) * 0.16);
   --nav-panel-fade: calc(var(--nav-stretch-duration, 0.5s) * 0.4);
   --nav-icon-exit: calc(var(--nav-stretch-duration, 0.5s) * 0.28);
-  /* ── 玻璃配方（实验：单层大投影 + 单描边）──
-     参考 liquid-glass-js：厚度交给背景模糊与边缘，而不是 8 层 inset 高光。
-     外壳与导航胶囊共用这一份；分裂后两块玻璃观感与合并态一致。 */
+  /* ── 玻璃配方 ──
+     与主题切换器同源：8 层 inset 高光 + 2 层外投影。
+     外壳、logo 胶囊、导航胶囊共用这一份，分裂后三块玻璃观感一致。 */
   --glass-shadow-inset:
-    inset 0 0 0 1px color-mix(in srgb, var(--nav-content-color) 18%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent);
   --glass-shadow-outer: var(--shadow-3);
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
