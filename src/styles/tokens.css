@@ -1,0 +1,219 @@
+/* 设计变量唯一来源。
+   只放 CSS 自定义属性，不放组件类、@theme、断点条件或元素级主题补丁。
+   运行时设置（--paper-mix、--shadow-*、--border-strength 等）由 JS 写根元素覆盖这里的基础值。 */
+
+:root {
+  /* ── 语义颜色（深色）──
+     组件只引用语义 token；旧变量在末尾作为迁移期别名。 */
+  --surface-canvas: #0a0b0b;
+  --surface-card: rgba(222, 217, 207, 0.035);
+  --surface-card-hover: rgba(222, 217, 207, 0.065);
+  --surface-inset: rgba(222, 217, 207, 0.06);
+  --surface-glass: rgba(222, 217, 207, 0.045);
+
+  --content-strong: #ded9cf;
+  --content-default: #8f887c;
+  --content-muted: #857d70;
+  --content-inverse: #0a0b0b;
+  --content-on-accent: #0a0b0b;
+
+  /* 边框强度由设置面板写根元素，两套描边各自缩放 */
+  --border-strength: 1;
+  --glass-strength: 1;
+  --border-alpha-subtle: 11%;
+  --border-alpha-strong: 19%;
+  --border-alpha-glass: 11%;
+  --border-subtle: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-subtle) * var(--border-strength)), transparent);
+  --border-strong: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-strong) * var(--border-strength)), transparent);
+  --border-glass: color-mix(in srgb, var(--content-strong) calc(var(--border-alpha-glass) * var(--glass-strength)), transparent);
+
+  /* 阴影三层：同一组几何参数按倍率推导 */
+  --shadow-strength: 1;
+  --shadow-y: 18px;
+  --shadow-blur: 44px;
+  --shadow-spread: 0px;
+  --shadow-rgb: 0 0 0;
+  --shadow-alpha-base: 0.5;
+  --shadow-alpha: calc(var(--shadow-alpha-base) * var(--shadow-strength));
+  --shadow-1:
+    0 calc(var(--shadow-y) * 0.35) calc(var(--shadow-blur) * 0.35) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / calc(var(--shadow-alpha) * 0.45));
+  --shadow-2:
+    0 calc(var(--shadow-y) * 0.7) calc(var(--shadow-blur) * 0.7) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / calc(var(--shadow-alpha) * 0.75));
+  --shadow-3:
+    0 var(--shadow-y) var(--shadow-blur) var(--shadow-spread)
+    rgb(var(--shadow-rgb) / var(--shadow-alpha));
+
+  --accent: #c4713f;
+  --accent-secondary: #a4502a;
+  --accent-tertiary: #d98a5f;
+  --accent-soft: rgba(196, 113, 63, 0.15);
+  --focus-ring: #c4713f;
+  --danger: #f87171;
+
+  --selection-bg: #c4713f;
+  --selection-fg: #0a0b0b;
+
+  /* ── 旧名别名（迁移期，迁完删）── */
+  --bg: var(--surface-canvas);
+  --bg-card: var(--surface-card);
+  --bg-card-hover: var(--surface-card-hover);
+  --code-bg: var(--surface-inset);
+  --glass: var(--surface-glass);
+  --glass-border: var(--border-glass);
+  --text: var(--content-default);
+  --text-h: var(--content-strong);
+  --text-muted: var(--content-muted);
+  --border: var(--border-subtle);
+  --border-hover: var(--border-strong);
+  --accent-1: var(--accent);
+  --accent-2: var(--accent-secondary);
+  --accent-3: var(--accent-tertiary);
+  --gradient-1: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  --gradient-2: linear-gradient(135deg, var(--accent-tertiary), var(--accent));
+
+  /* 纸色强度：0% 暖白，100% 暖纸；由 Layout 按设置写到根元素 */
+  --paper-mix: 0%;
+
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --serif: 'Noto Serif SC', Georgia, serif;
+  --mono: 'SF Mono', 'Fira Code', monospace;
+
+  /* ── 字号阶梯（6 档）──
+     组件与页面只引用这些变量，不再写裸 px。
+     中文正文最小 12px；标题字距 0~+0.01em，禁止负字距。 */
+  --fs-micro: 0.75rem;      /* 12 元信息、标签、面板说明 */
+  --fs-ui: 0.875rem;        /* 14 导航、页脚、次要正文 */
+  --fs-body: 1rem;          /* 16 正文、卡片标题 */
+  --fs-heading-sm: 1.25rem; /* 20 区块标题、文章 h2/h3 */
+  --fs-heading: 1.75rem;    /* 28 大区块标题、移动端页面标题 */
+  --fs-display: 2.25rem;    /* 36 桌面页面标题、文章标题 */
+
+  /* 字重只用加载过的三档；700 会回退到 600，不再声明 */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* 行高 4 档；1 只用于图标/单行控件的几何对齐 */
+  --lh-tight: 1.15;
+  --lh-heading: 1.3;
+  --lh-ui: 1.5;
+  --lh-body: 1.7;
+
+  /* ── 间距阶梯（8 档，4px 基准）──
+     只用于 padding / margin / gap；0、auto、% 与 calc() 不算。 */
+  --space-1: 0.25rem;  /*  4 */
+  --space-2: 0.5rem;   /*  8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.5rem;   /* 24 */
+  --space-6: 2rem;     /* 32 */
+  --space-7: 3rem;     /* 48 */
+  --space-8: 4rem;     /* 64 */
+
+  /* ── 控件与卡片 ── */
+  --control-h: 40px;
+  --control-h-sm: 36px;
+  --control-h-touch: 44px;
+  --control-px: 16px;
+  --control-px-sm: 12px;
+  --control-px-lg: 20px;
+  --control-radius: 12px;
+  --card-pad: 24px;
+  --card-pad-feature: 32px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+
+
+  /* 正文栏宽：35 个汉字（1em ≈ 1 个汉字），30–40 字的中间值 */
+  --measure: 35em;
+
+  /* ── 圆角阶梯 ──
+     常规圆角 3 档；胶囊与正圆是形状，不是设计档位，单独给 token。 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* 图片比例：封面 16:9、卡片 4:3、头像 1:1 */
+  --ratio-wide: 16 / 9;
+  --ratio-card: 4 / 3;
+  --ratio-square: 1 / 1;
+
+  /* ── 页面骨架 ──
+     所有页面共用同一套外框与顶部节奏；文章页另有按栏宽推导的宽度。 */
+  --page-max: 1100px;
+  --page-compact: 820px;
+  --page-top: var(--space-4);
+  --page-header-gap: var(--space-7);
+}
+
+:root[data-site-theme="light"] {
+  /* ── 语义颜色（暖白）── */
+  --surface-canvas: #f8f5ee;
+  --surface-card: rgba(35, 30, 24, 0.045);
+  --surface-card-hover: rgba(35, 30, 24, 0.08);
+  --surface-inset: rgba(35, 30, 24, 0.06);
+  --surface-glass: rgba(255, 253, 248, 0.58);
+
+  --content-strong: #1f1c18;
+  --content-default: #5f5a52;
+  --content-muted: #8a8378;
+  --content-inverse: #f8f5ee;
+  --content-on-accent: #ffffff;
+
+  --border-alpha-subtle: 12%;
+  --border-alpha-strong: 22%;
+  --border-alpha-glass: 12%;
+  --shadow-rgb: 60 45 25;
+  --shadow-alpha-base: 0.16;
+
+  --accent: #a4502a;
+  --accent-secondary: #8c3f22;
+  --accent-tertiary: #c4713f;
+  --accent-soft: rgba(164, 80, 42, 0.12);
+  --focus-ring: #a4502a;
+  --danger: #c93c3c;
+
+  --selection-bg: #a4502a;
+  --selection-fg: #ffffff;
+}
+
+/* 纸色：在暖白与暖纸之间按强度插值；强调色保持赭石，不参与混合。 */
+:root[data-site-theme="light"][data-paper="on"] {
+  --surface-canvas: color-mix(in srgb, #f4f1ea var(--paper-mix), #f8f5ee);
+  --surface-card: color-mix(in srgb, rgba(27, 26, 23, 0.045) var(--paper-mix), rgba(35, 30, 24, 0.045));
+  --surface-card-hover: color-mix(in srgb, rgba(27, 26, 23, 0.075) var(--paper-mix), rgba(35, 30, 24, 0.08));
+  --surface-inset: color-mix(in srgb, rgba(27, 26, 23, 0.06) var(--paper-mix), rgba(35, 30, 24, 0.06));
+  --surface-glass: color-mix(in srgb, rgba(255, 253, 247, 0.55) var(--paper-mix), rgba(255, 253, 248, 0.58));
+
+  --content-strong: color-mix(in srgb, #1b1a17 var(--paper-mix), #1f1c18);
+  --content-default: color-mix(in srgb, #6d675e var(--paper-mix), #5f5a52);
+  --content-muted: color-mix(in srgb, #746c5f var(--paper-mix), #8a8378);
+  --content-inverse: color-mix(in srgb, #f4f1ea var(--paper-mix), #f8f5ee);
+
+  --border-alpha-subtle: 16%;
+  --border-alpha-strong: 26%;
+  --border-alpha-glass: 14%;
+  --shadow-alpha-base: 0.22;
+
+  --danger: color-mix(in srgb, #b3402a var(--paper-mix), #c93c3c);
+}
+
+/* 移动端只调 token，不让页面各自改字号 */
+@media (max-width: 768px) {
+  :root {
+    --fs-heading: 1.5rem;   /* 28 → 24 */
+    --fs-display: 1.75rem;  /* 36 → 28 */
+  }
+}
+
+/* 触控目标：小屏按钮与输入统一抬到 44 */
+@media (max-width: 600px) {
+  :root {
+    --control-h: var(--control-h-touch);
+    --control-h-sm: var(--control-h-touch);
+  }
+}

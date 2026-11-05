@@ -4,7 +4,7 @@
 // 规则：
 //   1. font-size 必须是 var(--fs-*)，裸 px 只有图标/装饰例外（记在 baseline）
 //   2. 中文标题不许负字距（letter-spacing 为负），存量例外记在 baseline
-//   3. 裸 hex 颜色只允许出现在 token 源文件 src/index.css
+//   3. 裸 hex 颜色只允许出现在 token 源文件 src/styles/tokens.css
 //
 // 用法：
 //   node scripts/check-styles.mjs           只检查，超出 baseline 就退出 1
@@ -20,7 +20,7 @@ const SKIP_DIRS = [
   'src/pages/Lab.css',
   'src/components/ThreeHero.css',
 ]
-const COLOR_TOKEN_SOURCE = 'src/index.css'
+const COLOR_TOKEN_SOURCE = 'src/styles/tokens.css'
 
 function walk(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -212,6 +212,7 @@ function checkMedia(files) {
   return problems
 }
 
+
 const baseline = loadBaseline()
 const groups = [
   ['裸 font-size', compare('fontSize', stats.fontSize, baseline.fontSize || {}, samples.fontSize)],
@@ -243,13 +244,16 @@ if (mediaProblems.length) {
   for (const problem of mediaProblems) console.error(`  ${problem}`)
 }
 
+
 if (failed) {
   if (hasBaselineProblems) {
     console.error('\n新增样式必须用 token。确认是合理例外后，运行：')
     console.error('  node scripts/check-styles.mjs --update')
     console.error('并把 baseline 的 diff 一起提交。')
   }
-  console.error('\n断点只允许 1200 / 900 / 768 / 600，且同文件内必须降序。')
+  if (mediaProblems.length) {
+    console.error('\n断点只允许 1200 / 900 / 768 / 600，且同文件内必须降序。')
+  }
   process.exit(1)
 }
 

@@ -10,7 +10,7 @@
 | 哪些文件受约束、哪些豁免 | 一、适用范围与豁免 |
 | 字号、字重、行高 | 二、字号 |
 | 语义颜色与三种模式 | 三、颜色 |
-| 页面骨架、间距、圆角 | 四、页面骨架、间距与圆角 |
+| 页面骨架、断点、间距、圆角 | 四、页面骨架、间距与圆角 |
 | 动效时长与降级 | 五、动效 |
 | 自动检查与 baseline | 六、检查 |
 | 提交前跑什么 | 七、提交前 |
@@ -26,7 +26,7 @@
 | --- | --- |
 | 页面、共享组件、导航、主题切换器 | 完全约束 |
 | `src/pages/Player.css` | 文本受约束；磁带物理标签与图标例外 |
-| `src/index.css` | token 与颜色源文件，允许裸 hex |
+| `src/styles/tokens.css` | token 与颜色源文件，允许裸 hex |
 | `src/pages/Lab.css`、`src/components/lab/`、`ThreeHero.css` | 豁免，保留演示视觉语言 |
 
 豁免不是永久许可证。新增豁免必须写进本文件，并在 PR/提交说明里写原因。
@@ -90,7 +90,7 @@
 
 规则：
 
-1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/index.css`。
+1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/styles/tokens.css`。
 2. 主题差异只通过 `[data-site-theme]`、`[data-paper]`、`--paper-mix` 改变量，组件里禁止 `if (paper)` 分支。
 3. 纸色用 `--paper-mix` 在暖白与暖纸之间插值；强调色整组切换，不参与混合。
 4. 全站不引入蓝、紫、青作为强调色；需要新颜色时先判断它属于六组中的哪一组。
@@ -217,7 +217,7 @@ npm run check:styles
 | 裸圆角 | 新增 px / % 圆角；胶囊与正圆必须用 token |
 | 裸字重 | 新增数字字重即失败 |
 | 裸行高 | 新增无单位 / px 行高即失败（`1` 的图标例外走 baseline） |
-| 裸 hex | `src/index.css` 之外新增颜色即失败 |
+| 裸 hex | `src/styles/tokens.css` 之外新增颜色即失败 |
 
 确认是合理例外时：
 
@@ -254,21 +254,21 @@ npm run build
 
 | 想改什么 | 入口 | 注意 |
 | --- | --- | --- |
-| 全局颜色 / 语义 | `src/index.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
+| 全局颜色 / 语义 | `src/styles/tokens.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
 | 新增一个语义色 | 同上，三种模式都要给值 | 深色、暖白、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
-| 字号 | `src/index.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
-| 字重 | `src/index.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
-| 行高 | `src/index.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
-| 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
-| 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
+| 字号 | `src/styles/tokens.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
+| 字重 | `src/styles/tokens.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
+| 行高 | `src/styles/tokens.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
+| 间距 | `src/styles/tokens.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
+| 页面骨架 / 容器宽度 | `src/styles/tokens.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 响应式断点 | `src/lib/breakpoints.js`、各 CSS 的 `@media` | 只用 1200 / 900 / 768 / 600；桌面优先、同文件降序 |
-| 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
-| 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
-| 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
+| 正文栏宽 | `src/styles/tokens.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
+| 圆角 | `src/styles/tokens.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
+| 图片比例 | `src/styles/tokens.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
 | 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |
 | 按钮 / 表单 | `src/components/ui/Button.jsx`、`Field.jsx`、`src/styles/components.css` | 主/次/文字按钮；控件 40 / 密集 36 / 移动 44 |
-| 卡片内边距 | `src/index.css` 的 `--card-pad*`、`src/styles/effects.css` | 面板 24、内容主卡 32 |
+| 卡片内边距 | `src/styles/tokens.css` 的 `--card-pad*`、`src/styles/effects.css` | 面板 24、内容主卡 32 |
 | 链接 | `src/styles/components.css`、`src/pages/Post.css` | 正文常下划线；操作链接无下划线 |
 | favicon | `public/favicon.svg` | 32 网格、无渐变无滤镜、≤ 2 KB |
 | 动效时长 / 缓动 | `src/components/ui/nav-settings.js`、`src/components/ui/theme-switcher-settings.js`、组件 CSS | 导航时长与缓动走设置；主题过渡 700ms 在 Provider |
@@ -398,7 +398,7 @@ npm run build
 | 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
 | 导航小设置栏 | `src/components/NavSettingsPanel.jsx`、`src/components/Header.css` |
 | 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
-| 卡片内边距 / 圆角 | `src/index.css` 的 `--card-*`、`src/styles/effects.css` |
+| 卡片内边距 / 圆角 | `src/styles/tokens.css` 的 `--card-*`、`src/styles/effects.css` |
 | 链接 | `src/styles/components.css`、`src/pages/Post.css` |
 
 ## 十二、文档分工
