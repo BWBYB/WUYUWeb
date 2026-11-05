@@ -376,11 +376,27 @@ npm run build
 - 键盘焦点统一 `--focus-ring`，2px + offset 2
 - 导航、主题切换器、Player、Lab 为材质/物理例外，不套普通按钮与链接
 
+### 导航小设置栏（紧凑例外）
+
+固定在 280px 高的导航胶囊里，不跟随移动端 44px：
+
+| 项 | 值 |
+| --- | --- |
+| 行高 | 36px，行距 8px |
+| 分段按钮 | 32px 高，胶囊 |
+| 滑块 | 轨道 4px，拇指 14px |
+| 开关 | 36 × 20，拇指 16px |
+| 底部按钮 | `btn--text btn--sm` 36px |
+| 焦点 | 局部 `--focus-ring: var(--nav-action-color)` |
+
+行高固定 36 是为了保证 4 行 + footer 在 280px 内闭合；移动端也不改成 44。底部“详细设置”是文字按钮 + 箭头，不用强调色胶囊。
+
 ### 入口
 
 | 想改什么 | 改哪里 |
 | --- | --- |
 | 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
+| 导航小设置栏 | `src/components/NavSettingsPanel.jsx`、`src/components/Header.css` |
 | 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
 | 卡片内边距 / 圆角 | `src/index.css` 的 `--card-*`、`src/styles/effects.css` |
 | 链接 | `src/styles/components.css`、`src/pages/Post.css` |
