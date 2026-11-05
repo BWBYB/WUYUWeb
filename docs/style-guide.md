@@ -10,7 +10,7 @@
 | 哪些文件受约束、哪些豁免 | 一、适用范围与豁免 |
 | 字号、字重、行高 | 二、字号 |
 | 语义颜色与三种模式 | 三、颜色 |
-| 页面骨架、断点、间距、圆角 | 四、页面骨架、间距与圆角 |
+| 页面骨架、断点、层级、间距、圆角 | 四、页面骨架、间距与圆角 |
 | 动效时长与降级 | 五、动效 |
 | 自动检查与 baseline | 六、检查 |
 | 提交前跑什么 | 七、提交前 |
@@ -132,6 +132,24 @@
 4. 不允许新增 1024、992、480 这类近似值；由 `check-styles` 拦截。
 5. `≤600` 时导航常驻分裂态，滚动与回顶部都不再合并；行为在 `Header.jsx` 的 `MEDIA.small` 判断里。
 
+### 层级（已落地）
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--z-background` | -1 | 画布、玻璃伪元素 |
+| `--z-raised` | 10 | 组件内抬升（预留） |
+| `--z-sticky` | 100 | 顶栏 |
+| `--z-dock` | 1000 | 底部主题切换器 |
+| `--z-dock-panel` | 1100 | 背景设置面板，盖住 dock |
+| `--z-modal` | 1200 | 预留，首个弹窗启用 |
+
+规则：
+
+1. 全局浮层只用 `var(--z-*)`；组件内部相对层级保留小整数（导航 2 / 12 / 16、Player 1 / 10）。
+2. 导航内部使用局部变量 `--nav-z-base` / `--nav-z-panel` / `--nav-z-fieldset`，不进入全局阶梯。
+3. z-index 不能跨 stacking context；弹窗必须 portal 到根层级，否则写 9999 也盖不过 header。
+4. 背景只用负层，内容不用负值；禁止新增 999、9999。
+
 ### 间距（已落地）
 
 8 档，4px 基准：
@@ -217,6 +235,7 @@ npm run check:styles
 | 裸圆角 | 新增 px / % 圆角；胶囊与正圆必须用 token |
 | 裸字重 | 新增数字字重即失败 |
 | 裸行高 | 新增无单位 / px 行高即失败（`1` 的图标例外走 baseline） |
+| 全局 z-index | ≥100 的裸值即失败，必须用 `--z-*` |
 | 裸 hex | `src/styles/tokens.css` 之外新增颜色即失败 |
 
 确认是合理例外时：
@@ -263,6 +282,7 @@ npm run build
 | 间距 | `src/styles/tokens.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
 | 页面骨架 / 容器宽度 | `src/styles/tokens.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 响应式断点 | `src/lib/breakpoints.js`、各 CSS 的 `@media` | 只用 1200 / 900 / 768 / 600；桌面优先、同文件降序 |
+| 全局层级 | `src/styles/tokens.css` 的 `--z-*`、`src/components/Header.css` 的 `--nav-z-*` | 浮层用 token；组件内部小整数保留 |
 | 正文栏宽 | `src/styles/tokens.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
 | 圆角 | `src/styles/tokens.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 图片比例 | `src/styles/tokens.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |

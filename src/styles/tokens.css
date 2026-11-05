@@ -125,6 +125,13 @@
   --focus-width: 2px;
   --focus-offset: 2px;
 
+  /* ── 层级 ── 全局浮层只用这些 token；组件内部小整数另算 */
+  --z-background: -1;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-dock: 1000;
+  --z-dock-panel: 1100;
+  --z-modal: 1200;
 
   /* 正文栏宽：35 个汉字（1em ≈ 1 个汉字），30–40 字的中间值 */
   --measure: 35em;

@@ -71,7 +71,7 @@
   --switcher-capsule-width: 84px;
   --switcher-step: calc(var(--switcher-option-width) + var(--switcher-gap));
   --switcher-trip: calc(var(--switcher-step) * 2);
-  z-index: 1000;
+  z-index: var(--z-dock);
   box-sizing: border-box;
   width: calc(var(--switcher-option-width) * 3 + var(--switcher-gap) * 2 + 24px);
   max-width: calc(100vw - 24px);
@@ -168,7 +168,7 @@
 .switcher__option:has(input:checked) .switcher__icon { scale: 1; }
 
 .switcher::after {
-  z-index: -1;
+  z-index: var(--z-background);
   position: absolute;
   top: 4px;
   left: 4px;
@@ -232,7 +232,7 @@
 }
 
 .switcher__filter {
-  z-index: -1;
+  z-index: var(--z-background);
   position: absolute;
   width: 0;
   height: 0;

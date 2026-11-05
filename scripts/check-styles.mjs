@@ -212,6 +212,26 @@ function checkMedia(files) {
   return problems
 }
 
+function checkZIndex(files) {
+  const problems = []
+
+  for (const file of files) {
+    const css = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    let line = 1
+    let cursor = 0
+
+    for (const match of css.matchAll(/z-index:\s*(-?\d+)/g)) {
+      line += css.slice(cursor, match.index).split('\n').length - 1
+      cursor = match.index
+      const value = Number(match[1])
+      if (Math.abs(value) >= 100) {
+        problems.push(`${file}:${line}  全局 z-index ${value} 必须使用 --z-* token`)
+      }
+    }
+  }
+
+  return problems
+}
 
 const baseline = loadBaseline()
 const groups = [
@@ -244,6 +264,12 @@ if (mediaProblems.length) {
   for (const problem of mediaProblems) console.error(`  ${problem}`)
 }
 
+const zIndexProblems = checkZIndex(files)
+if (zIndexProblems.length) {
+  failed = true
+  console.error(`\n✗ 全局 z-index：${zIndexProblems.length} 处不符合规范`)
+  for (const problem of zIndexProblems) console.error(`  ${problem}`)
+}
 
 if (failed) {
   if (hasBaselineProblems) {
@@ -253,6 +279,9 @@ if (failed) {
   }
   if (mediaProblems.length) {
     console.error('\n断点只允许 1200 / 900 / 768 / 600，且同文件内必须降序。')
+  }
+  if (zIndexProblems.length) {
+    console.error('\n全局 z-index 只用 --z-background / --z-sticky / --z-dock / --z-dock-panel / --z-modal。')
   }
   process.exit(1)
 }

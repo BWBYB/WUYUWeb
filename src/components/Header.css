@@ -34,7 +34,11 @@
   position: fixed;
   top: 16px;
   left: 50%;
-  z-index: 100;
+  z-index: var(--z-sticky);
+  /* header 内部相对层级：不进入全局阶梯 */
+  --nav-z-base: 2;
+  --nav-z-panel: 12;
+  --nav-z-fieldset: 16;
   display: flex;
   /* 不写死 height（对齐 Legacy header-wrapper）：高度由最高子元素撑开。
      常态 = nav-pill 的 fieldset 高度（--nav-height 63px）；
@@ -72,7 +76,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: var(--radius-pill);
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -101,7 +105,7 @@
 /* ── 左 logo 胶囊 ─────────────────────────── */
 .logo-pill {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +136,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: inherit;
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -163,7 +167,7 @@
 
 .site-header-logo {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: inline-flex;
   height: 40px;
   align-items: center;
@@ -233,7 +237,7 @@
 /* ── 右导航胶囊 ─────────────────────────── */
 .nav-pill {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: flex;
   align-items: center;
   margin-left: auto;
@@ -252,7 +256,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: inherit;
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -270,7 +274,7 @@
 }
 
 .site-header > .nav-pill > .switcher--navigation {
-  z-index: 2;
+  z-index: var(--nav-z-base);
   align-self: center;
   flex: 0 1 auto;
 }
@@ -396,7 +400,7 @@
 .nav-settings-panel {
   position: absolute;
   inset: 0;
-  z-index: 12; /* 对齐 Legacy：面板盖在玻璃(::before z:-1)与 fieldset(z:2) 之上 */
+  z-index: var(--nav-z-panel); /* 面板盖在玻璃与 fieldset 之上 */
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -650,7 +654,7 @@
    一条覆盖全部属性的过渡，不锁住 width/height 就会抖。 */
 .nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link {
   position: relative !important;
-  z-index: 16;
+  z-index: var(--nav-z-fieldset);
   border-radius: var(--radius-circle);
   background-color: transparent;
   box-shadow: none;
@@ -661,7 +665,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: -1; /* 让图标压在圆上 */
+  z-index: var(--z-background); /* 让图标压在圆上 */
   width: 30px;
   height: 30px;
   translate: -50% -50%;
