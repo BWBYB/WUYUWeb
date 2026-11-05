@@ -7,6 +7,7 @@ import './navigation-switcher.css'
 const navigationOptions = [
   { path: '/', label: '首页', icon: 'home' },
   { path: '/blog', label: '文章', icon: 'pencil' },
+  { path: '/about', label: '关于', icon: 'info' },
 ]
 
 const moreOption = { label: '更多', icon: 'more' }

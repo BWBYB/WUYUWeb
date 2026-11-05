@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Blog from './pages/Blog'
 import Post from './pages/Post'
 import About from './pages/About'
+import Resume from './pages/Resume'
 import Settings from './pages/Settings'
 import Archive from './pages/Archive'
 import Timeline from './pages/Timeline'
@@ -34,6 +35,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Post />} />
           <Route path="/post/:id" element={<LegacyPostRedirect />} />
+          <Route path="/resume" element={<Resume />} />
           <Route path="/archive" element={<Archive />} />
           <Route path="/timeline" element={<Timeline />} />
           {UpdatesEditor && (

@@ -84,8 +84,8 @@ export default function Header({ paper = false }) {
     isMoreOpenRef.current = isMoreOpen
   }, [isMoreOpen])
 
-  // 「关于」页（点 logo 进入）：logo 文字亮起。
-  const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
+  // 「简历」页（点 logo 进入）：logo 文字亮起。
+  const isResumePage = location.pathname === '/resume' || location.pathname.startsWith('/resume/')
   // 「设置」页（点 ⚙ 进入）：只让导航选中胶囊淡出，logo 不变。
   const isSettingsPage = location.pathname === '/settings' || location.pathname.startsWith('/settings/')
   // 探索 / CD机 收进「更多」后不再有独立导航项，进入这两页时隐藏选中胶囊
@@ -313,13 +313,13 @@ export default function Header({ paper = false }) {
     <header
       className={splitActive ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
-      data-on-about={isAboutPage ? 'true' : undefined}
-      data-hide-capsule={isAboutPage || isSettingsPage || isMorePage ? 'true' : undefined}
+      data-on-resume={isResumePage ? 'true' : undefined}
+      data-hide-capsule={isResumePage || isSettingsPage || isMorePage ? 'true' : undefined}
       data-settings-open={isSettingsOpen ? 'true' : undefined}
       data-more-open={isMoreOpen ? 'true' : undefined}
     >
       <div className="logo-pill">
-        <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">
+        <Link to="/resume" className="site-header-logo" aria-label="WUYU 简历">
           W<span className="logo-rest">UYU</span>
         </Link>
       </div>

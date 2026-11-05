@@ -281,7 +281,7 @@
   --switcher-option-width: 76px !important;
   --switcher-gap: 8px !important;
   --switcher-capsule-width: 92px !important;
-  width: calc(var(--switcher-option-width) * 4 + var(--switcher-gap) * 3 + 24px) !important;
+  width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
@@ -306,7 +306,7 @@
 /* 仅「关于」页：logo 文字用 action 色高亮（合并态 WUYU 亮 / 分裂态 W 亮）。
    分裂态 logo 圆形胶囊玻璃保留（分裂态下 logo 需要玻璃撑起液态外观，
    淡出会导致 W 裸露无边框），只靠文字变色提示。 */
-.site-header[data-on-about="true"] .site-header-logo {
+.site-header[data-on-resume="true"] .site-header-logo {
   color: var(--nav-action-color);
 }
 

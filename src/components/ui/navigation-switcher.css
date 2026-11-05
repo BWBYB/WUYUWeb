@@ -8,7 +8,7 @@
   position: relative !important;
   inset: auto !important;
   z-index: 2;
-  width: calc(var(--switcher-option-width) * 4 + var(--switcher-gap) * 3 + 24px) !important;
+  width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
   max-width: 100%;
   height: var(--switcher-height);
   margin: 0 !important;
