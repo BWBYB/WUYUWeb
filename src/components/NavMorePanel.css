@@ -1,0 +1,93 @@
+/* 「更多」小面板：与设置面板同一套展开方式，内容换成两个入口 */
+.nav-more-panel {
+  --focus-ring: var(--nav-action-color);
+  position: absolute;
+  inset: 0;
+  z-index: var(--nav-z-panel);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  padding: var(--space-7) var(--space-3) var(--space-3);
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--nav-content-color) 7%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.94);
+  transform-origin: top right;
+  transition:
+    opacity var(--nav-panel-fade) ease,
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear var(--nav-stretch-duration, 0.5s);
+}
+
+.nav-pill[data-more-open="true"] .nav-more-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity var(--nav-panel-fade) ease var(--nav-panel-delay),
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear 0s;
+}
+
+/* 面板打开时让出下方图标，只保留「更多」按钮用于再次点击关闭 */
+.nav-pill[data-more-open="true"] .switcher--navigation .switcher__option:not(.navigation-more-link),
+.nav-pill[data-more-open="true"] .switcher--navigation::after {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.nav-pill[data-more-open="true"] .switcher--navigation .navigation-more-link {
+  position: relative;
+  z-index: var(--nav-z-fieldset);
+}
+
+.nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--nav-content-color);
+  text-decoration: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.nav-more-item:hover,
+.nav-more-item.is-active {
+  border-color: color-mix(in srgb, var(--nav-action-color) 22%, transparent);
+  background: color-mix(in srgb, var(--nav-action-color) 12%, transparent);
+  color: var(--nav-action-color);
+}
+
+.nav-more-icon {
+  flex: 0 0 20px;
+}
+
+.nav-more-copy {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.nav-more-label {
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+}
+
+.nav-more-desc {
+  overflow: hidden;
+  color: var(--nav-content-color);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  opacity: 0.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -411,12 +411,20 @@ npm run build
 
 行高固定 36 是为了保证 4 行 + footer 在 280px 内闭合；移动端也不改成 44。底部“详细设置”是文字按钮 + 箭头，不用强调色胶囊。
 
+### 导航更多面板
+
+- `NavMorePanel` 复用设置面板的展开/关闭节奏，高度 176px
+- 只放「探索 `/lab`」和「CD机 `/player`」两个入口
+- 面板打开时隐藏其余导航图标与选中胶囊，只保留「更多」按钮，点击外部也可关闭
+- `≤600` 常驻分裂时同样可用
+
 ### 入口
 
 | 想改什么 | 改哪里 |
 | --- | --- |
 | 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
 | 导航小设置栏 | `src/components/NavSettingsPanel.jsx`、`src/components/Header.css` |
+| 导航更多面板 | `src/components/NavMorePanel.jsx`、`Header.jsx` |
 | 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
 | 卡片内边距 / 圆角 | `src/styles/tokens.css` 的 `--card-*`、`src/styles/effects.css` |
 | 链接 | `src/styles/components.css`、`src/pages/Post.css` |

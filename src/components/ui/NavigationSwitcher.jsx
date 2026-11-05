@@ -7,10 +7,9 @@ import './navigation-switcher.css'
 const navigationOptions = [
   { path: '/', label: '首页', icon: 'home' },
   { path: '/blog', label: '文章', icon: 'pencil' },
-  { path: '/lab', label: '探索', icon: 'compass' },
-  { path: '/player', label: 'CD机', icon: 'disc' },
 ]
 
+const moreOption = { label: '更多', icon: 'more' }
 const settingsOption = { path: '/settings', label: '设置', icon: 'settings' }
 
 function isActivePath(path, pathname) {
@@ -24,7 +23,12 @@ function getRouteIndex(pathname) {
   return navigationOptions.findIndex(option => isActivePath(option.path, pathname))
 }
 
-export default function NavigationSwitcher({ onToggleSettings, paper = false }) {
+export default function NavigationSwitcher({
+  onToggleSettings,
+  onToggleMore,
+  moreOpen = false,
+  paper = false,
+}) {
   const location = useLocation()
   const navigate = useNavigate()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
@@ -151,6 +155,19 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
           <span className="navigation-option-label">{option.label}</span>
         </label>
       ))}
+
+      <button
+        type="button"
+        className="switcher__option navigation-more-link"
+        aria-label={moreOption.label}
+        aria-expanded={moreOpen ? 'true' : 'false'}
+        onClick={() => {
+          if (onToggleMore) onToggleMore()
+        }}
+      >
+        <Icon name={moreOption.icon} size={20} className="navigation-option-icon" />
+        <span className="navigation-option-label">{moreOption.label}</span>
+      </button>
 
       <button
         type="button"

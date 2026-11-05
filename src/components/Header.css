@@ -297,7 +297,7 @@
   --switcher-option-width: 76px !important;
   --switcher-gap: 8px !important;
   --switcher-capsule-width: 92px !important;
-  width: calc(var(--switcher-option-width) * 5 + var(--switcher-gap) * 4 + 24px) !important;
+  width: calc(var(--switcher-option-width) * 4 + var(--switcher-gap) * 3 + 24px) !important;
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)) !important;
 }
 
@@ -396,6 +396,11 @@
 .site-header.is-split .nav-pill[data-settings-open="true"] {
   height: 280px;
   /* 圆角保持 calc(var(--nav-height)/2) 不变，上圆角不动、只向下拉伸 */
+}
+
+/* 更多面板：只放两个入口，高度比设置面板矮 */
+.site-header.is-split .nav-pill[data-more-open="true"] {
+  height: 176px;
 }
 
 /* 打开面板时不再改 fieldset 的定位方式。

@@ -5,6 +5,7 @@ import { easingFromControls, scaledDuration } from './ui/nav-settings'
 import { MEDIA } from '../lib/breakpoints'
 import NavigationSwitcher from './ui/NavigationSwitcher'
 import NavSettingsPanel from './NavSettingsPanel'
+import NavMorePanel from './NavMorePanel'
 import './Header.css'
 
 // ≤600 时导航常驻分裂态，不随滚动合并。
@@ -38,11 +39,14 @@ export default function Header({ paper = false }) {
   const [isForcedSplit, setIsForcedSplit] = useState(false)
   // 设置小窗口（分裂态点 ⚙ 展开，右侧导航条向下拉伸）
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  // 更多小窗口：探索 / CD机 收进这里
+  const [isMoreOpen, setIsMoreOpen] = useState(false)
   const navPillRef = useRef(null)
   const openTimerRef = useRef(null)
   const closeTimerRef = useRef(null)
   // 滚动回调里要读「面板是否开着」，但 effect 的闭包拿不到最新 state，用 ref 同步
   const isSettingsOpenRef = useRef(false)
+  const isMoreOpenRef = useRef(false)
 
   // 小屏常驻分裂：滚动、回顶部都不再触发合并
   const splitActive = isCompactViewport || isSplit || isForcedSplit
@@ -76,10 +80,17 @@ export default function Header({ paper = false }) {
     isSettingsOpenRef.current = isSettingsOpen
   }, [isSettingsOpen])
 
+  useEffect(() => {
+    isMoreOpenRef.current = isMoreOpen
+  }, [isMoreOpen])
+
   // 「关于」页（点 logo 进入）：logo 文字亮起。
   const isAboutPage = location.pathname === '/about' || location.pathname.startsWith('/about/')
   // 「设置」页（点 ⚙ 进入）：只让导航选中胶囊淡出，logo 不变。
   const isSettingsPage = location.pathname === '/settings' || location.pathname.startsWith('/settings/')
+  // 探索 / CD机 收进「更多」后不再有独立导航项，进入这两页时隐藏选中胶囊
+  const isMorePage = location.pathname === '/lab' || location.pathname.startsWith('/lab/') ||
+    location.pathname === '/player' || location.pathname.startsWith('/player/')
 
   useEffect(() => {
     let ticking = false
@@ -122,9 +133,10 @@ export default function Header({ paper = false }) {
         clearOpenTimer()
         clearCloseTimer()
 
-        if (isSettingsOpenRef.current) {
+        if (isSettingsOpenRef.current || isMoreOpenRef.current) {
           clearMergeTimer()
           setIsSettingsOpen(false)
+          setIsMoreOpen(false)
           mergeTimer = window.setTimeout(() => {
             mergeTimer = null
             setIsSplit(false)
@@ -150,9 +162,10 @@ export default function Header({ paper = false }) {
       if (dir !== -1) return
 
       // 向上滑：面板开着就先收起（8px 即响应，遮挡物早收早好），等它淡出后再合并
-      if (isSettingsOpenRef.current) {
+      if (isSettingsOpenRef.current || isMoreOpenRef.current) {
         clearMergeTimer()
         setIsSettingsOpen(false)
+        setIsMoreOpen(false)
         mergeTimer = window.setTimeout(() => {
           mergeTimer = null
           setIsSplit(false)
@@ -185,8 +198,9 @@ export default function Header({ paper = false }) {
 
   // 关闭面板：若分裂是被 ⚙ 强制出来的，等面板收起后再合并，
   // 避免「边收面板边缩胶囊」的抽搐。
-  const closeSettings = useCallback(() => {
+  const closePanels = useCallback(() => {
     setIsSettingsOpen(false)
+    setIsMoreOpen(false)
 
     if (openTimerRef.current !== null) {
       window.clearTimeout(openTimerRef.current)
@@ -209,39 +223,62 @@ export default function Header({ paper = false }) {
 
   // 点面板外部关闭（点击目标不在 nav-pill 内则关闭）
   useEffect(() => {
-    if (!isSettingsOpen) return
+    if (!isSettingsOpen && !isMoreOpen) return
     const onPointerDown = (e) => {
       if (navPillRef.current && !navPillRef.current.contains(e.target)) {
-        closeSettings()
+        closePanels()
       }
     }
     document.addEventListener('pointerdown', onPointerDown)
     return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [isSettingsOpen, closeSettings])
+  }, [isSettingsOpen, isMoreOpen, closePanels])
+
+  const openPanelAfterSplit = (panel) => {
+    clearCloseTimer()
+    setIsForcedSplit(true)
+
+    // 1× 时等 400ms，随动画倍速等比缩放（慢放时不会抢在分裂之前）
+    clearOpenTimer()
+    openTimerRef.current = window.setTimeout(() => {
+      openTimerRef.current = null
+      setIsSettingsOpen(panel === 'settings')
+      setIsMoreOpen(panel === 'more')
+    }, Math.round(400 / navSettings.animationSpeed))
+  }
 
   const toggleSettings = () => {
     // 合并态点 ⚙：先分裂，等宽度动画走完再展开小窗，相当于分裂后再点一次
     if (!splitActive) {
-      clearCloseTimer()
-      setIsForcedSplit(true)
-
-      // 1× 时等 400ms，随动画倍速等比缩放（慢放时不会抢在分裂之前）
-      clearOpenTimer()
-      openTimerRef.current = window.setTimeout(() => {
-        openTimerRef.current = null
-        setIsSettingsOpen(true)
-      }, Math.round(400 / navSettings.animationSpeed))
+      openPanelAfterSplit('settings')
       return
     }
 
     if (isSettingsOpen) {
-      closeSettings()
+      closePanels()
       return
     }
 
     clearOpenTimer()
     clearCloseTimer()
+    setIsMoreOpen(false)
     setIsSettingsOpen(true)
+  }
+
+  const toggleMore = () => {
+    if (!splitActive) {
+      openPanelAfterSplit('more')
+      return
+    }
+
+    if (isMoreOpen) {
+      closePanels()
+      return
+    }
+
+    clearOpenTimer()
+    clearCloseTimer()
+    setIsSettingsOpen(false)
+    setIsMoreOpen(true)
   }
 
   // 深色统一用铜色高亮；浅色纸色用赭石，普通浅色仍交给设置面板
@@ -277,8 +314,9 @@ export default function Header({ paper = false }) {
       className={splitActive ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
       data-on-about={isAboutPage ? 'true' : undefined}
-      data-hide-capsule={isAboutPage || isSettingsPage ? 'true' : undefined}
+      data-hide-capsule={isAboutPage || isSettingsPage || isMorePage ? 'true' : undefined}
       data-settings-open={isSettingsOpen ? 'true' : undefined}
+      data-more-open={isMoreOpen ? 'true' : undefined}
     >
       <div className="logo-pill">
         <Link to="/about" className="site-header-logo" aria-label="WUYU 关于">
@@ -290,14 +328,20 @@ export default function Header({ paper = false }) {
         className="nav-pill"
         ref={navPillRef}
         data-settings-open={isSettingsOpen ? 'true' : undefined}
+        data-more-open={isMoreOpen ? 'true' : undefined}
       >
         <NavigationSwitcher
           onToggleSettings={toggleSettings}
+          onToggleMore={toggleMore}
+          moreOpen={isMoreOpen}
           paper={paper}
         />
 
         {/* 设置小窗口：分裂态点 ⚙ 展开，右侧导航条向下拉伸 */}
-        <NavSettingsPanel open={isSettingsOpen} onClose={closeSettings} />
+        <NavSettingsPanel open={isSettingsOpen} onClose={closePanels} />
+
+        {/* 更多小窗口：探索 / CD机 */}
+        <NavMorePanel open={isMoreOpen} onClose={closePanels} />
       </div>
     </header>
   )
