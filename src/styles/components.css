@@ -1,0 +1,183 @@
+/* 组件基础层：按钮、表单、链接。卡片皮肤仍在 effects.css。 */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-h);
+  padding: 0 var(--control-px);
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
+  font: inherit;
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn--sm {
+  height: var(--control-h-sm);
+  padding: 0 var(--control-px-sm);
+  font-size: var(--fs-micro);
+}
+
+.btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--content-on-accent);
+}
+
+.btn--primary:hover {
+  border-color: var(--accent-secondary);
+  background: var(--accent-secondary);
+}
+
+.btn--primary:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.18);
+}
+
+.btn--secondary {
+  border-color: var(--border-subtle);
+  background: transparent;
+  color: var(--content-default);
+}
+
+.btn--secondary:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-card-hover);
+  color: var(--content-strong);
+}
+
+.btn--secondary:active {
+  background: var(--surface-card);
+}
+
+.btn--text {
+  border-color: transparent;
+  background: transparent;
+  color: var(--accent);
+  padding-inline: var(--space-2);
+}
+
+.btn--text:hover {
+  background: var(--accent-soft);
+  color: var(--accent-secondary);
+}
+
+.btn--text:active {
+  color: var(--accent-secondary);
+  background: var(--accent-soft);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.control {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--control-px-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--control-radius);
+  background: var(--surface-card);
+  color: var(--content-strong);
+  font: inherit;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.control::placeholder {
+  color: var(--content-muted);
+}
+
+.control:hover {
+  border-color: var(--border-strong);
+}
+
+.control:focus {
+  border-color: var(--accent);
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+textarea.control {
+  height: auto;
+  min-height: 96px;
+  padding: var(--space-3);
+  line-height: var(--lh-body);
+  resize: vertical;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.field__label {
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+}
+
+.field__hint,
+.field__error {
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+.field__hint {
+  color: var(--content-muted);
+}
+
+.field__error {
+  color: var(--danger);
+}
+
+.link-inline {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.link-inline:hover {
+  color: var(--accent-secondary);
+  text-decoration-thickness: 2px;
+}
+
+.link-inline:active {
+  color: var(--accent-secondary);
+}
+
+.link-action {
+  color: var(--content-default);
+  text-decoration: none;
+}
+
+.link-action:hover,
+.link-action:active {
+  color: var(--accent);
+}
+
+/* 键盘焦点统一；组件内更高优先级的材质例外可以覆盖 */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

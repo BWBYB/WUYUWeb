@@ -13,7 +13,7 @@
 .theme-customizer-kicker {
   display: inline-block;
   margin-bottom: var(--space-2);
-  color: rgba(180, 195, 255, 0.68);
+  color: var(--accent);
   font-size: var(--fs-micro);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.18em;
@@ -43,8 +43,7 @@
   gap: var(--space-2);
 }
 
-.theme-customizer-preset,
-.theme-customizer-reset {
+.theme-customizer-preset {
   min-height: 42px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -77,30 +76,21 @@
 }
 
 .theme-customizer-preset option {
-  background: #171722;
-  color: #f0f0f5;
+  background: var(--surface-canvas);
+  color: var(--content-strong);
 }
 
-.theme-customizer-reset {
-  padding: 0 var(--space-4);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-}
-
-.theme-customizer-reset:hover,
-.theme-customizer-reset:focus-visible,
 .theme-customizer-preset:focus-within {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
   color: var(--text-h);
 }
 
-.theme-customizer-reset:focus-visible,
 .theme-customizer-preset:focus-within,
 .theme-customizer-color-value:focus-visible,
 .theme-customizer-range:focus-visible {
-  outline: 2px solid rgba(160, 180, 255, 0.85);
-  outline-offset: 3px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .theme-customizer-preview {

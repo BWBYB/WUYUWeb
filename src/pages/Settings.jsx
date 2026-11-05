@@ -26,7 +26,7 @@ export default function Settings() {
 
       <NavCustomizer />
 
-      <Link className="settings-page-back fade-in fade-in-5" to={returnTo}>
+      <Link className="settings-page-back btn btn--secondary fade-in fade-in-5" to={returnTo}>
         <span aria-hidden="true">←</span> 返回
       </Link>
     </div>

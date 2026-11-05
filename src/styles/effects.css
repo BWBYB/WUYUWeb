@@ -63,6 +63,7 @@
 
 /* Glass card */
 .glass-card {
+  padding: var(--card-pad);
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
@@ -72,10 +73,12 @@
   transition: all 0.3s ease;
 }
 
-.glass-card:hover {
+/* 只有整卡可点时才抬升；静态卡片保持稳定 */
+.glass-card.card--interactive:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-hover);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
 }
 
 /* 水层开启时把卡片模糊降到 2px：12px 会把 8px 的字符水纹糊成一片灰，水就透不出来 */

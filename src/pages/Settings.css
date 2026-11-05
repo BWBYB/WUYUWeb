@@ -12,7 +12,7 @@
 .settings-page-kicker {
   display: inline-block;
   margin-bottom: var(--space-3);
-  color: rgba(180, 195, 255, 0.68);
+  color: var(--accent);
   font-size: var(--fs-micro);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.18em;
@@ -36,34 +36,12 @@
 }
 
 .settings-page-back {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
   margin-top: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  color: var(--text);
-  font-size: var(--fs-ui);
-  text-decoration: none;
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
 /* 两个设置模块之间的间距 */
 .settings-page .glass-card + .glass-card {
   margin-top: var(--space-5);
-}
-
-.settings-page-back:hover,
-.settings-page-back:focus-visible {
-  border-color: var(--border-hover);
-  background: var(--bg-card-hover);
-  color: var(--text-h);
-}
-
-.settings-page-back:focus-visible {
-  outline: 2px solid rgba(160, 180, 255, 0.85);
-  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {

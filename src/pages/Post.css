@@ -190,17 +190,6 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: var(--fs-micro);
-}
-
-.code-copy-button:hover {
-  color: var(--text-h);
 }
 
 .post-navigation {
@@ -250,6 +239,22 @@
   color: var(--text);
   font-size: var(--fs-ui);
   line-height: var(--lh-ui);
+}
+
+.post-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.post-content a:hover {
+  color: var(--accent-secondary);
+  text-decoration-thickness: 2px;
+}
+
+.post-content a:active {
+  color: var(--accent-secondary);
 }
 
 .post-content strong {

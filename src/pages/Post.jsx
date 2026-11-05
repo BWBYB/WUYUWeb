@@ -21,7 +21,7 @@ export default function Post() {
     const buttons = [...container.querySelectorAll('pre')].map((pre) => {
       const button = document.createElement('button')
       button.type = 'button'
-      button.className = 'code-copy-button'
+      button.className = 'code-copy-button btn btn--text btn--sm'
       button.textContent = '复制'
       button.addEventListener('click', async () => {
         const code = pre.querySelector('code')?.textContent || ''

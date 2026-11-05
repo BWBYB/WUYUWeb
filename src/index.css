@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/media.css";
+@import "./styles/components.css";
 
 @theme {
   --color-background: var(--surface-canvas);
@@ -126,6 +127,19 @@
   --space-6: 2rem;     /* 32 */
   --space-7: 3rem;     /* 48 */
   --space-8: 4rem;     /* 64 */
+
+  /* ── 控件与卡片 ── */
+  --control-h: 40px;
+  --control-h-sm: 36px;
+  --control-h-touch: 44px;
+  --control-px: 16px;
+  --control-px-sm: 12px;
+  --control-px-lg: 20px;
+  --control-radius: 12px;
+  --card-pad: 24px;
+  --card-pad-feature: 32px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
 
   /* 正文栏宽：35 个汉字（1em ≈ 1 个汉字），30–40 字的中间值 */
   --measure: 35em;
@@ -255,5 +269,13 @@ html {
   :root {
     --fs-heading: 1.5rem;   /* 28 → 24 */
     --fs-display: 1.75rem;  /* 36 → 28 */
+  }
+}
+
+/* 触控目标：小屏按钮与输入统一抬到 44 */
+@media (max-width: 600px) {
+  :root {
+    --control-h: var(--control-h-touch);
+    --control-h-sm: var(--control-h-touch);
   }
 }

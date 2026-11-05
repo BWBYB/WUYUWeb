@@ -92,8 +92,8 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .hero-label__link:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
   border-radius: var(--radius-sm);
 }
 
@@ -125,8 +125,8 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .hero-scroll-float:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
   border-radius: var(--radius-sm);
 }
 
@@ -194,7 +194,7 @@ html[data-site-theme="light"] .home .hero-section {
 
 /* Glass Card Base */
 .bento-card {
-  padding: var(--space-6);
+  padding: var(--card-pad-feature);
 }
 
 .card-header {

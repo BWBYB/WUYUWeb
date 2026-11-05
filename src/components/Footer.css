@@ -30,7 +30,8 @@
   transition: color 0.2s;
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-links a:active {
   color: var(--text-h);
 }
 
