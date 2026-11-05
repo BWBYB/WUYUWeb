@@ -17,7 +17,8 @@
 | 已知债务 | 八、已知债务 |
 | 改某个决定该动哪个文件 | 九、修改入口 |
 | 图片比例与图标 | 十、图片与图标 |
-| 各 md 的职责 | 十一、文档分工 |
+| 按钮、表单、卡片、链接 | 十一、组件 |
+| 各 md 的职责 | 十二、文档分工 |
 
 ## 一、适用范围与豁免
 
@@ -266,6 +267,9 @@ npm run build
 | 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
 | 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |
+| 按钮 / 表单 | `src/components/ui/Button.jsx`、`Field.jsx`、`src/styles/components.css` | 主/次/文字按钮；控件 40 / 密集 36 / 移动 44 |
+| 卡片内边距 | `src/index.css` 的 `--card-pad*`、`src/styles/effects.css` | 面板 24、内容主卡 32 |
+| 链接 | `src/styles/components.css`、`src/pages/Post.css` | 正文常下划线；操作链接无下划线 |
 | favicon | `public/favicon.svg` | 32 网格、无渐变无滤镜、≤ 2 KB |
 | 动效时长 / 缓动 | `src/components/ui/nav-settings.js`、`src/components/ui/theme-switcher-settings.js`、组件 CSS | 导航时长与缓动走设置；主题过渡 700ms 在 Provider |
 | 阴影 / 边框强度 | `src/components/ui/surface-settings.js`、`src/components/ui/SurfaceCustomizer.jsx` | 全局唯一入口；组件只读 `--shadow-1/2/3` 与 `--border-*` |
@@ -310,7 +314,78 @@ npm run build
 4. 纯装饰图标 `aria-hidden="true"`；只有图标的按钮必须有 `aria-label`。
 5. 新增图标先加进 `Icon.jsx`，不要在组件里散装 `<svg>`。
 
-## 十一、文档分工
+## 十一、组件
+
+### 控件尺寸
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--control-h` | 40px | 默认按钮、输入框、select |
+| `--control-h-sm` | 36px | 密集设置面板 |
+| `--control-h-touch` | 44px | ≤600 触控目标 |
+| `--control-px` | 16px | 默认水平内边距 |
+| `--control-px-sm` | 12px | 紧凑按钮 / 输入框 |
+| `--control-radius` | 12px | 标准控件圆角 |
+
+### 按钮
+
+`src/components/ui/Button.jsx`：
+
+```jsx
+<Button variant="primary | secondary | text" size="md | sm" />
+```
+
+| 类型 | 默认 | hover | active |
+| --- | --- | --- | --- |
+| primary | `--accent` 底 / `--content-on-accent` | `--accent-secondary` | 内压 1px |
+| secondary | 透明 / `--content-default` / `--border-subtle` | `--surface-card-hover` / `--border-strong` | `--surface-card` |
+| text | 透明 / `--accent` | `--accent-soft` / `--accent-secondary` | 同 hover |
+
+禁用：透明度 0.45，`pointer-events: none`。胶囊形只给分类筛选，不给普通操作。
+
+### 表单
+
+`src/components/ui/Field.jsx` + `.control`：
+
+- 高度 40，移动端 44
+- 边框 `--border-subtle`，圆角 `--control-radius`
+- focus：边框 `--accent` + 2px `--focus-ring`，offset 2
+- error：边框 `--danger`，`.field__error`
+- textarea 最小高度 96，行高 `--lh-body`
+- select 与 input 同高，option 使用 `--surface-canvas` / `--content-strong`
+
+### 卡片
+
+| 类 | 内边距 | 用途 |
+| --- | --- | --- |
+| `.glass-card` | `--card-pad` 24 | 设置、工具、普通面板 |
+| `.bento-card` / `.blog-post-card` / `.about-card` | `--card-pad-feature` 32 | 首页、博客、关于的内容主卡 |
+
+- 圆角 `--radius-lg`，边框 `--border-glass`，阴影 `--shadow-1`
+- 静态卡不位移；整卡可点时加 `.card--interactive`，hover 抬 2px、阴影升到 `--shadow-2`
+- 卡片标题 20 / 600，正文 16 / 400
+
+### 链接
+
+| 类型 | 默认 | hover |
+| --- | --- | --- |
+| 正文链接 `.link-inline` / `.post-content a` | `--accent` + 1px 下划线，offset 2 | `--accent-secondary` + 2px 下划线 |
+| 操作链接 `.link-action` | `--content-default`，无下划线 | `--accent` |
+
+- visited 不改色
+- 键盘焦点统一 `--focus-ring`，2px + offset 2
+- 导航、主题切换器、Player、Lab 为材质/物理例外，不套普通按钮与链接
+
+### 入口
+
+| 想改什么 | 改哪里 |
+| --- | --- |
+| 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
+| 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
+| 卡片内边距 / 圆角 | `src/index.css` 的 `--card-*`、`src/styles/effects.css` |
+| 链接 | `src/styles/components.css`、`src/pages/Post.css` |
+
+## 十二、文档分工
 
 | 文件 | 管什么 |
 | --- | --- |
