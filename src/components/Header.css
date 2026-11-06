@@ -731,9 +731,9 @@
   }
 
   .site-header-logo {
-    /* 移动端字号缩小，WUYU 实际宽度变小，但宽度由单字符串方案的
-       width 明确值控制，这里只缩字号、不动 width/letter-spacing 结构 */
-    font-size: var(--fs-micro);
+    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与 18px 裁切盒匹配。
+       若缩到 12px，W 会靠左，右侧多出约 4px，看起来偏离圆心。 */
+    font-size: var(--fs-body);
   }
 }
 
