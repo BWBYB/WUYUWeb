@@ -624,9 +624,12 @@ export function createAsciiBackground(canvas, options = {}) {
     const mid = (min + max) / 2
     const half = (max - min) / 2
     const variation = clamp(cfg.fish.lengthVariation, 0, 1)
+    // 窄屏限制鱼体长度，避免一条鱼横跨大半个池子；
+    // 桌面宽度下 40% 远大于原长度，不会生效。
+    const maxLen = Math.max(48, S.pondW * 0.4)
     for (const f of FISHES) {
       f.lengthCells = mid + f.sizeBias * half * variation
-      f.len = f.lengthCells * S.cw
+      f.len = Math.min(f.lengthCells * S.cw, maxLen)
       f.seg = f.len / (f.N - 1)
       for (let i = 0; i < f.N - 1; i++) f.L[i] = f.seg
     }
@@ -1479,7 +1482,7 @@ export function createAsciiBackground(canvas, options = {}) {
     for (const el of nodes) {
       if (seen.has(el)) continue
       seen.add(el)
-      if (el.closest('.bgp, .theme-switcher-global, .site-header')) continue
+      if (el.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) continue
       const b = el.getBoundingClientRect()
       if (b.width < 2 || b.height < 2) continue
       if (b.bottom < -60 || b.top > S.h + 60) continue
