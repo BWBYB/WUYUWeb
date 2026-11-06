@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div className="home">
       {/* Hero Section */}
-      <section className="hero-section" aria-labelledby="hero-title">
+      <section className="hero-section" data-koi-pond aria-labelledby="hero-title">
         <div className="hero-label" data-water-avoid>
           <div className="hero-label__name">
             <span className="hero-label__dot" aria-hidden="true" />

@@ -28,14 +28,14 @@ export default function Resume() {
 
   return (
     <div className="resume-page" id="top">
-      <section className="resume-hero">
+      <section className="resume-hero" data-koi-pond>
         <div className="resume-code" aria-hidden="true">
           {codeMarks.map((mark, index) => (
             <span key={`${mark}-${index}`}>{mark}</span>
           ))}
         </div>
 
-        <div className="resume-hero-inner fade-in fade-in-1">
+        <div className="resume-hero-inner fade-in fade-in-1" data-water-avoid data-water-dim>
           <p className="resume-kicker">RESUME / 个人简历</p>
           <p className="resume-hello">HELLO</p>
           <h1 className="resume-title">
