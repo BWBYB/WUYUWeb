@@ -16,6 +16,7 @@
 .timeline-eyebrow {
   margin: 0 0 var(--space-2);
   color: var(--accent-2);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   letter-spacing: .08em;
 }
@@ -127,6 +128,7 @@
 .timeline-record-meta {
   margin-bottom: var(--space-2);
   color: var(--text-muted);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
 }
 

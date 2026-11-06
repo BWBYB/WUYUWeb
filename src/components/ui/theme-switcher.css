@@ -10,7 +10,7 @@
   --glass-reflex-light: 1;
   --saturation: 150%;
   color: var(--c-content);
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--sans);
   font-optical-sizing: auto;
   transition: background 0.4s cubic-bezier(1, 0, 0.4, 1),
     color 0.4s cubic-bezier(1, 0, 0.4, 1);

@@ -202,6 +202,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
   background: var(--surface-card);
+  font-family: var(--accent-font);
   color: var(--content-default);
   font-size: var(--fs-ui);
   line-height: var(--lh-ui);
@@ -270,6 +271,7 @@
   border-color: transparent;
   border-radius: var(--radius-sm);
   background: var(--content-strong);
+  font-family: var(--accent-font);
   color: var(--surface-canvas);
   font-size: var(--fs-micro);
 }

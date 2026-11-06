@@ -3,6 +3,15 @@
 @import "./styles/media.css";
 @import "./styles/components.css";
 
+/* 得意黑只有发布包，没有可引用的 CSS，直接声明 woff2。 */
+@font-face {
+  font-family: 'Smiley Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/font-smiley-sans@1.0.0/SmileySans-Oblique.ttf.woff2") format("woff2");
+}
+
 @theme {
   --color-background: var(--surface-canvas);
   --color-foreground: var(--content-strong);

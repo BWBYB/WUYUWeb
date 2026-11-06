@@ -13,6 +13,7 @@
   display: inline-block;
   margin-bottom: var(--space-3);
   color: var(--accent);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.18em;

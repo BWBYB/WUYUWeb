@@ -68,7 +68,7 @@ html[data-site-theme="light"] .home .hero-section {
 .hero-label__sub {
   margin: 0;
   color: var(--text);
-  font-family: var(--sans);
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   line-height: var(--lh-ui);
   opacity: 0.7;
@@ -257,6 +257,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-post-category {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--accent-2);
   background: var(--accent-soft);
@@ -265,6 +266,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-post-date {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--text-muted);
 }
@@ -308,6 +310,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .progress-label {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--text-muted);
 }

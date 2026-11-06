@@ -76,6 +76,7 @@
   max-width: 64px;
   color: var(--c);
   font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
   line-height: 1;
   text-align: center;
   transform: none;

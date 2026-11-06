@@ -99,6 +99,7 @@
 }
 
 .blog-post-category {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--accent-2);
   background: var(--accent-soft);
@@ -107,6 +108,7 @@
 }
 
 .blog-post-date {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--text-muted);
 }
@@ -148,6 +150,7 @@
   gap: var(--space-2);
   margin-bottom: var(--space-4);
   color: var(--text-muted);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
 }
 

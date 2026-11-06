@@ -13,6 +13,7 @@
 }
 
 .footer-text {
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   color: var(--text-muted);
 }
@@ -24,6 +25,7 @@
 }
 
 .footer-links a {
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   color: var(--text-muted);
   text-decoration: none;

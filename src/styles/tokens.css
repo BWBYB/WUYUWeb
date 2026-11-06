@@ -76,9 +76,10 @@
   /* 纸色强度：0% 暖白，100% 暖纸；由 Layout 按设置写到根元素 */
   --paper-mix: 0%;
 
-  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sans: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
   --serif: 'Noto Serif SC', Georgia, serif;
-  --mono: 'SF Mono', 'Fira Code', monospace;
+  --mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+  --accent-font: 'Smiley Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 
   /* ── 字号阶梯（6 档）──
      组件与页面只引用这些变量，不再写裸 px。

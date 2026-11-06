@@ -31,6 +31,7 @@
 }
 
 .post-header-category {
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
   color: var(--accent-2);
   background: var(--accent-soft);
@@ -39,6 +40,7 @@
 }
 
 .post-header-date {
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   color: var(--text-muted);
 }
@@ -72,6 +74,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   color: var(--text-muted);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
 }
 
@@ -218,6 +221,7 @@
 
 .post-navigation-link span {
   color: var(--text-muted);
+  font-family: var(--accent-font);
   font-size: var(--fs-micro);
 }
 
