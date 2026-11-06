@@ -92,7 +92,7 @@
 
 1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/styles/tokens.css`。
 2. 主题差异只通过 `[data-site-theme]`、`[data-paper]`、`--paper-mix` 改变量，组件里禁止 `if (paper)` 分支。
-3. 纸色用 `--paper-mix` 在暖白与暖纸之间插值；强调色整组切换，不参与混合。
+3. 纸色用 `--paper-mix` 在白色与暖纸之间插值；强调色整组切换，不参与混合。
 4. 全站不引入蓝、紫、青作为强调色；需要新颜色时先判断它属于六组中的哪一组。
 5. 对比度：正文对画布/卡片 ≥ 4.5:1，弱文字 ≥ 3:1，强调色作为文字 ≥ 4.5:1，焦点圈对相邻色 ≥ 3:1。
 
@@ -274,7 +274,7 @@ npm run build
 | 想改什么 | 入口 | 注意 |
 | --- | --- | --- |
 | 全局颜色 / 语义 | `src/styles/tokens.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
-| 新增一个语义色 | 同上，三种模式都要给值 | 深色、暖白、纸色缺一不可；纸色用 `--paper-mix` 插值 |
+| 新增一个语义色 | 同上，三种模式都要给值 | 深色、白色、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
 | 字号 | `src/styles/tokens.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
 | 字重 | `src/styles/tokens.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |

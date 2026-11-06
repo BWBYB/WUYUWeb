@@ -158,8 +158,8 @@
 }
 
 :root[data-site-theme="light"] {
-  /* ── 语义颜色（暖白）── */
-  --surface-canvas: #f8f5ee;
+  /* ── 语义颜色（白色；仅纸色模式转暖）── */
+  --surface-canvas: #ffffff;
   --surface-card: rgba(35, 30, 24, 0.045);
   --surface-card-hover: rgba(35, 30, 24, 0.08);
   --surface-inset: rgba(35, 30, 24, 0.06);
@@ -168,7 +168,7 @@
   --content-strong: #1f1c18;
   --content-default: #5f5a52;
   --content-muted: #8a8378;
-  --content-inverse: #f8f5ee;
+  --content-inverse: #ffffff;
   --content-on-accent: #ffffff;
 
   --border-alpha-subtle: 12%;
@@ -190,7 +190,7 @@
 
 /* 纸色：在暖白与暖纸之间按强度插值；强调色保持赭石，不参与混合。 */
 :root[data-site-theme="light"][data-paper="on"] {
-  --surface-canvas: color-mix(in srgb, #f4f1ea var(--paper-mix), #f8f5ee);
+  --surface-canvas: color-mix(in srgb, #f4f1ea var(--paper-mix), #ffffff);
   --surface-card: color-mix(in srgb, rgba(27, 26, 23, 0.045) var(--paper-mix), rgba(35, 30, 24, 0.045));
   --surface-card-hover: color-mix(in srgb, rgba(27, 26, 23, 0.075) var(--paper-mix), rgba(35, 30, 24, 0.08));
   --surface-inset: color-mix(in srgb, rgba(27, 26, 23, 0.06) var(--paper-mix), rgba(35, 30, 24, 0.06));
@@ -199,7 +199,7 @@
   --content-strong: color-mix(in srgb, #1b1a17 var(--paper-mix), #1f1c18);
   --content-default: color-mix(in srgb, #6d675e var(--paper-mix), #5f5a52);
   --content-muted: color-mix(in srgb, #746c5f var(--paper-mix), #8a8378);
-  --content-inverse: color-mix(in srgb, #f4f1ea var(--paper-mix), #f8f5ee);
+  --content-inverse: color-mix(in srgb, #f4f1ea var(--paper-mix), #ffffff);
 
   --border-alpha-subtle: 16%;
   --border-alpha-strong: 26%;
