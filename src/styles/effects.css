@@ -125,6 +125,14 @@ html[data-site-theme='light'][data-paper='on'][data-water-bg='on'] .main .glass-
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
 /* Gradient text */
 .gradient-text {
   background: var(--gradient-1);
