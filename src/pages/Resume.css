@@ -5,19 +5,6 @@
   padding-top: var(--page-top);
 }
 
-/* 触摸端保留原生 scroll-snap；桌面端由 Lenis + Snap 接管 */
-@media (hover: none), (pointer: coarse) {
-  html.resume-snap {
-    scroll-snap-type: y mandatory;
-  }
-
-  html.resume-snap .resume-hero,
-  html.resume-snap .resume-section {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-}
-
 /* ── Hero ── */
 .resume-hero {
   position: relative;
@@ -63,6 +50,10 @@
   width: 100%;
   max-width: var(--page-max);
   margin-inline: auto;
+  /* 不压暗水体，用贴近字形的浅阴影把文字和水纹分开 */
+  text-shadow:
+    0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent),
+    0 2px 10px color-mix(in srgb, var(--surface-canvas) 45%, transparent);
 }
 
 .resume-kicker {
@@ -172,6 +163,8 @@
   font-size: var(--fs-heading);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-heading);
+  /* 页面整体不再做水体矩形压暗，标题用贴字形阴影保证可读 */
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
 }
 
 .resume-section-line {
@@ -194,6 +187,7 @@
   color: var(--content-default);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
 }
 
 .resume-tags {
@@ -405,6 +399,7 @@
   color: var(--content-strong);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
 }
 
 .resume-end-meta {
@@ -414,6 +409,7 @@
   margin: var(--space-1) 0 0;
   color: var(--content-muted);
   font-size: var(--fs-micro);
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
 }
 
 .resume-end-meta a {
@@ -514,11 +510,6 @@ html.lenis body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.resume-snap {
-    scroll-snap-type: none;
-    scroll-behavior: auto;
-  }
-
   .resume-section,
   .resume-section-grid {
     opacity: 1;
@@ -528,10 +519,6 @@ html.lenis body {
 }
 
 @media print {
-  html.resume-snap {
-    scroll-snap-type: none;
-  }
-
   .site-header,
   .site-footer,
   .switcher,

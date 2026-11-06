@@ -1,7 +1,7 @@
 import Button from '../components/ui/Button'
 import Icon from '../components/ui/Icon'
 import { resume } from '../lib/content/resume'
-import useResumeSnap from '../hooks/useResumeSnap'
+import useResumeScroll from '../hooks/useResumeScroll'
 import useSectionReveal from '../hooks/useSectionReveal'
 import '../styles/effects.css'
 import './Resume.css'
@@ -10,7 +10,7 @@ const codeMarks = ['</>', '[]', '{}', '()', '==', '++', ';', '=>', '</>', '[]']
 
 function SectionHeading({ children }) {
   return (
-    <div className="resume-section-heading">
+    <div className="resume-section-heading" data-water-no-dim>
       <h2 className="resume-section-title">{children}</h2>
       <span className="resume-section-line" aria-hidden="true" />
     </div>
@@ -21,8 +21,8 @@ export default function Resume() {
   const { profile, skills, projects, experience, education } = resume
   const allSkills = skills.flatMap((group) => group.items)
 
-  // 只在简历页启用滚动吸附，桌面走 Lenis，触摸端走原生 CSS snap。
-  useResumeSnap()
+  // 桌面用 Lenis 平滑滚动，不做吸附；触摸端保留原生滚动。
+  useResumeScroll()
   // 每个整屏模块进入视口时再淡入。
   useSectionReveal()
 
@@ -35,15 +35,15 @@ export default function Resume() {
           ))}
         </div>
 
-        <div className="resume-hero-inner fade-in fade-in-1" data-water-avoid data-water-dim>
-          <p className="resume-kicker">RESUME / 个人简历</p>
-          <p className="resume-hello">HELLO</p>
-          <h1 className="resume-title">
+        <div className="resume-hero-inner fade-in fade-in-1" data-water-no-dim>
+          <p className="resume-kicker" data-water-avoid>RESUME / 个人简历</p>
+          <p className="resume-hello" data-water-avoid>HELLO</p>
+          <h1 className="resume-title" data-water-avoid>
             我是 <span>{profile.name}</span>
           </h1>
-          <p className="resume-role">{profile.role}</p>
+          <p className="resume-role" data-water-avoid>{profile.role}</p>
 
-          <div className="resume-socials">
+          <div className="resume-socials" data-water-avoid>
             <a href={`mailto:${profile.email}`} aria-label={`邮箱：${profile.email}`}>
               <Icon name="mail" size={24} />
             </a>
@@ -60,7 +60,7 @@ export default function Resume() {
           <div className="resume-section-grid">
             <SectionHeading>关于</SectionHeading>
             <div className="resume-section-body">
-              <p className="resume-summary">{profile.summary}</p>
+              <p className="resume-summary" data-water-no-dim>{profile.summary}</p>
               <div className="resume-tags">
                 {allSkills.map((item) => <span className="resume-tag" key={item}>{item}</span>)}
               </div>
@@ -160,7 +160,7 @@ export default function Resume() {
         </section>
       </div>
 
-      <footer className="resume-end">
+      <footer className="resume-end" data-water-no-dim>
         <div>
           <p className="resume-end-title">{profile.name}</p>
           <p className="resume-end-meta">
