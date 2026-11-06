@@ -386,6 +386,7 @@ export function createAsciiBackground(canvas, options = {}) {
     waveBoost: new Float32Array(0),
     fieldBand: 0,
     dimBoxes: [],
+    lineDimBoxes: [],
     avoidBoxes: [],
     heroEl: null,
     pondLeft: 0,
@@ -1437,6 +1438,40 @@ export function createAsciiBackground(canvas, options = {}) {
     S.readingK = cfg.readingDim && !S.heroEl ? REDUCED_READING_K : 1
   }
 
+  function collectLineBoxes(container, out) {
+    const range = document.createRange()
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT
+        if (node.parentElement?.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) {
+          return NodeFilter.FILTER_REJECT
+        }
+        return NodeFilter.FILTER_ACCEPT
+      },
+    })
+
+    const padX = S.cw * 0.8
+    const padY = S.ch * 0.8
+    let node = walker.nextNode()
+
+    while (node) {
+      range.selectNodeContents(node)
+      for (const rect of range.getClientRects()) {
+        if (rect.width < 2 || rect.height < 2) continue
+        if (rect.bottom < -60 || rect.top > S.h + 60) continue
+        out.push([
+          (rect.left - padX) / S.cw,
+          (rect.top - padY) / S.ch,
+          (rect.right + padX) / S.cw,
+          (rect.bottom + padY) / S.ch,
+        ])
+      }
+      node = walker.nextNode()
+    }
+
+    range.detach?.()
+  }
+
   function measureDim() {
     if (S.destroyed) return
     const hero = typeof document !== 'undefined'
@@ -1477,12 +1512,13 @@ export function createAsciiBackground(canvas, options = {}) {
 
     // 水体让路用视口坐标：画布固定，页面滚动时文字在动，水不跟着动。
     const boxes = []
+    const lineBoxes = []
     const seen = new Set()
     const nodes = document.querySelectorAll(DIM_SELECTOR)
     for (const el of nodes) {
       if (seen.has(el)) continue
       seen.add(el)
-      if (el.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) continue
+      if (el.closest('[data-water-no-dim], [data-water-dim-lines], .bgp, .theme-switcher-global, .site-header')) continue
       const b = el.getBoundingClientRect()
       if (b.width < 2 || b.height < 2) continue
       if (b.bottom < -60 || b.top > S.h + 60) continue
@@ -1493,7 +1529,15 @@ export function createAsciiBackground(canvas, options = {}) {
         b.bottom / S.ch + 0.45,
       ])
     }
+
+    // 开放文字区按实际行框压暗，避免整段文字变成一个大气泡。
+    for (const container of document.querySelectorAll('[data-water-dim-lines]')) {
+      if (container.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) continue
+      collectLineBoxes(container, lineBoxes)
+    }
+
     S.dimBoxes = boxes
+    S.lineDimBoxes = lineBoxes
 
     // 鱼群避让只关心 hero 内的文字块，坐标仍用池内局部坐标。
     const avoid = []
@@ -1518,8 +1562,10 @@ export function createAsciiBackground(canvas, options = {}) {
     if (!dim.length) return
     dim.fill(0)
     const boxes = S.dimBoxes
-    if (!boxes.length) return
+    const lineBoxes = S.lineDimBoxes
+    if (!boxes.length && !lineBoxes.length) return
     const feather = 3.2
+    const lineFeather = 1.4
     for (let ry = 0; ry < S.rows; ry++) {
       const cy = ry + 0.5
       for (let rx = 0; rx < S.cols; rx++) {
@@ -1531,6 +1577,14 @@ export function createAsciiBackground(canvas, options = {}) {
           const dy = Math.max(b[1] - cy, 0, cy - b[3])
           const k = 1 - smoothstep(0, feather, Math.hypot(dx, dy))
           if (k > best) best = k
+        }
+        for (let i = 0; i < lineBoxes.length; i++) {
+          const b = lineBoxes[i]
+          const dx = Math.max(b[0] - cx, 0, cx - b[2])
+          const dy = Math.max(b[1] - cy, 0, cy - b[3])
+          const k = 1 - smoothstep(0, lineFeather, Math.hypot(dx, dy))
+          // 行级遮罩比块级更轻，避免文字周围出现暗斑
+          if (k * 0.72 > best) best = k * 0.72
         }
         if (best > 0.08) dim[ry * S.cols + rx] = Math.min(7, Math.ceil(best * 7))
       }
@@ -2155,6 +2209,7 @@ export function createAsciiBackground(canvas, options = {}) {
           visible: S.pondVisible,
         },
         dimBoxes: S.dimBoxes.length,
+        lineDimBoxes: S.lineDimBoxes.length,
         avoidBoxes: S.avoidBoxes.length,
         waves: WATER.waves.length,
         pellets: WATER.pellets.length,
@@ -2181,6 +2236,7 @@ export function createAsciiBackground(canvas, options = {}) {
       FISHES.length = 0
       FISH_ORDER.length = 0
       S.dimBoxes = []
+      S.lineDimBoxes = []
       S.avoidBoxes = []
     },
   }

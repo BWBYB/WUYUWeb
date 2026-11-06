@@ -10,7 +10,7 @@ const codeMarks = ['</>', '[]', '{}', '()', '==', '++', ';', '=>', '</>', '[]']
 
 function SectionHeading({ children }) {
   return (
-    <div className="resume-section-heading" data-water-no-dim>
+    <div className="resume-section-heading" data-water-dim-lines>
       <h2 className="resume-section-title">{children}</h2>
       <span className="resume-section-line" aria-hidden="true" />
     </div>
@@ -35,7 +35,7 @@ export default function Resume() {
           ))}
         </div>
 
-        <div className="resume-hero-inner fade-in fade-in-1" data-water-no-dim>
+        <div className="resume-hero-inner fade-in fade-in-1" data-water-dim-lines>
           <p className="resume-kicker" data-water-avoid>RESUME / 个人简历</p>
           <p className="resume-hello" data-water-avoid>HELLO</p>
           <h1 className="resume-title" data-water-avoid>
@@ -60,7 +60,7 @@ export default function Resume() {
           <div className="resume-section-grid">
             <SectionHeading>关于</SectionHeading>
             <div className="resume-section-body">
-              <p className="resume-summary" data-water-no-dim>{profile.summary}</p>
+              <p className="resume-summary" data-water-dim-lines>{profile.summary}</p>
               <div className="resume-tags">
                 {allSkills.map((item) => <span className="resume-tag" key={item}>{item}</span>)}
               </div>
@@ -160,7 +160,7 @@ export default function Resume() {
         </section>
       </div>
 
-      <footer className="resume-end" data-water-no-dim>
+      <footer className="resume-end" data-water-dim-lines>
         <div>
           <p className="resume-end-title">{profile.name}</p>
           <p className="resume-end-meta">
