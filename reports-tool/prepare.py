@@ -264,7 +264,10 @@ def main():
         print("\n%d. [%s] ▲%s 赞 ｜ %s ｜ %s" % (
             i, p["id"], p["upvotes"], p["org"] or "-", p["first_author"] or "-"))
         print("   标题: %s" % p["title"])
-        print("   摘要: %s" % p["summary"])
+        # 摘要截断到 520 字：够写 plain/why/analogy，又不至于把一次调用的
+        # 输出撑到需要分两段读（2026-11-08 就是被 head -120 + sed 切成两次重跑）。
+        body = p["summary"]
+        print("   摘要: %s%s" % (body[:520], "…（全文见 data 快照）" if len(body) > 520 else ""))
 
     print("\n" + "=" * W)
     print("二、速览论文（%d 篇，只需 plain）" % len(brief["速览论文"]))
@@ -298,17 +301,25 @@ def main():
     print("\n" + "=" * W)
     print("五、必须给出的 plain（漏一个就留一个 [EN]）")
     print("=" * W)
-    print("  论文 ID（%d 个）: %s" % (
-        len(brief["必须给出的 plain"]["论文"]),
-        " ".join(brief["必须给出的 plain"]["论文"])))
-    print("  仓库名（%d 个）:" % len(brief["必须给出的 plain"]["仓库"]))
-    for n in brief["必须给出的 plain"]["仓库"]:
-        print("    - %s" % n)
+    print("  论文 ID（%d 个）：" % len(brief["必须给出的 plain"]["论文"]))
+    print("    %s" % " ".join(brief["必须给出的 plain"]["论文"]))
+    # 仓库名在第三、四节已逐个列出，这里压成一行，省 15 行冗余
+    print("  仓库名（%d 个）：" % len(brief["必须给出的 plain"]["仓库"]))
+    print("    %s" % "、".join(brief["必须给出的 plain"]["仓库"]))
 
     print("\n" + "=" * W)
     print("六、insights 结构")
     print("=" * W)
-    print(json.dumps(brief["insights 结构"], ensure_ascii=False, indent=2))
+    # 结构本身由 --template 直接生成，不必在这里展开 37 行 JSON ——
+    # 那会挤占一次调用的可读输出，逼得下游分两段重读（2026-11-08 实测就是如此）。
+    print("  用 --template 生成骨架即可，字段结构会自带。概览：")
+    print("    summary  : 字符串 40–80 字单行")
+    print("    tldr     : 字符串 ×3–4")
+    print("    theme    : 段落 ×2–4")
+    print("    papers   : {论文id: {plain, why, analogy, readme}}（精读榜四项，速览区只要 plain）")
+    print("    repos    : {仓库全名: {plain, why, for_who}}（精读榜三项，速览区只要 plain）")
+    print("    concepts : [{term, means}] ×3")
+    print("    try      : 字符串 ×2–3")
 
     print("\n" + "=" * W)
     print("七、写作要求")

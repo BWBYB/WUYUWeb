@@ -36,6 +36,12 @@ fi
 echo $$ > "$LOCK/pid"
 trap 'rm -rf "$LOCK"' EXIT INT TERM HUP
 
+# 显式打印锁的生命周期。为什么重要：2026-11-08 的自动化任务看到锁目录后
+# 误以为另一个实例还在跑，连查 4 次（kill -0、翻 /proc、复查）才确认是僵尸锁。
+# 那 4 次 bash 全是白跑的上下文重付。现在开头和结尾各印一行，谁都能一眼看出
+# 「锁在本次运行期间存在，脚本退出时自动释放」。看到锁目录不代表有人在跑。
+echo "[lock] 已获取 .run-daily.lock (pid $$)；脚本退出时会自动释放"
+
 # 优先用项目 venv：Scrapling 要求 Python ≥3.10，而 `python3` 命中的是 Apple CLT 的 3.9。
 # venv 不存在时退回系统 python3：抓取降级为正则解析，但 lint.py 会因缺 PyYAML 判 ERROR，
 # 于是本脚本以退出码 1 结束——能出稿，但不假装验过。不要为此放宽闸门。
@@ -141,5 +147,9 @@ if [ "$ok" -eq 0 ]; then
     echo "########## DAILY-DIGEST-FAILED ##########"
   } | tee -a "logs/run.log"
 fi
+
+# 明确告知锁即将释放。看到锁目录不代表有人在跑——它是本次运行自己创建的，
+# 进程退出时由 trap 删除。把这句话印出来，省掉下游反复确认的功夫。
+echo "[lock] 本次运行结束，.run-daily.lock 将随进程退出自动删除"
 
 exit $rc
