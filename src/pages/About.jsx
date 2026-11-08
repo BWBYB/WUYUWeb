@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { resume } from '../lib/content/resume'
 import '../styles/effects.css'
 import './About.css'
 
@@ -42,11 +43,11 @@ export default function About() {
         <div className="about-card glass-card fade-in fade-in-5">
           <h2 className="about-card-title">联系</h2>
           <div className="contact-links">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="contact-link">
+            <a href={resume.profile.github} target="_blank" rel="noopener noreferrer" className="contact-link">
               <span className="contact-icon">GH</span>
               GitHub
             </a>
-            <a href="mailto:hello@example.com" className="contact-link">
+            <a href={`mailto:${resume.profile.email}`} className="contact-link">
               <span className="contact-icon">@</span>
               邮箱
             </a>

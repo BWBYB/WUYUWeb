@@ -77,6 +77,35 @@
   background: var(--accent-soft);
 }
 
+/* 玻璃按钮：复用导航的三层状态——容器 12% → hover 赭石 → 按下 36% 胶囊。
+   边缘由 8 层 inset 高光承担，不画可见边框，和导航玻璃一致。 */
+.btn--glass {
+  border-color: transparent;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  color: var(--content-strong);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+}
+
+.btn--glass:hover {
+  color: var(--accent);
+}
+
+.btn--glass:active {
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 24%), transparent);
+  color: var(--content-strong);
+}
+
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
@@ -148,6 +177,58 @@ textarea.control {
 
 .field__error {
   color: var(--danger);
+}
+
+/* Switch：与导航小设置栏同尺寸的 36 × 20 胶囊 */
+.switch {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--content-strong) 26%, transparent);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.switch:hover {
+  background: color-mix(in srgb, var(--content-strong) 34%, transparent);
+}
+
+.switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-circle);
+  background: var(--surface-canvas);
+  transition: transform 0.2s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.switch--on {
+  background: var(--accent);
+}
+
+.switch--on:hover {
+  background: var(--accent-secondary);
+}
+
+.switch--on .switch__thumb {
+  transform: translateX(16px);
+}
+
+.switch:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.switch:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .link-inline {

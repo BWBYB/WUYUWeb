@@ -20,6 +20,15 @@
   /* 边框强度由设置面板写根元素，两套描边各自缩放 */
   --border-strength: 1;
   --glass-strength: 1;
+  /* 卡片与导航共用的玻璃材质 */
+  --glass-neutral: #bbbbbc;
+  --glass-card-opacity: 12%;
+  --glass-highlight: #ffffff;
+  --glass-ink: #000000;
+  --glass-reflex-light: 0.3;
+  --glass-reflex-dark: 2;
+  --glass-blur: 8px;
+  --glass-saturation: 150%;
   --border-alpha-subtle: 11%;
   --border-alpha-strong: 19%;
   --border-alpha-glass: 11%;
@@ -171,6 +180,10 @@
   --content-muted: #8a8378;
   --content-inverse: #ffffff;
   --content-on-accent: #ffffff;
+
+  /* 白天玻璃的反射与深色相反：高光更强、暗部更弱 */
+  --glass-reflex-light: 1;
+  --glass-reflex-dark: 1;
 
   --border-alpha-subtle: 12%;
   --border-alpha-strong: 22%;

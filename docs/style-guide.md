@@ -196,7 +196,7 @@
 规则：
 
 1. 组件不写裸 `box-shadow`；卡片用 `--shadow-1`，浮层用 `--shadow-2`，导航用 `--shadow-3`。
-2. 玻璃的 8 层 inset 高光属于材质例外，保留在 `Header.css` / `theme-switcher.css`；外投影仍必须走 `--shadow-2/3`。
+2. 玻璃的 8 层 inset 高光属于材质例外，保留在 `Header.css` / `theme-switcher.css` / `components.css`（玻璃按钮）；外投影仍必须走 `--shadow-2/3`。
 3. 设置页「阴影与边框」卡片是唯一入口，导航与主题切换器不再各自提供阴影滑块。
 4. Player、Lab 的物理阴影豁免。
 
@@ -356,7 +356,7 @@ npm run build
 `src/components/ui/Button.jsx`：
 
 ```jsx
-<Button variant="primary | secondary | text" size="md | sm" />
+<Button variant="primary | secondary | text | glass" size="md | sm" />
 ```
 
 | 类型 | 默认 | hover | active |
@@ -364,8 +364,9 @@ npm run build
 | primary | `--accent` 底 / `--content-on-accent` | `--accent-secondary` | 内压 1px |
 | secondary | 透明 / `--content-default` / `--border-subtle` | `--surface-card-hover` / `--border-strong` | `--surface-card` |
 | text | 透明 / `--accent` | `--accent-soft` / `--accent-secondary` | 同 hover |
+| glass | 中性玻璃 12% / 胶囊 / `--content-strong` | 同底 / `--accent` | 玻璃 36% / `--content-strong` |
 
-禁用：透明度 0.45，`pointer-events: none`。胶囊形只给分类筛选，不给普通操作。
+禁用：透明度 0.45，`pointer-events: none`。胶囊形用于分类筛选和导航同源玻璃按钮，普通按钮仍用 `--control-radius`。玻璃按钮复用导航的三层状态（容器 12% → hover 赭石文字 → 按下 36% 选中胶囊）；滑动胶囊与单选逻辑仍归 switcher。
 
 ### 表单
 

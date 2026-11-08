@@ -1,0 +1,9 @@
+.edge-blur-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.edge-blur-toggle .theme-customizer-control-copy {
+  flex: 1;
+}

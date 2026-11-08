@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import ThemeSwitcherCustomizer from '../components/ui/ThemeSwitcherCustomizer'
 import SurfaceCustomizer from '../components/ui/SurfaceCustomizer'
+import EdgeBlurCustomizer from '../components/ui/EdgeBlurCustomizer'
 import NavCustomizer from '../components/ui/NavCustomizer'
 import './Settings.css'
 
@@ -23,6 +24,8 @@ export default function Settings() {
       <ThemeSwitcherCustomizer />
 
       <SurfaceCustomizer />
+
+      <EdgeBlurCustomizer />
 
       <NavCustomizer />
 

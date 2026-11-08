@@ -61,48 +61,35 @@
   }
 }
 
-/* Glass card */
+/* Glass card：与导航栏同源的 8 层 inset + 中性玻璃底 */
 .glass-card {
   padding: var(--card-pad);
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent),
+    var(--shadow-2);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* 只有整卡可点时才抬升；静态卡片保持稳定 */
 .glass-card.card--interactive:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-hover);
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 4%), transparent);
+  border-color: var(--border-strong);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-2);
-}
-
-/* 水层开启时把卡片模糊降到 2px：12px 会把 8px 的字符水纹糊成一片灰，水就透不出来 */
-html[data-water-bg='on'] .main .glass-card {
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
-}
-
-/* 浅色卡片底太白会把水挡没；降到 0.4 让水纹透上来，文字区仍由局部压暗兜底 */
-html[data-site-theme='light'][data-water-bg='on'] .main .glass-card {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-html[data-site-theme='light'][data-water-bg='on'] .main .glass-card:hover {
-  background: rgba(255, 255, 255, 0.52);
-}
-
-/* 纸色下卡片改用暖白，冷白会像贴上去的塑料片 */
-html[data-site-theme='light'][data-paper='on'][data-water-bg='on'] .main .glass-card {
-  background: color-mix(in srgb, rgba(255, 252, 244, 0.42) var(--paper-mix), rgba(255, 255, 255, 0.4));
-}
-
-html[data-site-theme='light'][data-paper='on'][data-water-bg='on'] .main .glass-card:hover {
-  background: color-mix(in srgb, rgba(255, 252, 244, 0.55) var(--paper-mix), rgba(255, 255, 255, 0.52));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 12%), transparent),
+    var(--shadow-3);
 }
 
 /* Fade in animation */

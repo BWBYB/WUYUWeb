@@ -5,9 +5,29 @@
   padding-top: var(--page-top);
 }
 
+/* 首屏 + 内容窗口的滚动容器；进度变量由 useResumeIntro 写入。 */
+.resume-intro {
+  --intro-progress: 0;
+  position: relative;
+}
+
+/* 简历页的淡入只改透明度：文字一旦有 translateY，
+   ASCII 行级压暗会在动画结束后与文字错位。 */
+.resume-page .fade-in {
+  transform: none;
+  animation: resumeFadeIn 0.6s ease forwards;
+}
+
+@keyframes resumeFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
 /* ── Hero ── */
 .resume-hero {
   position: relative;
+  z-index: 0; /* 建立层叠上下文，避免 inner 的 z-raised 压过关于卡 */
   display: flex;
   align-items: center;
   min-height: 100vh;
@@ -56,18 +76,10 @@
     0 2px 10px color-mix(in srgb, var(--surface-canvas) 45%, transparent);
 }
 
-.resume-kicker {
-  margin: 0 0 var(--space-4);
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
-  letter-spacing: 0.16em;
-}
-
 .resume-hello {
   margin: 0 0 var(--space-2);
   color: var(--content-muted);
-  font-size: var(--fs-heading-sm);
+  font-size: calc(var(--fs-heading-sm) * 2);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-heading);
 }
@@ -75,7 +87,7 @@
 .resume-title {
   margin: 0;
   color: var(--content-strong);
-  font-size: var(--fs-display);
+  font-size: calc(var(--fs-display) * 2);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
 }
@@ -145,12 +157,6 @@
   gap: var(--space-7);
   align-items: start;
   width: 100%;
-  transform: translateY(20px);
-  transition: transform 0.6s ease;
-}
-
-.resume-section.is-visible .resume-section-grid {
-  transform: translateY(0);
 }
 
 .resume-section-heading {
@@ -202,15 +208,62 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
   background: var(--surface-card);
-  font-family: var(--accent-font);
   color: var(--content-default);
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   line-height: var(--lh-ui);
+}
+
+/* 关于领衔的内容窗口：半透明玻璃，盖住吸附的首屏，内部随滚动平移。 */
+.resume-window {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-canvas) 86%, transparent);
+  box-shadow: var(--shadow-2);
+  -webkit-backdrop-filter: blur(12px) saturate(var(--glass-saturation));
+  backdrop-filter: blur(12px) saturate(var(--glass-saturation));
+}
+
+.resume-window-inner {
+  min-width: 0;
+}
+
+.resume-window .resume-section {
+  padding-inline: var(--card-pad-feature);
+}
+
+/* 入场由滚动动画承担，不再等 IntersectionObserver 淡入 */
+.resume-section.resume-about {
+  position: relative;
+  opacity: 1;
+}
+
+/* 工牌只在桌面无减动偏好时出现，见下方 no-preference 媒体块 */
+.resume-lanyard {
+  display: none;
+}
+
+.resume-window-spacer {
+  display: none;
+}
+
+.resume-about-loop {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* 纸带卡片的下投影需要额外纵向空间，380 高的舞台会沿底边切掉阴影 */
+.resume-about-loop .curved-logo-stage {
+  aspect-ratio: 1200 / 420;
 }
 
 /* ── Projects ── */
 .resume-projects {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
 }
 
@@ -218,13 +271,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  min-width: 0;
   padding: var(--card-pad-feature);
-  color: inherit;
-  text-decoration: none;
-}
-
-.resume-project--link {
-  cursor: pointer;
 }
 
 .resume-project-top {
@@ -239,12 +287,6 @@
   font-family: var(--mono);
   font-size: var(--fs-ui);
   letter-spacing: 0.08em;
-}
-
-.resume-project-period {
-  color: var(--content-muted);
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
 }
 
 .resume-project-title {
@@ -266,30 +308,76 @@
   margin-top: var(--space-1);
 }
 
-.resume-project .resume-tag {
-  padding: var(--space-1) var(--space-2);
+.resume-project-loop .resume-tag,
+.resume-experience-loop .resume-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-h);
+  padding: 0 var(--control-px);
   border-color: transparent;
-  border-radius: var(--radius-sm);
-  background: var(--content-strong);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  color: var(--content-strong);
   font-family: var(--accent-font);
-  color: var(--surface-canvas);
-  font-size: var(--fs-micro);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-regular);
+  white-space: nowrap;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
 }
 
-.resume-project-link {
-  margin-top: var(--space-2);
-  color: var(--accent);
-  font-size: var(--fs-ui);
+.resume-project-loop,
+.resume-experience-loop {
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.resume-project-loop {
+  margin-top: var(--space-1);
+}
+
+.resume-experience-loop {
+  margin-top: var(--space-4);
+}
+
+.resume-project-tags-print,
+.resume-experience-tags-print {
+  display: none;
+}
+
+.resume-project-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resume-project-github {
+  width: var(--control-h);
+  padding: 0;
+  border-radius: var(--radius-circle);
 }
 
 /* ── Experience / Education ── */
 .resume-experience {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
 }
 
 .resume-entry {
   position: relative;
+  min-width: 0;
   padding: var(--card-pad-feature);
 }
 
@@ -385,66 +473,71 @@
   background: var(--border-strong);
 }
 
-/* ── End ── */
-.resume-end {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-5);
-  margin-top: var(--space-7);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--border-subtle);
-}
+/* 首屏吸附、内容窗口从 0.8 / +5° 入场到 1 / 0°，吸附后内部平移；减动偏好下保持普通页面。 */
+@media (prefers-reduced-motion: no-preference) {
+  .resume-hero {
+    position: sticky;
+    top: 0;
+  }
 
-.resume-end-title {
-  margin: 0;
-  color: var(--content-strong);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
-}
+  .resume-page .resume-hero-inner,
+  .resume-code {
+    transform: scale(calc(1 - var(--intro-progress) * 0.2))
+      rotate(calc(var(--intro-progress) * -5deg));
+    transform-origin: center;
+  }
 
-.resume-end-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: var(--space-1) 0 0;
-  color: var(--content-muted);
-  font-size: var(--fs-micro);
-  text-shadow: 0 1px 2px color-mix(in srgb, var(--surface-canvas) 72%, transparent);
-}
+  .resume-window {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    transform: scale(calc(0.8 + var(--intro-progress) * 0.2))
+      rotate(calc(5deg - var(--intro-progress) * 5deg));
+    transform-origin: center;
+  }
 
-.resume-end-meta a {
-  color: inherit;
-  text-decoration: none;
-}
+  .resume-window-inner {
+    transform: translate3d(0, calc(var(--window-shift, 0px) * -1), 0);
+  }
 
-.resume-end-meta a:hover {
-  color: var(--accent);
-}
+  .resume-window-spacer {
+    display: block;
+    height: var(--window-scroll, 0px);
+    pointer-events: none;
+  }
 
-.resume-end-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
+  /* 桌面把纸带循环收到右列，给左侧工牌让位 */
+  .resume-about .resume-about-loop {
+    grid-column: 2;
+  }
 
-.resume-top-link {
-  color: var(--content-muted);
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
-  text-decoration: none;
-  white-space: nowrap;
-}
+  /* 工牌固定在窗口上，四个面板都保持同一位置，卡面垂直居中 */
+  .resume-lanyard {
+    --intro-retract: clamp(0, calc((1 - var(--intro-progress)) * 5), 1);
 
-.resume-top-link:hover {
-  color: var(--accent);
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: calc(1 - var(--intro-retract));
+    transform: translate3d(0, calc(var(--intro-retract) * -100%), 0);
+  }
 }
 
 @media (max-width: 900px) {
   .resume-section-grid {
     grid-template-columns: 1fr;
     gap: var(--space-5);
+  }
+
+  .resume-about .resume-about-loop {
+    grid-column: 1 / -1;
+  }
+
+  .resume-lanyard {
+    display: none;
   }
 
   .resume-entry {
@@ -457,17 +550,37 @@
   }
 }
 
+/* 移动端先关闭吸附与窗口变换，等布局适配后再开。 */
+@media (max-width: 768px) {
+  .resume-hero {
+    position: relative;
+  }
+
+  .resume-page .resume-hero-inner,
+  .resume-code,
+  .resume-window,
+  .resume-window-inner {
+    transform: none;
+  }
+
+  .resume-window {
+    position: relative;
+    height: auto;
+  }
+
+  .resume-window-spacer {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .resume-hero {
-    padding: calc(var(--space-8) + var(--space-5)) var(--space-2) var(--space-6);
+    /* 放大 Hero 字号后，底部给固定主题切换器留出空间，避免社交行被盖住 */
+    padding: calc(var(--space-8) + var(--space-5)) var(--space-2) calc(var(--space-8) + var(--space-6));
   }
 
   .resume-code span:nth-child(n + 7) {
     display: none;
-  }
-
-  .resume-title {
-    font-size: var(--fs-display);
   }
 
   .resume-section {
@@ -477,15 +590,6 @@
   .resume-entry-head {
     flex-direction: column;
     gap: var(--space-2);
-  }
-
-  .resume-end {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .resume-end-actions {
-    flex-wrap: wrap;
   }
 }
 
@@ -523,14 +627,26 @@ html.lenis body {
 @media print {
   .site-header,
   .site-footer,
+  .footer,
   .switcher,
   .ascii-bg,
   .aurora-bg,
   .resume-code,
   .resume-socials,
-  .resume-end-actions,
-  .resume-top-link {
+  .resume-project-actions {
     display: none !important;
+  }
+
+  .layout {
+    display: block;
+    min-height: 0;
+    padding-top: 0;
+  }
+
+  .main {
+    display: block;
+    max-width: none;
+    padding: 0;
   }
 
   .resume-page {
@@ -547,12 +663,36 @@ html.lenis body {
 
   .resume-hero {
     display: block;
+    position: static;
     min-height: 0;
     padding: 0 0 var(--space-5);
   }
 
-  .resume-content {
-    display: block;
+  .resume-page .resume-hero-inner,
+  .resume-code,
+  .resume-window,
+  .resume-window-inner {
+    transform: none !important;
+  }
+
+  .resume-window {
+    position: static;
+    height: auto;
+    overflow: visible;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .resume-window .resume-section {
+    padding-inline: 0;
+  }
+
+  .resume-window-spacer {
+    display: none !important;
   }
 
   .resume-section {
@@ -576,6 +716,10 @@ html.lenis body {
     margin-bottom: var(--space-4);
   }
 
+  #experience {
+    break-before: page;
+  }
+
   .resume-project,
   .resume-entry {
     break-inside: avoid;
@@ -592,13 +736,20 @@ html.lenis body {
     background: white;
   }
 
+  .resume-about-loop,
+  .resume-project-loop,
+  .resume-experience-loop,
+  .resume-lanyard {
+    display: none !important;
+  }
+
+  .resume-project-tags-print,
+  .resume-experience-tags-print {
+    display: flex !important;
+  }
+
   .resume-entry::before,
   .resume-entry::after {
     display: none;
-  }
-
-  .resume-end {
-    border-color: color-mix(in srgb, black 18%, transparent);
-    break-inside: avoid;
   }
 }

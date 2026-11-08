@@ -17,7 +17,7 @@
 @property --logo-width {
   syntax: '<length>';
   inherits: false;
-  initial-value: 65px;
+  initial-value: 48px;
 }
 
 /* 合并态：只有父级 .site-header 是唯一的胶囊（带玻璃）。
@@ -176,11 +176,12 @@
      flex-start 让内容靠左，overflow:hidden 收缩时只裁右边，始终露出最左边的 W */
   justify-content: flex-start;
   /* 单一字符串 WUYU：用明确 width 过渡 + overflow:hidden 从右往左裁切，
-     分裂时只露 W（15px），合并时露完整 WUYU（57px）。
+     分裂时只露 W，合并时露完整 WUYU。
+     宽度跟随字体走：4 个等宽字符 + 3 段字距（末尾字距是空白，会被裁掉）+ 左右各 1px。
      不再拆 W/UYU 两个 span —— 那样在 flex 里父容器会随内容瞬跳重排，
      打断 max-width 抽屉过渡，导致「突变」。 */
-  width: var(--logo-width, 65px); /* 合并态 = 文字宽 57px + 8px 余量 */
-  --logo-width: 65px; /* 基础态（合并态）宽度，供 @property 过渡 */
+  width: var(--logo-width, 48px);
+  --logo-width: calc(4ch + 0.48em + 2px);
   padding-inline: 1px;
   overflow: hidden;
   white-space: nowrap;
@@ -218,10 +219,10 @@
   border-radius: var(--radius-sm);
 }
 
-/* 分裂态：宽度留出 W 的右端余量，避免硬裁切掉最后一个笔画；
+/* 分裂态：宽度收到单个等宽字符，W 在盒内居中，胶囊圆心也随之对准；
    UYU 仍被 overflow:hidden 从右往左裁掉 */
 .site-header.is-split .site-header-logo {
-  --logo-width: 18px; /* W 约 15px + 左右各 1px 余量 */
+  --logo-width: calc(1ch + 2px);
   letter-spacing: 0;
 }
 
@@ -731,8 +732,8 @@
   }
 
   .site-header-logo {
-    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与 18px 裁切盒匹配。
-       若缩到 12px，W 会靠左，右侧多出约 4px，看起来偏离圆心。 */
+    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与裁切盒（1ch + 2px）匹配。
+       若缩到 12px，不等宽回退字体的 W 会靠左，看起来偏离圆心。 */
     font-size: var(--fs-body);
   }
 }
