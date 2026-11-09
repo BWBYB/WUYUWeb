@@ -56,7 +56,7 @@
 
 `index.html` 实际加载 IBM Plex Mono 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
 
-全站 UI 与元信息使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 ASCII 使用 `--mono`（同为 IBM Plex Mono），文章/列表标题、文章正文与摘要使用 `--serif-editorial`（英文 New York → 中文思源宋体），引言等短句使用 `--serif`。中文由回退字体渲染，正文英文不再走等宽。
+全站 UI 与元信息使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 ASCII 使用 `--mono`（同为 IBM Plex Mono），文章/列表标题、文章正文与摘要使用 `--serif-editorial`（英文 New York → 中文思源宋体），引言等短句使用 `--serif`。中文由回退字体渲染，正文英文不再走等宽；标题与正文里的数字统一使用 `--post-date-font`（SF Mono，与列表日期同一套等宽）。
 
 信息型小字（分类、脚注、标签、kicker，12–14px）与页脚文字使用 `--accent-font`（得意黑 Smiley Sans，经 jsDelivr 加载，只有 400 一档）。导航项与更多面板使用 `--sans`；得意黑不用于标题、正文、按钮和表单控件；日期、编号、ASCII 等需要对齐的小字仍用 `--mono`。
 

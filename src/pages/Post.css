@@ -207,6 +207,10 @@
   color: var(--text);
 }
 
+.post-numeral {
+  font-family: var(--post-date-font);
+}
+
 .post-content p {
   margin: 0 0 var(--space-5);
   color: var(--text);

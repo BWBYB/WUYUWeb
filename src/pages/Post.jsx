@@ -10,6 +10,37 @@ function formatReadingTime(wordCount) {
   return `${minutes} 分钟阅读`
 }
 
+const numeralPattern = /\d+(?:-\d+)*/g
+
+function wrapNumerals(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!/\d/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT
+      if (node.parentElement.closest('code, pre, .post-numeral')) return NodeFilter.FILTER_REJECT
+      return NodeFilter.FILTER_ACCEPT
+    },
+  })
+
+  const textNodes = []
+  while (walker.nextNode()) textNodes.push(walker.currentNode)
+
+  for (const node of textNodes) {
+    const text = node.nodeValue
+    const fragment = document.createDocumentFragment()
+    let lastIndex = 0
+    for (const match of text.matchAll(numeralPattern)) {
+      fragment.append(text.slice(lastIndex, match.index))
+      const span = document.createElement('span')
+      span.className = 'post-numeral'
+      span.textContent = match[0]
+      fragment.append(span)
+      lastIndex = match.index + match[0].length
+    }
+    fragment.append(text.slice(lastIndex))
+    node.replaceWith(fragment)
+  }
+}
+
 export default function Post() {
   const { slug } = useParams()
   const post = getPostBySlug(slug)
@@ -18,6 +49,8 @@ export default function Post() {
   useEffect(() => {
     const container = contentRef.current
     if (!container) return undefined
+
+    wrapNumerals(container)
 
     const buttons = [...container.querySelectorAll('pre')].map((pre) => {
       const button = document.createElement('button')
