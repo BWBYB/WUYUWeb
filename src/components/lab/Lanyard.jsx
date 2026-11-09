@@ -727,6 +727,7 @@ const Lanyard = ({
   breeze = 0.5,
   interactive = true,
   intro = true,
+  nudge = 0,
   className = '',
   style
 }) => {
@@ -757,7 +758,8 @@ const Lanyard = ({
     elasticity,
     breeze,
     interactive,
-    intro
+    intro,
+    nudge
   };
 
   useEffect(() => {
@@ -1026,7 +1028,14 @@ const Lanyard = ({
       }
       canvas.style.touchAction = s.interactive ? 'pan-y' : 'auto';
 
-      applied = { layoutKey, framingKey, imageKey, faceKey, strapColor: s.strapColor, strapScale };
+      // 每次 nudge 递增给卡片一记横向冲量，链条和重力自然摆回
+      if (placed && s.nudge > 0 && s.nudge !== applied.nudge) {
+        sim.body.velocity.x += 3;
+        sim.body.angular.z += 1.2;
+        sim.calm = 0;
+      }
+
+      applied = { layoutKey, framingKey, imageKey, faceKey, strapColor: s.strapColor, strapScale, nudge: s.nudge };
       start();
     };
 

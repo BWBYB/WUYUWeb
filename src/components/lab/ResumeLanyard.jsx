@@ -9,6 +9,7 @@ export default function ResumeLanyard() {
   const [enabled, setEnabled] = useState(false)
   const [near, setNear] = useState(false)
   const [size, setSize] = useState(0.44)
+  const [nudge, setNudge] = useState(0)
 
   useEffect(() => {
     const small = window.matchMedia('(max-width: 900px)')
@@ -38,6 +39,21 @@ export default function ResumeLanyard() {
     observer.observe(host)
     return () => observer.disconnect()
   }, [])
+
+  // 纸面完全盖住（工牌完整伸下来）的瞬间给一个摆动冲量，像被轻轻碰了一下
+  useEffect(() => {
+    if (!enabled) return undefined
+    const root = document.documentElement
+    let covered = root.getAttribute('data-resume-paper') === 'cover'
+    if (covered) setNudge((n) => n + 1)
+    const observer = new MutationObserver(() => {
+      const next = root.getAttribute('data-resume-paper') === 'cover'
+      if (next && !covered) setNudge((n) => n + 1)
+      covered = next
+    })
+    observer.observe(root, { attributes: true, attributeFilter: ['data-resume-paper'] })
+    return () => observer.disconnect()
+  }, [enabled])
 
   useEffect(() => {
     if (!enabled) return undefined
@@ -94,6 +110,7 @@ export default function ResumeLanyard() {
             breeze={0.3}
             interactive
             intro={false}
+            nudge={nudge}
           />
         </Suspense>
       )}

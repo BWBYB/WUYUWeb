@@ -254,8 +254,9 @@
     radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--accent) 6%, transparent) 0.6px, transparent 1px),
     linear-gradient(90deg, transparent 35px, color-mix(in srgb, var(--accent) 55%, transparent) 35px 36px, transparent 36px),
     radial-gradient(120% 90% at 50% 0%, var(--paper-news-sheen), transparent 62%);
-  background-size: 3px 3px, 5px 5px, 100% 100%, 100% 100%;
-  background-position: 0 0, 1px 2px, 0 0, 0 0;
+  /* 网点放稀：深点 12px 一格、铜点 19px 一格，远看是纸纹而不是细网格 */
+  background-size: 12px 12px, 19px 19px, 100% 100%, 100% 100%;
+  background-position: 0 0, 5px 6px, 0 0, 0 0;
   box-shadow:
     inset 0 0 38px var(--paper-news-shade),
     inset 0 1px 0 var(--paper-news-sheen);
@@ -607,7 +608,8 @@ html[data-resume-paper='cover'] .site-header {
   background: var(--border-strong);
 }
 
-/* 首屏吸附、内容窗口从 0.8 / +5° 入场到 1 / 0°，吸附后内部平移；减动偏好下保持普通页面。 */
+/* 首屏吸附、内容窗口从 0.8 / +5° 入场到 1 / 0°，吸附后内部平移；减动偏好下保持普通页面。
+   首屏旋转中途后仰、到纸面完全盖住时回正，透过薄纸看到的底字不会歪。 */
 @media (prefers-reduced-motion: no-preference) {
   .resume-hero {
     position: sticky;
@@ -616,8 +618,9 @@ html[data-resume-paper='cover'] .site-header {
 
   .resume-page .resume-hero-inner,
   .resume-code {
+    /* 抛物线：p=0 与 p=1 都为 0°，中途最大 -5°，纸面盖满时首屏正好回正 */
     transform: scale(calc(1 - var(--intro-progress) * 0.2))
-      rotate(calc(var(--intro-progress) * -5deg));
+      rotate(calc(var(--intro-progress) * (1 - var(--intro-progress)) * -20deg));
     transform-origin: center;
   }
 
