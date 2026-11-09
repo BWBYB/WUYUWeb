@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { audioEngine } from '../lib/audio-engine'
+import useTocActive from '../hooks/useTocActive'
 
-const SPY_OFFSET = 120
 const FALLOFF_ROWS = 2.6
 const MAX_ROWS = 18
 const MIN_ROWS = 10
@@ -14,7 +14,7 @@ const bump = (distance) => (
 )
 
 export default function ChapterRail({ chapters, label = '章节目录' }) {
-  const [current, setCurrent] = useState(0)
+  const { current } = useTocActive(chapters)
   const [previewIndex, setPreviewIndex] = useState(0)
   const [previewOpen, setPreviewOpen] = useState(false)
 
@@ -108,43 +108,6 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
       clearWave()
     }
   }, [count])
-
-  useEffect(() => {
-    if (!count) return undefined
-    let frame = 0
-    let last = -1
-
-    const update = () => {
-      frame = 0
-      let next = 0
-      chapters.forEach((chapter, index) => {
-        const heading = document.getElementById(chapter.id)
-        if (heading && heading.getBoundingClientRect().top <= SPY_OFFSET) next = index
-      })
-      const root = document.documentElement
-      const scrollable = root.scrollHeight > window.innerHeight + 8
-      if (scrollable && window.innerHeight + window.scrollY >= root.scrollHeight - 4) {
-        next = count - 1
-      }
-      if (next !== last) {
-        last = next
-        setCurrent(next)
-      }
-    }
-
-    const requestUpdate = () => {
-      if (!frame) frame = requestAnimationFrame(update)
-    }
-
-    update()
-    window.addEventListener('scroll', requestUpdate, { passive: true })
-    window.addEventListener('resize', requestUpdate)
-    return () => {
-      window.removeEventListener('scroll', requestUpdate)
-      window.removeEventListener('resize', requestUpdate)
-      if (frame) cancelAnimationFrame(frame)
-    }
-  }, [chapters, count])
 
   useEffect(() => () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)

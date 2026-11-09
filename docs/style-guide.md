@@ -118,7 +118,7 @@
 1. 页面外框统一 `width: 100%; max-width: var(--page-*); margin-inline: auto; padding-top: var(--page-top)`。
 2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`；列表页描述限制在 `--measure`，文章页跟随 `--measure-post`。
 3. 页头与正文间距统一 `--page-header-gap`，不再各页写 32 / 40 / 64。
-4. 文章详情正文使用 `--measure-post`（65ch），页面宽度 = 正文 + 左右内边距；不再保留左侧目录列。
+4. 文章详情正文使用 `--measure-post`（65ch），页面宽度 = 正文 + 左右内边距；不设左侧目录列，章节目录用右下角目录岛（`TocIsland`，≤1200 与打印隐藏）。
 5. Player 与 Lab 不参与页面骨架。
 
 ### 响应式断点（已落地）
@@ -147,7 +147,7 @@
 | `--z-sticky` | 100 | 顶栏 |
 | `--z-dock` | 1000 | 底部主题切换器 |
 | `--z-dock-panel` | 1100 | 背景设置面板，盖住 dock |
-| `--z-modal` | 1200 | 预留，首个弹窗启用 |
+| `--z-modal` | 1200 | 右下目录岛（TocIsland） |
 
 规则：
 
@@ -289,7 +289,8 @@ npm run build
 | 页面骨架 / 容器宽度 | `src/styles/tokens.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
 | 响应式断点 | `src/lib/breakpoints.js`、各 CSS 的 `@media` | 只用 1200 / 900 / 768 / 600；桌面优先、同文件降序 |
 | 全局层级 | `src/styles/tokens.css` 的 `--z-*`、`src/components/Header.css` 的 `--nav-z-*` | 浮层用 token；组件内部小整数保留 |
-| 正文栏宽 | `src/styles/tokens.css` 的 `--measure`、`--measure-post`、`src/pages/Post.css` | 列表摘要 35em；文章详情 65ch，居中且无目录列 |
+| 正文栏宽 | `src/styles/tokens.css` 的 `--measure`、`--measure-post`、`src/pages/Post.css` | 列表摘要 35em；文章详情 65ch，居中且无左侧目录列 |
+| 文章目录 | `src/components/ChapterRail.jsx`、`src/components/TocIsland.jsx`、`src/hooks/useTocActive.js` | 右侧刻度轨与右下目录岛共用同一份滚动定位；目录岛高度跟导航设置（`settings.height * 0.9`） |
 | 圆角 | `src/styles/tokens.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
 | 图片比例 | `src/styles/tokens.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
 | 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |

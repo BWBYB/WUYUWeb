@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getAdjacentPosts, getPostBySlug } from '../lib/content/posts'
 import ChapterRail from '../components/ChapterRail'
+import TocIsland from '../components/TocIsland'
 import '../styles/effects.css'
 import './Post.css'
 
@@ -109,7 +110,8 @@ export default function Post() {
         <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
 
-      {post.toc.length >= 3 && <ChapterRail key={post.slug} chapters={post.toc} />}
+      {post.toc.length >= 3 && <ChapterRail key={`rail-${post.slug}`} chapters={post.toc} />}
+      {post.toc.length >= 3 && <TocIsland key={post.slug} chapters={post.toc} />}
 
       <nav className="post-navigation" aria-label="文章导航">
         {previous ? (
