@@ -38,7 +38,9 @@
 | `--fs-micro` | 12px | 元信息、标签、面板说明 |
 | `--fs-ui` | 14px | 导航、页脚、次要正文、控件 |
 | `--fs-body` | 16px | 正文、卡片标题 |
+| `--fs-lead` | 18px | 导语、列表摘要 |
 | `--fs-heading-sm` | 20px | 区块标题、文章 h2/h3 |
+| `--fs-heading-md` | 24px | 列表标题 |
 | `--fs-heading` | 28px | 大区块标题、移动端页面标题 |
 | `--fs-display` | 36px | 桌面页面标题、文章标题 |
 
@@ -54,7 +56,7 @@
 
 `index.html` 实际加载 IBM Plex Mono 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
 
-全站正文与 UI 使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 ASCII 使用 `--mono`（同为 IBM Plex Mono），引言等短句使用 `--serif`。中文由回退字体渲染，拉丁字符保持等宽。
+全站 UI 与元信息使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 ASCII 使用 `--mono`（同为 IBM Plex Mono），文章/列表标题、文章正文与摘要使用 `--serif-editorial`（英文 New York → 中文思源宋体），引言等短句使用 `--serif`。中文由回退字体渲染，正文英文不再走等宽。
 
 信息型小字（分类、脚注、标签、kicker，12–14px）与页脚文字使用 `--accent-font`（得意黑 Smiley Sans，经 jsDelivr 加载，只有 400 一档）。导航项与更多面板使用 `--sans`；得意黑不用于标题、正文、按钮和表单控件；日期、编号、ASCII 等需要对齐的小字仍用 `--mono`。
 
@@ -106,15 +108,15 @@
 
 | Token | 值 | 用途 |
 | --- | --- | --- |
-| `--page-max` | 1100px | 首页、文章列表、关于、设置 |
-| `--page-compact` | 820px | 归档、时间线 |
+| `--page-max` | 1100px | 首页、关于、设置、简历 |
+| `--page-compact` | 820px | 文章列表、归档、时间线 |
 | `--page-top` | 16px | 所有页面统一顶部留白 |
 | `--page-header-gap` | 48px | 页头与正文之间 |
 
 规则：
 
 1. 页面外框统一 `width: 100%; max-width: var(--page-*); margin-inline: auto; padding-top: var(--page-top)`。
-2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`，并限制在 `--measure`。
+2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`；列表页描述限制在 `--measure`，文章页跟随 `--measure-post`。
 3. 页头与正文间距统一 `--page-header-gap`，不再各页写 32 / 40 / 64。
 4. 文章详情正文使用 `--measure-post`（65ch），页面宽度 = 正文 + 左右内边距；不再保留左侧目录列。
 5. Player 与 Lab 不参与页面骨架。
@@ -280,7 +282,7 @@ npm run build
 | 全局颜色 / 语义 | `src/styles/tokens.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
 | 新增一个语义色 | 同上，三种模式都要给值 | 深色、白色、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
-| 字号 | `src/styles/tokens.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
+| 字号 | `src/styles/tokens.css` 的 `--fs-*` | 8 档已固定；移动端在 `max-width: 768px` 覆盖 |
 | 字重 | `src/styles/tokens.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
 | 行高 | `src/styles/tokens.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
 | 间距 | `src/styles/tokens.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |

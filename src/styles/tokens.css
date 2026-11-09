@@ -101,14 +101,18 @@
   --serif: 'Noto Serif SC', Georgia, serif;
   --mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
   --accent-font: 'Smiley Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* 文章标题与正文：英文 New York，中文思源宋体 */
+  --serif-editorial: ui-serif, Georgia, 'Noto Serif SC', serif;
 
-  /* ── 字号阶梯（6 档）──
+  /* ── 字号阶梯（8 档）──
      组件与页面只引用这些变量，不再写裸 px。
      中文正文最小 12px；标题字距 0~+0.01em，禁止负字距。 */
   --fs-micro: 0.75rem;      /* 12 元信息、标签、面板说明 */
   --fs-ui: 0.875rem;        /* 14 导航、页脚、次要正文 */
   --fs-body: 1rem;          /* 16 正文、卡片标题 */
+  --fs-lead: 1.125rem;      /* 18 导语、列表摘要 */
   --fs-heading-sm: 1.25rem; /* 20 区块标题、文章 h2/h3 */
+  --fs-heading-md: 1.5rem;  /* 24 列表标题 */
   --fs-heading: 1.75rem;    /* 28 大区块标题、移动端页面标题 */
   --fs-display: 2.25rem;    /* 36 桌面页面标题、文章标题 */
 

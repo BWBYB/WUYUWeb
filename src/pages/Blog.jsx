@@ -4,6 +4,16 @@ import { getCategories, getPostsByCategory } from '../lib/content/posts'
 import '../styles/effects.css'
 import './Blog.css'
 
+const numeralPattern = /(\d+(?:-\d+)*)/
+
+function renderPostTitle(title) {
+  return title.split(numeralPattern).map((part, index) =>
+    index % 2 === 1
+      ? <span key={index} className="blog-post-title-num">{part}</span>
+      : part
+  )
+}
+
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState('全部')
   const categories = ['全部', ...getCategories()]
@@ -37,20 +47,22 @@ export default function Blog() {
       {/* Posts */}
       <div className="blog-post-list">
         {filteredPosts.map((post, index) => (
-          <article key={post.slug} className={`blog-post-card glass-card fade-in fade-in-${Math.min(index + 2, 5)}`}>
-            <div className="blog-post-meta">
-              {post.category && <span className="blog-post-category">{post.category}</span>}
-              <time className="blog-post-date">{post.date}</time>
-            </div>
-            <Link to={`/blog/${post.slug}`} className="blog-post-link">
-              <h2 className="blog-post-title">{post.title}</h2>
+          <article key={post.slug} className={`blog-post-row fade-in fade-in-${Math.min(index + 2, 5)}`}>
+            <Link to={`/blog/${post.slug}`} className="blog-post-row-link">
+              <div className="blog-post-row-head">
+                <h2 className="blog-post-title">{renderPostTitle(post.title)}</h2>
+                <span className="blog-post-rule" aria-hidden="true" />
+                <time className="blog-post-date" dateTime={post.date}>{post.date}</time>
+              </div>
               <p className="blog-post-excerpt">{post.summary}</p>
-              {post.tags.length > 0 && (
-                <div className="blog-post-tags" aria-label="文章标签">
-                  {post.tags.map((tag) => <span key={tag}>#{tag}</span>)}
-                </div>
-              )}
-              <span className="read-more">阅读全文 &rarr;</span>
+              <div className="blog-post-row-foot">
+                {post.category && <span className="blog-post-category">{post.category}</span>}
+                {post.tags.length > 0 && (
+                  <div className="blog-post-tags" aria-label="文章标签">
+                    {post.tags.map((tag) => <span key={tag}>#{tag}</span>)}
+                  </div>
+                )}
+              </div>
             </Link>
           </article>
         ))}

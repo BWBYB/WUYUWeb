@@ -72,7 +72,7 @@ export default function Post() {
         {post.cover && <img className="post-cover media media--wide" src={post.cover} alt="" />}
       </header>
 
-      <div className="post-content glass-card">
+      <div className="post-content">
         <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
 
