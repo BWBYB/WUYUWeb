@@ -214,25 +214,159 @@
   line-height: var(--lh-ui);
 }
 
-/* 关于领衔的内容窗口：半透明玻璃，盖住吸附的首屏，内部随滚动平移。 */
+/* 新闻纸内容窗口：单栏纸面，装订孔与铜色页边线；内部随滚动平移。 */
 .resume-window {
+  /* 纸面上不再用主题玻璃色，统一换成固定纸色与墨色文字 */
+  --content-strong: var(--paper-news-ink);
+  --content-default: var(--paper-news-text);
+  --content-muted: var(--paper-news-muted);
+  --border-subtle: var(--paper-news-line);
+  --border-strong: var(--paper-news-line-strong);
+  --surface-card: color-mix(in srgb, var(--paper-news-ink) 4%, transparent);
+  --surface-card-hover: color-mix(in srgb, var(--paper-news-ink) 7%, transparent);
+  --surface-inset: color-mix(in srgb, var(--paper-news-ink) 5%, transparent);
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+
   position: relative;
   z-index: 1;
   overflow: hidden;
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface-canvas) 86%, transparent);
+  border: 1px solid var(--paper-news-line-strong);
+  /* 纸张比玻璃卡更接近直角，只留一点圆 */
+  border-radius: var(--radius-sm);
+  background: transparent;
   box-shadow: var(--shadow-2);
-  -webkit-backdrop-filter: blur(12px) saturate(var(--glass-saturation));
-  backdrop-filter: blur(12px) saturate(var(--glass-saturation));
+}
+
+/* 纸面本体：印刷网点、铜色页边线与装订孔，孔洞透出背后的水体 */
+.resume-window::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  /* 纸面留一点透明，背后的水体与字符会像隔着薄纸透出来；
+     背景模糊把背后字符柔化成色块，避免和纸面正文抢读 */
+  background-color: color-mix(in srgb, var(--paper-news) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
+  backdrop-filter: blur(14px) saturate(1.04);
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--paper-news-ink) 11%, transparent) 0.7px, transparent 1.1px),
+    radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--accent) 6%, transparent) 0.6px, transparent 1px),
+    linear-gradient(90deg, transparent 35px, color-mix(in srgb, var(--accent) 55%, transparent) 35px 36px, transparent 36px),
+    radial-gradient(120% 90% at 50% 0%, var(--paper-news-sheen), transparent 62%);
+  background-size: 3px 3px, 5px 5px, 100% 100%, 100% 100%;
+  background-position: 0 0, 1px 2px, 0 0, 0 0;
+  box-shadow:
+    inset 0 0 38px var(--paper-news-shade),
+    inset 0 1px 0 var(--paper-news-sheen);
+  -webkit-mask-image: radial-gradient(circle at 18px 36px, transparent 4.8px, rgb(0 0 0) 5.6px);
+  -webkit-mask-size: 100% 62px;
+  -webkit-mask-repeat: repeat;
+  mask-image: radial-gradient(circle at 18px 36px, transparent 4.8px, rgb(0 0 0) 5.6px);
+  mask-size: 100% 62px;
+  mask-repeat: repeat;
+  pointer-events: none;
+}
+
+/* 细纤维颗粒，和纸面共用同一套装订孔 mask */
+.resume-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: var(--paper-grain);
+  background-size: 160px 160px;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(circle at 18px 36px, transparent 4.8px, rgb(0 0 0) 5.6px);
+  -webkit-mask-size: 100% 62px;
+  -webkit-mask-repeat: repeat;
+  mask-image: radial-gradient(circle at 18px 36px, transparent 4.8px, rgb(0 0 0) 5.6px);
+  mask-size: 100% 62px;
+  mask-repeat: repeat;
+  pointer-events: none;
 }
 
 .resume-window-inner {
+  position: relative;
+  z-index: 1;
   min-width: 0;
 }
 
+/* 左侧留出装订孔与页边线的装订槽，右侧保持原内边距 */
 .resume-window .resume-section {
-  padding-inline: var(--card-pad-feature);
+  padding-inline: calc(var(--card-pad-feature) + var(--space-5)) var(--card-pad-feature);
+}
+
+/* 纸面有底色，标题与正文不再需要水体阴影 */
+.resume-window .resume-section-title,
+.resume-window .resume-summary {
+  text-shadow: none;
+}
+
+/* 亮铜在浅纸上的小字对比度不够，序号与学校换成深赭色 */
+.resume-window .resume-project-index,
+.resume-window .resume-entry-org {
+  color: var(--paper-news-accent);
+}
+
+/* 浅色主题背景本来就亮，纸再透会和页面糊成一片；少透一点保住纸的边缘 */
+html[data-site-theme='light'] .resume-window::before {
+  background-color: color-mix(in srgb, var(--paper-news) 94%, transparent);
+}
+
+/* 纸面盖满视口时导航改墨色；header 的 token 是 inline 注入的，只能 !important */
+html[data-resume-paper='cover'] .site-header {
+  --nav-content-color: var(--paper-news-ink) !important;
+  --nav-action-color: var(--paper-news-accent) !important;
+}
+
+/* 纸面上的卡片与胶囊改轻墨色描边，不再用玻璃反光 */
+.resume-window .glass-card {
+  border-color: var(--paper-news-line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--paper-news-ink) 3%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--paper-news-sheen),
+    0 1px 2px color-mix(in srgb, var(--paper-news-ink) 8%, transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.resume-window .resume-project-loop .resume-tag,
+.resume-window .resume-experience-loop .resume-tag {
+  border-color: var(--paper-news-line);
+  background: color-mix(in srgb, var(--paper-news-ink) 3%, transparent);
+  color: var(--paper-news-text);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.resume-window .btn--glass {
+  border-color: var(--paper-news-line);
+  background: color-mix(in srgb, var(--paper-news-ink) 4%, transparent);
+  color: var(--content-strong);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.resume-window .btn--glass:hover {
+  border-color: var(--paper-news-line-strong);
+  background: color-mix(in srgb, var(--paper-news-ink) 7%, transparent);
+  color: var(--paper-news-accent);
+}
+
+.resume-window .btn--glass:active {
+  background: color-mix(in srgb, var(--paper-news-ink) 11%, transparent);
+  color: var(--content-strong);
+}
+
+/* 时间线圆点的描边跟随纸色 */
+.resume-window .resume-entry::before {
+  border-color: var(--paper-news);
 }
 
 /* 入场由滚动动画承担，不再等 IntersectionObserver 淡入 */
@@ -685,6 +819,12 @@ html.lenis body {
     box-shadow: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  /* 打印时去掉纸面、装订孔与纤维颗粒 */
+  .resume-window::before,
+  .resume-window::after {
+    display: none !important;
   }
 
   .resume-window .resume-section {

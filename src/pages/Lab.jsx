@@ -14,6 +14,7 @@ import CurvedLoop from '../components/lab/CurvedLoop'
 import CurvedLogoLoop from '../components/lab/CurvedLogoLoop'
 import AsciiLogo from '../components/lab/AsciiLogo'
 import LogoWellStyles from '../components/lab/LogoWellStyles'
+import PaperStyles from '../components/lab/PaperStyles'
 import { PIECES } from '../components/lab/logoPieces'
 import StickerPeel from '../components/lab/StickerPeel'
 import Crosshair from '../components/lab/Crosshair'
@@ -706,6 +707,7 @@ export default function Lab() {
     { title: 'Curved Loop', subtitle: '曲线文字循环', component: <CurvedLoopDemo /> },
     { title: 'Curved Logo Loop', subtitle: 'ASCII 徽标曲线', component: <CurvedLogoLoopDemo />, wide: true },
     { title: 'Logo Wells', subtitle: 'ASCII 承接面五选', component: <LogoWellStyles />, wide: true },
+    { title: 'Paper Styles', subtitle: '纸质面板五选', component: <PaperStyles />, wide: true },
     { title: 'Sticker Peel', subtitle: '可拖拽贴纸', component: <StickerPeelDemo /> },
     { title: 'Crosshair', subtitle: '十字准星光标', component: <CrosshairDemo /> },
     { title: 'Liquid Button', subtitle: '液态玻璃按钮', component: <LiquidGlassButtonDemo /> },

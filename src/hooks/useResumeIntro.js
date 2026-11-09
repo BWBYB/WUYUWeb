@@ -14,13 +14,24 @@ export default function useResumeIntro(ref, innerRef) {
     const hero = intro.querySelector('.resume-hero')
     const small = window.matchMedia('(max-width: 768px)')
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const root = document.documentElement
     let frame = null
     let limit = 0
+    let paperCovered = false
+
+    // 纸面盖满视口后导航要换墨色，否则深色主题的浅字会压在浅纸上
+    const setPaperCover = (on) => {
+      if (on === paperCovered) return
+      paperCovered = on
+      if (on) root.setAttribute('data-resume-paper', 'cover')
+      else root.removeAttribute('data-resume-paper')
+    }
 
     const clear = () => {
       intro.style.removeProperty('--intro-progress')
       intro.style.removeProperty('--window-scroll')
       intro.style.removeProperty('--window-shift')
+      setPaperCover(false)
     }
 
     const update = () => {
@@ -35,6 +46,7 @@ export default function useResumeIntro(ref, innerRef) {
       const shift = clamp(-top - heroHeight, 0, limit)
       intro.style.setProperty('--intro-progress', progress.toFixed(4))
       intro.style.setProperty('--window-shift', `${shift.toFixed(1)}px`)
+      setPaperCover(progress >= 1)
     }
 
     const schedule = () => {
@@ -76,6 +88,7 @@ export default function useResumeIntro(ref, innerRef) {
       window.removeEventListener('resize', modeChange)
       small.removeEventListener('change', modeChange)
       reduced.removeEventListener('change', modeChange)
+      setPaperCover(false)
     }
   }, [ref, innerRef])
 }

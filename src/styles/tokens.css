@@ -64,6 +64,18 @@
   --selection-bg: #c4713f;
   --selection-fg: #0a0b0b;
 
+  /* ── 新闻纸面板（简历内容窗口）──
+     纸色固定，深浅主题都不反色；文字改用纸面墨色。 */
+  --paper-news: #fbfbf9;
+  --paper-news-ink: #2b2c29;
+  --paper-news-text: #4c4d46;
+  --paper-news-muted: #66675e;
+  --paper-news-accent: #94461f;
+  --paper-news-line: rgba(43, 44, 41, 0.2);
+  --paper-news-line-strong: rgba(43, 44, 41, 0.32);
+  --paper-news-sheen: rgba(255, 255, 255, 0.55);
+  --paper-news-shade: rgba(98, 98, 92, 0.13);
+
   /* ── 旧名别名（迁移期，迁完删）── */
   --bg: var(--surface-canvas);
   --bg-card: var(--surface-card);
