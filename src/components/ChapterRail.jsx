@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { audioEngine } from '../lib/audio-engine'
 
 const SPY_OFFSET = 120
 const FALLOFF_ROWS = 2.6
@@ -34,6 +35,79 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
     media.addEventListener('change', sync)
     return () => media.removeEventListener('change', sync)
   }, [])
+
+  useEffect(() => {
+    if (!count) return undefined
+    let raf = 0
+    let playing = false
+    let timeData = null
+    const levels = new Float32Array(count)
+    const ticks = navRef.current ? [...navRef.current.querySelectorAll('.chapter-rail__tick')] : []
+
+    const clearWave = () => {
+      ticks.forEach((tick) => tick.style.removeProperty('--wave'))
+      levels.fill(0)
+    }
+
+    const frame = () => {
+      raf = 0
+      if (reducedRef.current) {
+        clearWave()
+        return
+      }
+
+      const analyser = audioEngine.getAnalyser()
+      let level = 0
+      if (playing && analyser) {
+        if (!timeData || timeData.length !== analyser.fftSize) {
+          timeData = new Uint8Array(analyser.fftSize)
+        }
+        analyser.getByteTimeDomainData(timeData)
+        let sum = 0
+        for (let i = 0; i < timeData.length; i += 1) {
+          const sample = (timeData[i] - 128) / 128
+          sum += sample * sample
+        }
+        level = Math.min(1, Math.sqrt(sum / timeData.length) * 3.2)
+      }
+
+      const phase = performance.now() * 0.004
+      let peak = 0
+      levels.forEach((value, index) => {
+        const envelope = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(phase - index * 0.75))
+        const target = playing ? level * envelope : 0
+        const next = value + (target - value) * 0.18
+        levels[index] = next
+        peak = Math.max(peak, next)
+        ticks[index]?.style.setProperty('--wave', next.toFixed(3))
+      })
+
+      if (!playing && peak < 0.004) {
+        clearWave()
+        return
+      }
+      raf = requestAnimationFrame(frame)
+    }
+
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(frame)
+    }
+
+    const unsubscribe = audioEngine.subscribe((next) => {
+      if (next.isPlaying === playing) return
+      playing = next.isPlaying
+      start()
+    })
+
+    playing = audioEngine.getState().isPlaying
+    if (playing) start()
+
+    return () => {
+      unsubscribe()
+      if (raf) cancelAnimationFrame(raf)
+      clearWave()
+    }
+  }, [count])
 
   useEffect(() => {
     if (!count) return undefined

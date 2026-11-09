@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { audioEngine } from '../lib/audio-engine'
 import './Player.css'
 
 // Sample cassette data with audio frequencies for each track
@@ -78,10 +79,11 @@ const cassettes = [
 ]
 
 export default function Player() {
-  const [currentCassette, setCurrentCassette] = useState(0)
+  const [initialAudio] = useState(audioEngine.getState)
+  const [currentCassette, setCurrentCassette] = useState(initialAudio.cassetteId ?? 0)
   const [isInserted, setIsInserted] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTrack, setCurrentTrack] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(initialAudio.isPlaying)
+  const [currentTrack, setCurrentTrack] = useState(initialAudio.trackIndex ?? 0)
   const [showLibrary, setShowLibrary] = useState(false)
   const [isEjecting, setIsEjecting] = useState(false)
   const [isInserting, setIsInserting] = useState(false)
@@ -93,22 +95,17 @@ export default function Player() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
-  const [volume, setVolume] = useState(0.3)
+  const [volume, setVolume] = useState(initialAudio.volume)
   const [cassetteData, setCassetteData] = useState(cassettes)
   const [customTracks, setCustomTracks] = useState({}) // { cassetteId: [{name, url, file}] }
   const [isEditing, setIsEditing] = useState(false)
   const [editColors, setEditColors] = useState({ color: '', labelColor: '', stickerColor: '' })
-  const audioElementRef = useRef(null)
   const vuAnimRef = useRef(null)
   const reelAnimRef = useRef(null)
   const fileInputRef = useRef(null)
   const walkmanRef = useRef(null)
   const libraryRef = useRef(null)
   const carouselRef = useRef(null)
-  const audioContextRef = useRef(null)
-  const oscillatorRef = useRef(null)
-  const gainNodeRef = useRef(null)
-  const analyserRef = useRef(null)
   const dragStartRef = useRef({ x: 0, time: 0 })
   const dragVelocityRef = useRef(0)
   const lastDragXRef = useRef(0)
@@ -123,103 +120,57 @@ export default function Player() {
     : cassette.tracks
   const track = allTracks[currentTrack] || allTracks[0]
 
-  // Initialize audio context
-  const initAudio = useCallback(() => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
-      gainNodeRef.current = audioContextRef.current.createGain()
-      analyserRef.current = audioContextRef.current.createAnalyser()
-      analyserRef.current.fftSize = 256
-      gainNodeRef.current.connect(analyserRef.current)
-      analyserRef.current.connect(audioContextRef.current.destination)
-      gainNodeRef.current.gain.value = volume
-    }
-  }, [volume])
+  const trackRef = useRef(track)
+  useEffect(() => {
+    trackRef.current = track
+  })
 
-  // Start playing current track
-  const startAudio = useCallback(() => {
-    initAudio()
-    
-    const ctx = audioContextRef.current
-    if (ctx.state === 'suspended') {
-      ctx.resume()
+  // Audio lives in a module-level engine so it survives route changes
+  useEffect(() => {
+    if (isPlaying && isInserted) {
+      const active = audioEngine.getState()
+      if (
+        active.isPlaying
+        && active.cassetteId === currentCassette
+        && active.trackIndex === currentTrack
+      ) return
+      audioEngine.play(trackRef.current, { cassetteId: currentCassette, trackIndex: currentTrack })
+      return
     }
-    
-    // Stop previous audio source
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop()
-      oscillatorRef.current = null
-    }
-    if (audioElementRef.current) {
-      audioElementRef.current.pause()
-      audioElementRef.current = null
-    }
-    
-    const gain = gainNodeRef.current
-    
-    if (track.isCustom && track.url) {
-      // Play real audio file
-      const audio = new Audio(track.url)
-      audio.crossOrigin = 'anonymous'
-      const source = ctx.createMediaElementSource(audio)
-      source.connect(gain)
-      audio.play().catch(() => {})
-      audioElementRef.current = audio
-      oscillatorRef.current = null
-    } else {
-      // Fallback: oscillator-based tone
-      const osc = ctx.createOscillator()
-      osc.type = track.type || 'sine'
-      osc.frequency.value = track.freq || 440
-      
-      // Add some vibrato for interest
-      const lfo = ctx.createOscillator()
-      const lfoGain = ctx.createGain()
-      lfo.frequency.value = 5
-      lfoGain.gain.value = 2
-      lfo.connect(lfoGain)
-      lfoGain.connect(osc.frequency)
-      lfo.start()
-      
-      osc.connect(gain)
-      osc.start()
-      oscillatorRef.current = osc
-    }
-  }, [track, initAudio])
+    audioEngine.stop()
+  }, [isPlaying, isInserted, currentCassette, currentTrack])
 
-  // Stop audio
-  const stopAudio = useCallback(() => {
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop()
-      oscillatorRef.current = null
-    }
-    if (audioElementRef.current) {
-      audioElementRef.current.pause()
-      audioElementRef.current.currentTime = 0
-      audioElementRef.current = null
-    }
+  useEffect(() => {
+    return audioEngine.subscribe((next) => {
+      if (!next.isPlaying) setIsPlaying(false)
+    })
   }, [])
 
   // Update VU meter based on audio analysis
   useEffect(() => {
-    if (!isPlaying || !analyserRef.current) {
+    if (!isPlaying) {
       setVuLevel(0)
-      return
+      return undefined
     }
-    
-    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
-    
+
+    const analyser = audioEngine.getAnalyser()
+    if (!analyser) {
+      setVuLevel(0)
+      return undefined
+    }
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount)
+
     const updateVU = () => {
-      if (!analyserRef.current) return
-      analyserRef.current.getByteFrequencyData(dataArray)
+      analyser.getByteFrequencyData(dataArray)
       const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length
       const level = average / 255
       setVuLevel(level * 0.8 + Math.random() * 0.2)
       vuAnimRef.current = requestAnimationFrame(updateVU)
     }
-    
+
     updateVU()
-    
+
     return () => {
       if (vuAnimRef.current) {
         cancelAnimationFrame(vuAnimRef.current)
@@ -228,24 +179,9 @@ export default function Player() {
     }
   }, [isPlaying])
 
-  // Handle play state changes
+  // Keep engine volume in sync
   useEffect(() => {
-    if (isPlaying && isInserted) {
-      startAudio()
-    } else {
-      stopAudio()
-      if (!isPlaying) setVuLevel(0)
-    }
-    return () => {
-      stopAudio()
-    }
-  }, [isPlaying, isInserted, startAudio, stopAudio])
-
-  // Update volume
-  useEffect(() => {
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = volume
-    }
+    audioEngine.setVolume(volume)
   }, [volume])
 
   // Animate reels when playing
