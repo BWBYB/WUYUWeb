@@ -72,23 +72,8 @@ export default function Post() {
         {post.cover && <img className="post-cover media media--wide" src={post.cover} alt="" />}
       </header>
 
-      <div className="post-layout">
-        {post.toc.length > 0 && (
-          <aside className="post-toc" aria-label="文章目录">
-            <strong>目录</strong>
-            <nav>
-              {post.toc.map((item) => (
-                <a key={item.id} className={`toc-level-${item.level}`} href={`#${item.id}`}>
-                  {item.title}
-                </a>
-              ))}
-            </nav>
-          </aside>
-        )}
-
-        <div className="post-content glass-card">
-          <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
-        </div>
+      <div className="post-content glass-card">
+        <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
 
       {post.toc.length >= 3 && <ChapterRail key={post.slug} chapters={post.toc} />}

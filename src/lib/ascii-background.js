@@ -108,8 +108,6 @@ const DIM_SELECTOR = [
   '.main .post-header-category',
   '.main .post-header-date',
   '.main .post-tag',
-  '.main .post-toc-title',
-  '.main .post-toc a',
   '.main .archive-year',
   '.main .archive-month',
   '.main .settings-page-kicker',
