@@ -187,9 +187,10 @@ export default function TocIsland({ chapters, label = '目录' }) {
           id="toc-island-panel"
           className="toc-island__panel"
           role="dialog"
-          aria-label={label}
+          aria-labelledby="toc-island-heading"
           inert={!open || undefined}
         >
+          <div id="toc-island-heading" className="toc-island__heading">{label}</div>
           <div className="toc-island__list">
             {chapters.map((chapter, index) => (
               <button

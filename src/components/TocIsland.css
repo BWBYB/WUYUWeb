@@ -15,6 +15,7 @@
 
 .toc-island.glass-card {
   --toc-radius: calc(var(--toc-h, 63px) / 2);
+  --toc-ring-track: color-mix(in srgb, var(--content-strong) 16%, transparent);
   position: fixed;
   /* 46 = header 侧边 32 + 胶囊内衬 14，与分裂导航右边缘对齐 */
   right: 46px;
@@ -29,7 +30,6 @@
   animation: toc-island-enter 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
   transition:
     height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.25s ease,
     border-color 0.25s ease,
     box-shadow 0.25s ease;
@@ -47,10 +47,10 @@
   }
 }
 
-/* 展开高度 = 原 400 上浮 25%；顶到视口时按上下 16 留白收住 */
+/* 展开高度 = 原 400 上浮 25%；顶到视口时按上下 16 留白收住。
+   圆角与收起态一致，保持胶囊半径不变。 */
 .toc-island.is-open {
   height: min(500px, calc(100dvh - var(--space-4) * 2));
-  border-radius: var(--radius-lg);
 }
 
 /* 原药丸位置常驻为底部操作条：收起显示章节标题，展开显示橙色计数。
@@ -243,7 +243,7 @@
 }
 
 .toc-island__ring:hover {
-  background: var(--surface-card-hover);
+  background-color: var(--toc-ring-track);
   color: var(--content-strong);
 }
 
@@ -260,7 +260,7 @@
 }
 
 .toc-island__ring-track {
-  stroke: color-mix(in srgb, var(--content-strong) 16%, transparent);
+  stroke: var(--toc-ring-track);
 }
 
 .toc-island__ring-progress {
@@ -302,13 +302,22 @@
   transition-delay: 0.1s;
 }
 
+.toc-island__heading {
+  padding: var(--space-4) var(--space-4) 0;
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.12em;
+  line-height: var(--lh-ui);
+}
+
 .toc-island__list {
   position: relative;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: var(--space-4) var(--space-3) var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2);
   scroll-padding-block: var(--space-2);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
