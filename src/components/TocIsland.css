@@ -261,6 +261,12 @@
 
 .toc-island__ring-track {
   stroke: var(--toc-ring-track);
+  transition: opacity 0.18s ease;
+}
+
+/* 悬浮底色已复刻空轨道色，轨道淡出避免两层半透明叠加产生色差 */
+.toc-island__ring:hover .toc-island__ring-track {
+  opacity: 0;
 }
 
 .toc-island__ring-progress {
@@ -303,12 +309,11 @@
 }
 
 .toc-island__heading {
-  padding: var(--space-4) var(--space-4) 0;
-  color: var(--content-muted);
-  font-size: var(--fs-micro);
+  padding: var(--space-4) var(--space-4) var(--space-1);
+  color: var(--content-strong);
+  font-size: var(--fs-ui);
   font-weight: var(--fw-medium);
-  letter-spacing: 0.12em;
-  line-height: var(--lh-ui);
+  line-height: var(--lh-heading);
 }
 
 .toc-island__list {
@@ -405,6 +410,7 @@
   .toc-island__count,
   .toc-island__panel,
   .toc-island__ring,
+  .toc-island__ring-track,
   .toc-island__ring-progress,
   .toc-island__title--in,
   .toc-island__title--out,

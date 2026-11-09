@@ -111,7 +111,7 @@ export default function Post() {
       </div>
 
       {post.toc.length >= 3 && <ChapterRail key={`rail-${post.slug}`} chapters={post.toc} />}
-      {post.toc.length >= 3 && <TocIsland key={post.slug} chapters={post.toc} />}
+      {post.toc.length >= 3 && <TocIsland key={post.slug} chapters={post.toc} title={post.title} />}
 
       <nav className="post-navigation" aria-label="文章导航">
         {previous ? (

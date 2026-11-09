@@ -11,7 +11,7 @@ const prefersReducedMotion = () => (
 
 const pad = (value) => String(value).padStart(2, '0')
 
-export default function TocIsland({ chapters, label = '目录' }) {
+export default function TocIsland({ chapters, title, label = '目录' }) {
   const { settings } = useThemeSwitcherTheme()
   const { current, progress, direction } = useTocActive(chapters, { progress: true })
   const [open, setOpen] = useState(false)
@@ -190,7 +190,7 @@ export default function TocIsland({ chapters, label = '目录' }) {
           aria-labelledby="toc-island-heading"
           inert={!open || undefined}
         >
-          <div id="toc-island-heading" className="toc-island__heading">{label}</div>
+          <div id="toc-island-heading" className="toc-island__heading">{title || label}</div>
           <div className="toc-island__list">
             {chapters.map((chapter, index) => (
               <button
