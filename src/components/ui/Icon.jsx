@@ -60,12 +60,6 @@ const icons = {
       <path d="M4 19h16" />
     </>
   ),
-  close: (
-    <>
-      <path d="m6 6 12 12" />
-      <path d="M18 6 6 18" />
-    </>
-  ),
   arrowUp: (
     <>
       <path d="M12 19V5" />

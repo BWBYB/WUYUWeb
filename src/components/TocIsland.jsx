@@ -9,14 +9,16 @@ const prefersReducedMotion = () => (
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 )
 
+const pad = (value) => String(value).padStart(2, '0')
+
 export default function TocIsland({ chapters, label = '目录' }) {
   const { settings } = useThemeSwitcherTheme()
   const { current, progress, direction } = useTocActive(chapters, { progress: true })
   const [open, setOpen] = useState(false)
 
-  const pillRef = useRef(null)
+  const islandRef = useRef(null)
+  const barRef = useRef(null)
   const panelRef = useRef(null)
-  const closeRef = useRef(null)
   const wasOpenRef = useRef(false)
 
   const count = chapters.length
@@ -25,6 +27,7 @@ export default function TocIsland({ chapters, label = '目录' }) {
   const activeTitle = activeChapter?.title ?? ''
   const minLevel = Math.min(...chapters.map((chapter) => chapter.level))
   const dashOffset = (100 - progress * 100).toFixed(2)
+  const countLabel = `${pad(safeIndex + 1)} / ${pad(count)}`
 
   // 原组件用 AnimatePresence 做标题切换：旧标题上滑淡出，新标题从下方滑入。
   // 这里保留同一套节奏，previous 只在新旧交替的 360ms 内存在。
@@ -43,8 +46,12 @@ export default function TocIsland({ chapters, label = '目录' }) {
   }, [titleSwap.previous, titleSwap.seq])
 
   useEffect(() => {
-    if (open) closeRef.current?.focus()
-    else if (wasOpenRef.current) pillRef.current?.focus()
+    if (open) {
+      const active = panelRef.current?.querySelector('[aria-current="location"]')
+      if (active) active.focus()
+    } else if (wasOpenRef.current) {
+      barRef.current?.focus()
+    }
     wasOpenRef.current = open
   }, [open])
 
@@ -63,8 +70,10 @@ export default function TocIsland({ chapters, label = '目录' }) {
     }
     if (!open || event.key !== 'Tab') return
 
-    const focusable = panelRef.current
-      ? [...panelRef.current.querySelectorAll('button')].filter((element) => !element.disabled)
+    const focusable = islandRef.current
+      ? [...islandRef.current.querySelectorAll('button')].filter((element) => (
+        !element.disabled && !element.closest('[inert]')
+      ))
       : []
     if (!focusable.length) return
 
@@ -92,6 +101,7 @@ export default function TocIsland({ chapters, label = '目录' }) {
   }
 
   function handleBackToTitle() {
+    setOpen(false)
     window.scrollTo({
       top: 0,
       behavior: prefersReducedMotion() ? 'instant' : 'smooth',
@@ -109,21 +119,25 @@ export default function TocIsland({ chapters, label = '目录' }) {
         onClick={() => setOpen(false)}
       />
       <div
+        ref={islandRef}
         className={`toc-island glass-card${open ? ' is-open' : ''}`}
         style={{ '--toc-h': `${height}px` }}
         onKeyDown={handleKeyDown}
       >
-        <div className="toc-island__pill-layer" inert={open || undefined}>
+        <div className="toc-island__bar">
           <button
-            ref={pillRef}
+            ref={barRef}
             type="button"
-            className="toc-island__pill"
+            className="toc-island__bar-toggle"
             aria-expanded={open}
             aria-controls="toc-island-panel"
-            aria-label={`展开${label}`}
-            onClick={() => setOpen(true)}
+            aria-label={open ? `收起${label}` : `展开${label}`}
+            onClick={() => setOpen((prev) => !prev)}
           >
-            <span className={`toc-island__titles${direction === 'up' ? ' is-up' : ''}`}>
+            <span
+              className={`toc-island__titles${direction === 'up' ? ' is-up' : ''}`}
+              aria-hidden={open}
+            >
               {titleSwap.previous !== null && (
                 <span
                   key={`toc-out-${titleSwap.seq}`}
@@ -139,6 +153,9 @@ export default function TocIsland({ chapters, label = '目录' }) {
               >
                 {titleSwap.current}
               </span>
+            </span>
+            <span className="toc-island__count" aria-hidden={!open}>
+              {countLabel}
             </span>
           </button>
           <button
@@ -170,23 +187,9 @@ export default function TocIsland({ chapters, label = '目录' }) {
           id="toc-island-panel"
           className="toc-island__panel"
           role="dialog"
-          aria-modal="true"
           aria-label={label}
           inert={!open || undefined}
         >
-          <div className="toc-island__header">
-            <span className="toc-island__label">{label}</span>
-            <button
-              ref={closeRef}
-              type="button"
-              className="toc-island__close"
-              aria-label="关闭目录"
-              onClick={() => setOpen(false)}
-            >
-              <Icon name="close" size={20} />
-            </button>
-          </div>
-
           <div className="toc-island__list">
             {chapters.map((chapter, index) => (
               <button
@@ -201,7 +204,6 @@ export default function TocIsland({ chapters, label = '目录' }) {
                 onClick={(event) => handleSelect(event, chapter)}
               >
                 <span className="toc-island__item-title">{chapter.title}</span>
-                <span className="toc-island__item-dot" aria-hidden="true" />
               </button>
             ))}
           </div>
