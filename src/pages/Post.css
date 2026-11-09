@@ -128,6 +128,112 @@
   font-size: var(--fs-micro);
 }
 
+/* Chapter rail：固定在最右侧的章节刻度轨，悬停放大并弹出章节卡 */
+.chapter-rail {
+  position: fixed;
+  top: 50%;
+  right: var(--space-2);
+  z-index: var(--z-dock);
+  width: 72px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+}
+
+.chapter-rail__nav {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.chapter-rail__link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: var(--rail-row, 18px);
+  outline: none;
+  cursor: pointer;
+}
+
+.chapter-rail__tick {
+  --rise: 0;
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--content-muted);
+  opacity: calc(0.22 + var(--rise) * 0.78);
+  transform: scaleX(calc(1 + var(--rise) * 1.8)) scaleY(calc(1 + var(--rise) * 0.4));
+  transform-origin: right center;
+  transition: background-color 0.2s ease;
+}
+
+.chapter-rail__link.is-major .chapter-rail__tick {
+  width: 24px;
+}
+
+.chapter-rail__link.is-passed .chapter-rail__tick {
+  background: var(--content-default);
+  opacity: calc(0.45 + var(--rise) * 0.55);
+}
+
+.chapter-rail__link.is-current .chapter-rail__tick {
+  background: var(--accent);
+  opacity: calc(0.95 + var(--rise) * 0.05);
+}
+
+.chapter-rail__link:focus-visible .chapter-rail__tick {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.chapter-rail__card {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  width: 224px;
+  margin-right: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-canvas) 88%, transparent);
+  box-shadow: var(--shadow-2);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 2)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(calc(var(--glass-blur) * 2)) saturate(var(--glass-saturation));
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-50%) translateX(6px);
+  transition: opacity 0.16s ease, transform 0.2s ease, top 0.2s ease;
+}
+
+.chapter-rail__card.is-visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.chapter-rail__meta {
+  display: block;
+  color: var(--accent);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.chapter-rail__title {
+  display: -webkit-box;
+  margin-top: var(--space-1);
+  overflow: hidden;
+  color: var(--content-strong);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 /* Post Content */
 .post-content {
   grid-column: 2;
@@ -157,6 +263,10 @@
   font-weight: var(--fw-medium);
   color: var(--text-h);
   margin: var(--space-6) 0 var(--space-3);
+}
+
+.post-content :is(h2, h3) {
+  scroll-margin-top: 104px;
 }
 
 .post-content ul,
@@ -300,6 +410,24 @@
   color: var(--text-muted);
   text-decoration: none;
   font-size: var(--fs-ui);
+}
+
+@media (max-width: 1200px) {
+  .chapter-rail {
+    display: none;
+  }
+}
+
+@media print {
+  .chapter-rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-rail__card {
+    transition: none;
+  }
 }
 
 @media (max-width: 768px) {
