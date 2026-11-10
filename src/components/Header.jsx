@@ -88,7 +88,7 @@ export default function Header({ paper = false }) {
   const isResumePage = location.pathname === '/resume' || location.pathname.startsWith('/resume/')
   // 「设置」页（点 ⚙ 进入）：只让导航选中胶囊淡出，logo 不变。
   const isSettingsPage = location.pathname === '/settings' || location.pathname.startsWith('/settings/')
-  // 探索 / CD机 收进「更多」后不再有独立导航项，进入这两页时隐藏选中胶囊
+  // 探索 / CD机 属于「更多」板块：选中胶囊停在「更多」按钮上，提示当前板块
   const isMorePage = location.pathname === '/lab' || location.pathname.startsWith('/lab/') ||
     location.pathname === '/player' || location.pathname.startsWith('/player/')
 
@@ -315,7 +315,7 @@ export default function Header({ paper = false }) {
       className={splitActive ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
       data-on-resume={isResumePage ? 'true' : undefined}
-      data-hide-capsule={isResumePage || isSettingsPage || isMorePage ? 'true' : undefined}
+      data-hide-capsule={isResumePage || isSettingsPage ? 'true' : undefined}
       data-settings-open={isSettingsOpen ? 'true' : undefined}
       data-more-open={isMoreOpen ? 'true' : undefined}
     >
@@ -335,6 +335,7 @@ export default function Header({ paper = false }) {
           onToggleSettings={toggleSettings}
           onToggleMore={toggleMore}
           moreOpen={isMoreOpen}
+          moreActive={isMorePage}
           paper={paper}
         />
 

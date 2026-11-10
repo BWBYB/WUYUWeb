@@ -303,6 +303,7 @@
 }
 
 /* 「关于」页（点 logo）或「设置」页（点 ⚙）：导航没有对应按钮，选中胶囊完全淡出隐藏。
+   「更多」里的页面（探索 / CD机）例外：胶囊停在「更多」按钮上，见 NavigationSwitcher。
    离开时淡入/恢复。 */
 .site-header[data-hide-capsule="true"] .nav-pill > .switcher--navigation::after {
   opacity: 0 !important;
