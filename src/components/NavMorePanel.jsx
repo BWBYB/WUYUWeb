@@ -24,10 +24,8 @@ export default function NavMorePanel({ open, onClose }) {
             onClick={onClose}
           >
             <Icon name={item.icon} size={20} className="nav-more-icon" />
-            <span className="nav-more-copy">
-              <span className="nav-more-label">{item.label}</span>
-              <span className="nav-more-desc">{item.description}</span>
-            </span>
+            <span className="nav-more-label">{item.label}</span>
+            <span className="nav-more-desc">{item.description}</span>
           </Link>
         )
       })}

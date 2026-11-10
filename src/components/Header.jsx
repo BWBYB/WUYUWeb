@@ -297,6 +297,7 @@ export default function Header({ paper = false }) {
     '--nav-content-color': contentColor,
     '--nav-action-color': actionColor,
     '--nav-glass-opacity': `${settings.glassOpacity}%`,
+    '--nav-active-opacity': `${settings.activeOpacity}%`,
     '--nav-blur': `${settings.blur}px`,
     '--nav-saturation': `${settings.saturation}%`,
     '--nav-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
