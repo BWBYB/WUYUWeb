@@ -185,6 +185,10 @@
   padding-inline: 1px;
   overflow: hidden;
   white-space: nowrap;
+  /* 裁切宽度按 ch 计算，ch 取栈首字体的数字宽：全站数字字体
+     得意黑（0 ≈ .49em）比 WUYU 实际落到的 IBM Plex Mono（.6em）窄，
+     会让盒子缩到裁掉末尾字母。这里固定回纯等宽栈，ch 与字母同度量。 */
+  font-family: var(--mono-fixed);
   color: var(--nav-content-color);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
