@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
 import { easingFromControls, scaledDuration } from './ui/nav-settings'
@@ -35,7 +35,7 @@ export default function Header({ paper = false }) {
     getCompactServerSnapshot,
   )
   const [isSplit, setIsSplit] = useState(false)
-  // 合并态点 ⚙：先强制分裂，再开面板。滚动判定之外的一个临时分裂态。
+  // 合并态点 ⚙ / 更多：先强制分裂再开面板；关闭后保持分裂，不再合并回去。
   const [isForcedSplit, setIsForcedSplit] = useState(false)
   // 设置小窗口（分裂态点 ⚙ 展开，右侧导航条向下拉伸）
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
@@ -43,7 +43,9 @@ export default function Header({ paper = false }) {
   const [isMoreOpen, setIsMoreOpen] = useState(false)
   const navPillRef = useRef(null)
   const openTimerRef = useRef(null)
-  const closeTimerRef = useRef(null)
+  // 路由切换后的一小段时间内页面高度变化会钳制滚动位置，
+  // 这种滚动不是用户手势，不能据此触发合并。
+  const navGraceRef = useRef(0)
   // 滚动回调里要读「面板是否开着」，但 effect 的闭包拿不到最新 state，用 ref 同步
   const isSettingsOpenRef = useRef(false)
   const isMoreOpenRef = useRef(false)
@@ -63,18 +65,13 @@ export default function Header({ paper = false }) {
     }
   }
 
-  const clearCloseTimer = () => {
-    if (closeTimerRef.current !== null) {
-      window.clearTimeout(closeTimerRef.current)
-      closeTimerRef.current = null
-    }
-  }
+  // 卸载时清掉延迟，避免在已卸载组件上 setState
+  useEffect(() => () => clearOpenTimer(), [])
 
-  // 卸载时清掉两个延迟，避免在已卸载组件上 setState
-  useEffect(() => () => {
-    clearOpenTimer()
-    clearCloseTimer()
-  }, [])
+  // useLayoutEffect：必须赶在浏览器因新页面高度钳制滚动之前设好宽限期
+  useLayoutEffect(() => {
+    navGraceRef.current = performance.now() + 260
+  }, [location.pathname])
 
   useEffect(() => {
     isSettingsOpenRef.current = isSettingsOpen
@@ -117,6 +114,15 @@ export default function Header({ paper = false }) {
     const update = () => {
       ticking = false
       const y = window.scrollY
+
+      // 路由切换宽限期内只同步基准，不判断方向，避免把滚动钳制当成上滑
+      if (performance.now() < navGraceRef.current) {
+        lastY = y
+        dir = 0
+        upAccum = 0
+        return
+      }
+
       const dy = y - lastY
       lastY = y
 
@@ -131,7 +137,6 @@ export default function Header({ paper = false }) {
       if (!beyondThreshold) {
         upAccum = 0
         clearOpenTimer()
-        clearCloseTimer()
 
         if (isSettingsOpenRef.current || isMoreOpenRef.current) {
           clearMergeTimer()
@@ -196,8 +201,7 @@ export default function Header({ paper = false }) {
     }
   }, [navSettings.stretchThreshold, panelCloseMergeMs])
 
-  // 关闭面板：若分裂是被 ⚙ 强制出来的，等面板收起后再合并，
-  // 避免「边收面板边缩胶囊」的抽搐。
+  // 关闭面板只收面板：从合并态展开出来的分裂保留，不再合并回去。
   const closePanels = useCallback(() => {
     setIsSettingsOpen(false)
     setIsMoreOpen(false)
@@ -206,20 +210,7 @@ export default function Header({ paper = false }) {
       window.clearTimeout(openTimerRef.current)
       openTimerRef.current = null
     }
-
-    if (!isForcedSplit) return
-
-    if (window.scrollY >= navSettings.stretchThreshold) {
-      setIsForcedSplit(false)
-      return
-    }
-
-    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current)
-    closeTimerRef.current = window.setTimeout(() => {
-      closeTimerRef.current = null
-      setIsForcedSplit(false)
-    }, panelCloseMergeMs)
-  }, [isForcedSplit, navSettings.stretchThreshold, panelCloseMergeMs])
+  }, [])
 
   // 点面板外部关闭（点击目标不在 nav-pill 内则关闭）
   useEffect(() => {
@@ -234,7 +225,6 @@ export default function Header({ paper = false }) {
   }, [isSettingsOpen, isMoreOpen, closePanels])
 
   const openPanelAfterSplit = (panel) => {
-    clearCloseTimer()
     setIsForcedSplit(true)
 
     // 1× 时等 400ms，随动画倍速等比缩放（慢放时不会抢在分裂之前）
@@ -259,7 +249,6 @@ export default function Header({ paper = false }) {
     }
 
     clearOpenTimer()
-    clearCloseTimer()
     setIsMoreOpen(false)
     setIsSettingsOpen(true)
   }
@@ -276,7 +265,6 @@ export default function Header({ paper = false }) {
     }
 
     clearOpenTimer()
-    clearCloseTimer()
     setIsSettingsOpen(false)
     setIsMoreOpen(true)
   }
