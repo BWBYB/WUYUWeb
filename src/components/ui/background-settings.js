@@ -175,24 +175,11 @@ export function readBackgroundSettings() {
   }
 }
 
-// 首屏初值：移动端默认关。
-// 用户手动开过之后以存储为准；开启后引擎自动套轻量档（30fps、鱼数 ≤ 2）。
+// 首屏初值：所有分辨率默认开启字符水体，窄屏由引擎自动套轻量档
+// （30fps、鱼数 ≤ 2、密度 × 0.85），不再在移动端默认关闭。
+// 用户手动选「无」或「极光」后，以存储为准。
 export function readInitialBackgroundSettings() {
-  const base = readBackgroundSettings()
-
-  if (typeof window === 'undefined') return base
-
-  try {
-    if (window.localStorage.getItem('my-blog-background-settings')) return base
-  } catch {
-    return base
-  }
-
-  if (window.matchMedia && window.matchMedia('(max-width: 720px)').matches) {
-    return { ...base, mode: 'none' }
-  }
-
-  return base
+  return readBackgroundSettings()
 }
 
 export function saveBackgroundSettings(settings) {

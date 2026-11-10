@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Timeline from './Timeline'
+import Button from '../components/ui/Button'
+import Field from '../components/ui/Field'
 import { updates } from '../lib/content/updates'
 import './UpdatesEditor.css'
 
@@ -97,8 +99,8 @@ export default function UpdatesEditor() {
           <p>填写后保存到 <code>content/updates.md</code>，Vercel 公网版本不会包含此编辑入口。</p>
         </div>
         <div className="updates-editor-actions">
-          <button type="button" className="updates-editor-secondary" onClick={() => setEntries(updates.map(toEditableEntry))}>重置</button>
-          <button type="button" className="updates-editor-primary" onClick={save} disabled={saving}>{saving ? '保存中…' : '保存记录'}</button>
+          <Button variant="secondary" onClick={() => setEntries(updates.map(toEditableEntry))}>重置</Button>
+          <Button variant="primary" onClick={save} disabled={saving}>{saving ? '保存中…' : '保存记录'}</Button>
         </div>
       </header>
 
@@ -110,22 +112,18 @@ export default function UpdatesEditor() {
             <fieldset className="updates-editor-entry" key={`${index}-${entry.date}`}>
               <legend>记录 {index + 1}</legend>
               <button type="button" className="updates-editor-remove" onClick={() => removeEntry(index)} disabled={entries.length === 1}>删除</button>
-              <label>
-                日期
-                <input type="date" value={entry.date} onChange={event => updateEntry(index, 'date', event.target.value)} />
-              </label>
-              <label>
-                标题
-                <input value={entry.title} placeholder="例如：更新记录页面上线" onChange={event => updateEntry(index, 'title', event.target.value)} />
-              </label>
-              <label>
-                摘要
-                <textarea rows="2" value={entry.summary} placeholder="一句话说明这次更新" onChange={event => updateEntry(index, 'summary', event.target.value)} />
-              </label>
-              <label>
-                更新内容 <span>每行一项，可使用 Markdown 链接</span>
-                <textarea rows="5" value={entry.itemsText} placeholder="每行一项更新内容" onChange={event => updateEntry(index, 'itemsText', event.target.value)} />
-              </label>
+              <Field label="日期">
+                <input className="control" type="date" value={entry.date} onChange={event => updateEntry(index, 'date', event.target.value)} />
+              </Field>
+              <Field label="标题">
+                <input className="control" value={entry.title} placeholder="例如：更新记录页面上线" onChange={event => updateEntry(index, 'title', event.target.value)} />
+              </Field>
+              <Field label="摘要">
+                <textarea className="control" rows="2" value={entry.summary} placeholder="一句话说明这次更新" onChange={event => updateEntry(index, 'summary', event.target.value)} />
+              </Field>
+              <Field label="更新内容" hint="每行一项，可使用 Markdown 链接">
+                <textarea className="control" rows="5" value={entry.itemsText} placeholder="每行一项更新内容" onChange={event => updateEntry(index, 'itemsText', event.target.value)} />
+              </Field>
             </fieldset>
           ))}
           <button type="button" className="updates-editor-add" onClick={() => setEntries(current => [createEmptyEntry(), ...current])}>+ 添加更新记录</button>

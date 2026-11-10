@@ -1,0 +1,27 @@
+.lanyard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.lanyard-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* window 命中模式：指针事件由窗口监听，画布本身不挡下方内容 */
+.lanyard--overlay .lanyard-canvas {
+  pointer-events: none;
+}
+
+html.lanyard-cursor-grab,
+html.lanyard-cursor-grab * {
+  cursor: grab !important;
+}
+
+html.lanyard-cursor-grabbing,
+html.lanyard-cursor-grabbing * {
+  cursor: grabbing !important;
+}

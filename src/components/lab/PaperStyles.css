@@ -1,0 +1,492 @@
+.paper-styles {
+  /* 纸面噪点：细纤维与粗纤维两张 SVG 噪声，随卡片一起缩放 */
+  --grain-fine: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-coarse: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.42' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  padding: 6px var(--card-pad) var(--space-5);
+}
+
+.paper-styles__note {
+  margin: 0 0 var(--space-4);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.62;
+}
+
+.paper-styles__wall {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 22px);
+  align-items: start;
+  padding: clamp(16px, 2vw, 30px) clamp(14px, 2vw, 30px) clamp(18px, 2.2vw, 30px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 246, 230, 0.05), transparent 60%),
+    var(--surface-inset);
+}
+
+.paper-styles__item {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 0;
+  margin: 0;
+}
+
+/* ── 单张纸 ── */
+.paper-style {
+  --paper-ink: #26221c;
+  --paper-muted: rgba(38, 34, 28, 0.72);
+  --paper-faint: rgba(38, 34, 28, 0.5);
+  --paper-line: rgba(38, 34, 28, 0.2);
+  --paper-accent: #b4653a;
+  --paper-tilt: 0deg;
+  --paper-grain-opacity: 0.06;
+  --paper-grain-size: 160px 160px;
+
+  position: relative;
+  aspect-ratio: 2 / 3;
+  transform: rotate(var(--paper-tilt));
+  filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.28));
+  transition: transform 0.45s cubic-bezier(0.22, 0.7, 0.3, 1), filter 0.45s ease;
+}
+
+.paper-style__sheet {
+  position: relative;
+  height: 100%;
+  border-radius: 3px;
+  color: var(--paper-ink);
+  background-color: var(--paper-base, #efe7d6);
+  background-image: var(--paper-layers, none);
+}
+
+.paper-style__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: var(--paper-grain, none);
+  background-size: var(--paper-grain-size);
+  background-repeat: repeat;
+  opacity: var(--paper-grain-opacity);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.paper-style__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 22px 18px 15px;
+}
+
+.paper-style__eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+}
+
+.paper-style__title {
+  margin: 12px 0 0;
+  color: var(--paper-ink);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+}
+
+.paper-style__rule {
+  width: 34px;
+  height: 2px;
+  margin: 10px 0 11px;
+  background: var(--paper-accent);
+  opacity: 0.85;
+}
+
+.paper-style__lead {
+  margin: 0;
+  color: var(--paper-muted);
+  font-size: 10.5px;
+  line-height: 1.8;
+}
+
+.paper-style__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.paper-style__tags span {
+  padding: 2px 7px;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  color: var(--paper-muted);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+}
+
+.paper-style__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 9px;
+  border-top: 1px solid var(--paper-line);
+  color: var(--paper-faint);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+}
+
+/* A · 奶油纤维纸 */
+.paper-style--cream {
+  --paper-tilt: -1.2deg;
+  --paper-base: #efe7d6;
+  --paper-grain-opacity: 0.055;
+  --paper-grain-size: 150px 150px;
+}
+
+.paper-style--cream .paper-style__sheet {
+  border: 1px solid rgba(124, 97, 62, 0.22);
+  background-image:
+    radial-gradient(120% 80% at 18% 0%, rgba(255, 253, 246, 0.8), transparent 58%),
+    radial-gradient(90% 70% at 100% 100%, rgba(166, 128, 78, 0.14), transparent 62%),
+    repeating-linear-gradient(92deg, rgba(120, 95, 60, 0.045) 0 1px, transparent 1px 6px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 34px rgba(120, 95, 60, 0.05);
+}
+
+.paper-style--cream .paper-style__grain {
+  background-image: var(--grain-fine);
+}
+
+/* B · 工程方格纸 */
+.paper-style--grid {
+  --paper-tilt: 0.8deg;
+  --paper-base: #f1ecdd;
+  --paper-muted: rgba(46, 51, 44, 0.74);
+  --paper-faint: rgba(46, 51, 44, 0.52);
+  --paper-line: rgba(60, 74, 66, 0.24);
+  --paper-grain-opacity: 0.045;
+}
+
+.paper-style--grid .paper-style__sheet {
+  border: 1px solid rgba(102, 104, 88, 0.24);
+  background-image:
+    linear-gradient(90deg, transparent 29px, rgba(184, 104, 58, 0.55) 29px 30px, transparent 30px),
+    repeating-linear-gradient(0deg, rgba(64, 86, 96, 0.1) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(90deg, rgba(64, 86, 96, 0.1) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(0deg, rgba(64, 86, 96, 0.17) 0 1px, transparent 1px 70px);
+  -webkit-mask-image: radial-gradient(circle at 14px 34px, transparent 3.8px, #000 4.6px);
+  -webkit-mask-size: 100% 62px;
+  -webkit-mask-repeat: repeat;
+  mask-image: radial-gradient(circle at 14px 34px, transparent 3.8px, #000 4.6px);
+  mask-size: 100% 62px;
+  mask-repeat: repeat;
+}
+
+.paper-style--grid .paper-style__grain {
+  background-image: var(--grain-fine);
+}
+
+.paper-style--grid .paper-style__content {
+  padding-left: 42px;
+}
+
+.paper-style--grid .paper-style__title {
+  font-family: var(--mono);
+  font-size: 21px;
+  letter-spacing: 0.18em;
+}
+
+/* C · 牛皮纸 */
+.paper-style--kraft {
+  --paper-tilt: -0.7deg;
+  --paper-base: #c9a87c;
+  --paper-ink: #2b2118;
+  --paper-muted: rgba(43, 33, 24, 0.76);
+  --paper-faint: rgba(43, 33, 24, 0.55);
+  --paper-line: rgba(58, 42, 26, 0.28);
+  --paper-accent: #6d4527;
+  --paper-grain-opacity: 0.14;
+  --paper-grain-size: 210px 210px;
+}
+
+.paper-style--kraft .paper-style__sheet {
+  background-image:
+    radial-gradient(120% 90% at 50% 28%, rgba(255, 238, 206, 0.28), transparent 62%),
+    radial-gradient(110% 110% at 50% 105%, rgba(66, 40, 16, 0.24), transparent 68%),
+    repeating-linear-gradient(93deg, rgba(72, 48, 22, 0.07) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(2deg, rgba(72, 48, 22, 0.045) 0 1px, transparent 1px 9px);
+  box-shadow:
+    inset 0 0 46px rgba(78, 50, 20, 0.18),
+    inset 0 1px 0 rgba(255, 244, 220, 0.3);
+}
+
+.paper-style--kraft .paper-style__grain {
+  background-image: var(--grain-coarse);
+}
+
+.paper-style--kraft .paper-style__sheet::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  z-index: 2;
+  width: 64px;
+  height: 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 249, 232, 0.5),
+    rgba(226, 205, 167, 0.36) 70%,
+    rgba(210, 188, 148, 0.3)
+  );
+  box-shadow: 0 3px 6px rgba(40, 25, 10, 0.18);
+  clip-path: polygon(
+    0 8%, 6% 0, 94% 2%, 100% 10%, 98% 90%, 90% 96%, 82% 90%, 74% 97%,
+    66% 90%, 58% 96%, 50% 90%, 42% 97%, 34% 90%, 26% 96%, 18% 90%,
+    10% 96%, 2% 90%
+  );
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+
+.paper-style--kraft .paper-style__sheet::after {
+  content: 'WUYU · RESUME';
+  position: absolute;
+  top: 34px;
+  right: 10px;
+  z-index: 0;
+  padding: 3px 7px;
+  border: 1px solid rgba(84, 52, 24, 0.45);
+  border-radius: 3px;
+  color: rgba(84, 52, 24, 0.45);
+  font-family: var(--mono);
+  font-size: 7px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.paper-style--kraft .paper-style__content {
+  padding-top: 30px;
+}
+
+/* D · 羊皮纸毛边 */
+.paper-style--deckle {
+  --paper-tilt: 1.3deg;
+  --paper-base: #e9dfc6;
+  --paper-ink: #33291d;
+  --paper-muted: rgba(51, 41, 29, 0.74);
+  --paper-faint: rgba(51, 41, 29, 0.52);
+  --paper-line: rgba(96, 74, 44, 0.28);
+  --paper-accent: #a25f35;
+  --paper-grain-opacity: 0.085;
+  --paper-grain-size: 190px 190px;
+}
+
+.paper-style--deckle .paper-style__sheet {
+  border-radius: 0;
+  clip-path: polygon(
+    0.9% 1.8%, 9% 0.4%, 19% 2.2%, 30% 0.2%, 41% 1.6%, 53% 0.5%, 64% 2.4%,
+    76% 0.3%, 87% 1.9%, 99.2% 0.6%, 99.8% 9%, 99% 20%, 99.7% 31%, 99.2% 43%,
+    99.9% 54%, 99.1% 66%, 99.8% 78%, 99.3% 89%, 99.4% 99.4%, 90% 98.2%,
+    79% 99.8%, 68% 98.6%, 57% 99.4%, 45% 98.5%, 34% 99.7%, 23% 98.7%,
+    12% 99.5%, 0.8% 98.6%, 0.2% 90%, 0.9% 79%, 0.1% 68%, 0.7% 57%, 0.2% 46%,
+    0.8% 35%, 0.1% 24%, 0.6% 13%, 0.3% 4%
+  );
+  background-image:
+    radial-gradient(ellipse 36% 26% at 78% 14%, rgba(138, 96, 46, 0.14), transparent 72%),
+    radial-gradient(ellipse 24% 18% at 16% 62%, rgba(138, 96, 46, 0.12), transparent 72%),
+    radial-gradient(ellipse 30% 22% at 68% 84%, rgba(120, 86, 42, 0.1), transparent 72%),
+    radial-gradient(ellipse 15% 11% at 42% 32%, rgba(138, 96, 46, 0.13), transparent 72%),
+    radial-gradient(ellipse 10% 8% at 88% 58%, rgba(138, 96, 46, 0.12), transparent 72%),
+    linear-gradient(
+      180deg,
+      transparent 48.5%,
+      rgba(120, 90, 50, 0.07) 49.2%,
+      rgba(255, 252, 240, 0.3) 49.6%,
+      transparent 50.2%
+    ),
+    radial-gradient(130% 110% at 50% 42%, #f2e9d2 38%, #e5d8ba 76%, #d7c69f 100%);
+  box-shadow: inset 0 0 44px rgba(105, 78, 40, 0.2);
+}
+
+.paper-style--deckle .paper-style__grain {
+  background-image: var(--grain-coarse);
+}
+
+.paper-style--deckle .paper-style__title {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* E · 新闻纸（单栏 + 打孔页边线） */
+.paper-style--news {
+  --paper-tilt: -0.4deg;
+  --paper-base: #fbfbf9;
+  --paper-ink: #2b2c29;
+  --paper-muted: rgba(43, 44, 41, 0.72);
+  --paper-faint: rgba(43, 44, 41, 0.5);
+  --paper-line: rgba(43, 44, 41, 0.22);
+  --paper-accent: #3c423d;
+  --paper-grain-opacity: 0.055;
+}
+
+.paper-style--news .paper-style__sheet {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(43, 44, 41, 0.11) 0.7px, transparent 1.1px),
+    radial-gradient(circle at 2px 2px, rgba(196, 113, 63, 0.055) 0.6px, transparent 1px),
+    linear-gradient(90deg, transparent 29px, rgba(184, 104, 58, 0.55) 29px 30px, transparent 30px),
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 62%);
+  background-size: 12px 12px, 19px 19px, 100% 100%, 100% 100%;
+  background-position: 0 0, 5px 6px, 0 0, 0 0;
+  box-shadow:
+    inset 0 0 38px rgba(98, 98, 92, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  -webkit-mask-image: radial-gradient(circle at 14px 34px, transparent 3.8px, #000 4.6px);
+  -webkit-mask-size: 100% 62px;
+  -webkit-mask-repeat: repeat;
+  mask-image: radial-gradient(circle at 14px 34px, transparent 3.8px, #000 4.6px);
+  mask-size: 100% 62px;
+  mask-repeat: repeat;
+}
+
+.paper-style--news .paper-style__grain {
+  background-image: var(--grain-fine);
+}
+
+.paper-style--news .paper-style__content {
+  padding-left: 42px;
+}
+
+.paper-style--news .paper-style__title {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.paper-style--news .paper-style__tags {
+  margin-top: 10px;
+}
+
+/* ── 说明 ── */
+.paper-styles__meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-inline: 2px;
+}
+
+.paper-styles__tag {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 21px;
+  height: 18px;
+  padding: 0 5px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--surface-inset);
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.paper-styles__meta-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.paper-styles__meta-body strong {
+  color: var(--text-h);
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  line-height: 1.4;
+}
+
+.paper-styles__desc {
+  color: var(--text);
+  font-size: 10.5px;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+.paper-styles__traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.paper-styles__traits i {
+  padding: 1px 5px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  color: var(--text);
+  font-style: normal;
+  font-size: 9px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  opacity: 0.62;
+}
+
+html[data-site-theme='light'] .paper-styles__wall {
+  border-color: rgba(90, 72, 50, 0.22);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 252, 245, 0.5), transparent 60%),
+    #d8d1c2;
+}
+
+@media (max-width: 1200px) {
+  .paper-styles__wall {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .paper-styles__wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .paper-styles__wall {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .paper-styles__item {
+    width: min(100%, 300px);
+  }
+}
+
+@media (hover: hover) {
+  .paper-styles__item:hover .paper-style {
+    transform: translateY(-8px) rotate(0deg);
+    filter: drop-shadow(0 22px 24px rgba(0, 0, 0, 0.34));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-style {
+    transition: none;
+  }
+}

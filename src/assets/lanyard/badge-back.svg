@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1125" viewBox="0 0 800 1125">
+  <rect width="800" height="1125" fill="#efe7d6"/>
+  <rect x="46" y="46" width="708" height="1033" rx="26" fill="none" stroke="#26221c" stroke-opacity="0.16" stroke-width="2"/>
+  <g fill="#c4713f">
+    <rect x="46" y="46" width="44" height="3"/>
+    <rect x="46" y="46" width="3" height="44"/>
+    <rect x="710" y="1076" width="44" height="3"/>
+    <rect x="754" y="1035" width="3" height="44"/>
+  </g>
+
+  <g font-family="Menlo, Consolas, 'PingFang SC', monospace" fill="#26221c">
+    <text x="78" y="196" font-size="23" letter-spacing="5" fill="#7a7063">CONTACT</text>
+    <text x="722" y="196" font-size="23" letter-spacing="3" fill="#7a7063" text-anchor="end">WUYU</text>
+
+    <rect x="78" y="248" width="644" height="2" fill="#26221c" fill-opacity="0.16"/>
+
+    <text x="78" y="386" font-size="24" letter-spacing="3" fill="#7a7063">MAIL</text>
+    <text x="78" y="456" font-size="44" letter-spacing="1">814153912@qq.com</text>
+
+    <text x="78" y="574" font-size="24" letter-spacing="3" fill="#7a7063">GITHUB</text>
+    <text x="78" y="644" font-size="44" letter-spacing="1">github.com/BWBYB</text>
+
+    <rect x="78" y="748" width="120" height="6" fill="#c4713f"/>
+    <text x="78" y="806" font-size="27" fill="#4a4339">全栈工程师 → Agent 开发</text>
+    <text x="78" y="848" font-size="23" letter-spacing="2" fill="#7a7063">深圳 · SHENZHEN</text>
+
+    <line x1="78" y1="968" x2="722" y2="968" stroke="#26221c" stroke-opacity="0.16" stroke-width="2"/>
+    <text x="78" y="1022" font-size="23" letter-spacing="3" fill="#7a7063">拖拽甩卡 · 点击翻面</text>
+    <text x="722" y="1022" font-size="23" letter-spacing="3" fill="#7a7063" text-anchor="end">NO. 001</text>
+  </g>
+</svg>

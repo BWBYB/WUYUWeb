@@ -7,10 +7,10 @@ import './navigation-switcher.css'
 const navigationOptions = [
   { path: '/', label: '首页', icon: 'home' },
   { path: '/blog', label: '文章', icon: 'pencil' },
-  { path: '/lab', label: '探索', icon: 'compass' },
-  { path: '/player', label: 'CD机', icon: 'disc' },
+  { path: '/about', label: '关于', icon: 'info' },
 ]
 
+const moreOption = { label: '更多', icon: 'more' }
 const settingsOption = { path: '/settings', label: '设置', icon: 'settings' }
 
 function isActivePath(path, pathname) {
@@ -24,14 +24,22 @@ function getRouteIndex(pathname) {
   return navigationOptions.findIndex(option => isActivePath(option.path, pathname))
 }
 
-export default function NavigationSwitcher({ onToggleSettings, paper = false }) {
+export default function NavigationSwitcher({
+  onToggleSettings,
+  onToggleMore,
+  moreOpen = false,
+  moreActive = false,
+  paper = false,
+}) {
   const location = useLocation()
   const navigate = useNavigate()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const routeIndex = getRouteIndex(location.pathname)
-  const initialIndex = routeIndex >= 0 ? routeIndex : 0
-  const [activeIndex, setActiveIndex] = useState(initialIndex)
-  const [previousOption, setPreviousOption] = useState(String(initialIndex + 1))
+  // 探索 / CD机 属于「更多」板块：把选中胶囊停到「更多」按钮上（第 4 格）
+  const moreIndex = navigationOptions.length
+  const targetIndex = routeIndex >= 0 ? routeIndex : (moreActive ? moreIndex : null)
+  const [activeIndex, setActiveIndex] = useState(targetIndex ?? 0)
+  const [previousOption, setPreviousOption] = useState(String((targetIndex ?? 0) + 1))
   const radioGroupName = `navigation-${useId()}`
 
   // 动画期锁定：胶囊移动动画播放期间，新的切换目标先排队，等当前动画
@@ -40,7 +48,7 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
   const pendingIndexRef = useRef(null)
   const lockTimerRef = useRef(null)
   // 用 ref 记录「胶囊当前实际停在哪个 index」，避免闭包 stale（动画结束时读到旧 activeIndex）。
-  const currentIndexRef = useRef(initialIndex)
+  const currentIndexRef = useRef(targetIndex ?? 0)
 
   // 动画结束（或超时兜底）时调用：解锁，若队列还有目标则继续切换。
   // 不依赖 animationend 事件（在 translate 属性动画上不可靠），改用固定时长 setTimeout。
@@ -73,15 +81,15 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
 
   // 单一数据流：胶囊移动只由「路由变化 → 本 effect」驱动。
   useEffect(() => {
-    if (routeIndex < 0) return
-    if (routeIndex === currentIndexRef.current) return
+    if (targetIndex === null) return
+    if (targetIndex === currentIndexRef.current) return
     if (animatingRef.current) {
-      pendingIndexRef.current = routeIndex
+      pendingIndexRef.current = targetIndex
       return
     }
-    commitSwitch(currentIndexRef.current, routeIndex)
+    commitSwitch(currentIndexRef.current, targetIndex)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routeIndex])
+  }, [targetIndex])
 
   const selectNavigation = (nextIndex) => {
     navigate(navigationOptions[nextIndex].path)
@@ -151,6 +159,20 @@ export default function NavigationSwitcher({ onToggleSettings, paper = false }) 
           <span className="navigation-option-label">{option.label}</span>
         </label>
       ))}
+
+      <button
+        type="button"
+        className="switcher__option navigation-more-link"
+        aria-label={moreOption.label}
+        aria-expanded={moreOpen ? 'true' : 'false'}
+        aria-current={moreActive ? 'true' : undefined}
+        onClick={() => {
+          if (onToggleMore) onToggleMore()
+        }}
+      >
+        <Icon name={moreOption.icon} size={20} className="navigation-option-icon" />
+        <span className="navigation-option-label">{moreOption.label}</span>
+      </button>
 
       <button
         type="button"

@@ -1,6 +1,7 @@
 // ASCII 字符水体背景（纯 JS，不依赖 React）
 //
-// 定位：整页是一张固定的字符画布，水面铺满视口；锦鲤只住在首页 hero 里。
+// 定位：整页是一张固定的字符画布，水面铺满视口；锦鲤住在带 data-koi-pond 的 hero 里，
+// 首页与简历页共用同一群鱼，路由切换只重映射坐标，不重建。
 //   · 水场按视口坐标计算，滚动时文字在动、水不动
 //   · 五种波动共用同一套「底噪 + 漫游主光」，差异只在波形组织
 //   · 文字区域逐格降低 alpha（0–7 八档），卡片保持玻璃，水仍从后面透出来
@@ -30,7 +31,7 @@ const THEMES = {
     inkAlpha: 0.42,
   },
   light: {
-    bg: [248, 245, 238],
+    bg: [255, 255, 255],
     white: [112, 108, 104],
     red: [204, 62, 28],
     sumi: [58, 52, 46],
@@ -107,8 +108,6 @@ const DIM_SELECTOR = [
   '.main .post-header-category',
   '.main .post-header-date',
   '.main .post-tag',
-  '.main .post-toc-title',
-  '.main .post-toc a',
   '.main .archive-year',
   '.main .archive-month',
   '.main .settings-page-kicker',
@@ -385,12 +384,14 @@ export function createAsciiBackground(canvas, options = {}) {
     waveBoost: new Float32Array(0),
     fieldBand: 0,
     dimBoxes: [],
+    lineDimBoxes: [],
     avoidBoxes: [],
     heroEl: null,
     pondLeft: 0,
     pondTop: 0,
     pondW: 1,
     pondH: 1,
+    spawnPattern: 0,
     pondVisible: false,
     readingK: 1,
     effDensity: cfg.waterDensity,
@@ -622,9 +623,12 @@ export function createAsciiBackground(canvas, options = {}) {
     const mid = (min + max) / 2
     const half = (max - min) / 2
     const variation = clamp(cfg.fish.lengthVariation, 0, 1)
+    // 窄屏限制鱼体长度，避免一条鱼横跨大半个池子；
+    // 桌面宽度下 40% 远大于原长度，不会生效。
+    const maxLen = Math.max(48, S.pondW * 0.4)
     for (const f of FISHES) {
       f.lengthCells = mid + f.sizeBias * half * variation
-      f.len = f.lengthCells * S.cw
+      f.len = Math.min(f.lengthCells * S.cw, maxLen)
       f.seg = f.len / (f.N - 1)
       for (let i = 0; i < f.N - 1; i++) f.L[i] = f.seg
     }
@@ -636,6 +640,65 @@ export function createAsciiBackground(canvas, options = {}) {
       f.Y[i] = f.y - Math.sin(f.heading) * f.seg * i
     }
   }
+
+  // 五套出生布局：每次鱼群初始化随机选一套，刷新和路由进入都会重新生成。
+  const SPAWN_PATTERNS = [
+    {
+      name: 'orbit',
+      spawn(i, n) {
+        const a = ((i + 0.5) / Math.max(1, n)) * Math.PI * 2 + 0.35
+        return {
+          x: 0.5 + 0.25 * Math.cos(a),
+          y: 0.54 + 0.20 * Math.sin(a),
+          heading: a + Math.PI * 0.5,
+        }
+      },
+    },
+    {
+      name: 'left',
+      spawn(i, n) {
+        const t = n <= 1 ? 0.5 : i / (n - 1)
+        return {
+          x: 0.16 + 0.12 * Math.sin(t * Math.PI),
+          y: 0.28 + 0.44 * t,
+          heading: 0.35,
+        }
+      },
+    },
+    {
+      name: 'right',
+      spawn(i, n) {
+        const t = n <= 1 ? 0.5 : i / (n - 1)
+        return {
+          x: 0.84 - 0.12 * Math.sin(t * Math.PI),
+          y: 0.28 + 0.44 * t,
+          heading: Math.PI - 0.35,
+        }
+      },
+    },
+    {
+      name: 'diagonal',
+      spawn(i, n) {
+        const t = n <= 1 ? 0.5 : i / (n - 1)
+        return {
+          x: 0.22 + 0.56 * t,
+          y: 0.26 + 0.44 * t,
+          heading: Math.atan2(0.44, 0.56),
+        }
+      },
+    },
+    {
+      name: 'bottom',
+      spawn(i, n) {
+        const t = n <= 1 ? 0.5 : i / (n - 1)
+        return {
+          x: 0.18 + 0.64 * t,
+          y: 0.74 - 0.05 * Math.sin(t * Math.PI),
+          heading: -Math.PI * 0.5,
+        }
+      },
+    },
+  ]
 
   function createFish(i, n) {
     const rnd = salt => hash2(i * 17 + 3, salt * 131 + 7)
@@ -673,16 +736,11 @@ export function createAsciiBackground(canvas, options = {}) {
       cells: [],
       count: 0,
     }
-    if (n <= 1) {
-      f.x = S.pondW * 0.5
-      f.y = S.pondH * 0.56
-      f.heading = -0.55
-    } else {
-      const a = ((i + 0.5) / n) * Math.PI * 2 + 0.35
-      f.x = S.pondW * (0.5 + 0.23 * Math.cos(a))
-      f.y = S.pondH * (0.52 + 0.17 * Math.sin(a))
-      f.heading = a + Math.PI * 0.5
-    }
+    const spawnPattern = SPAWN_PATTERNS[S.spawnPattern] || SPAWN_PATTERNS[0]
+    const spawn = spawnPattern.spawn(i, n)
+    f.x = clamp(S.pondW * spawn.x, 8, Math.max(8, S.pondW - 8))
+    f.y = clamp(S.pondH * spawn.y, 8, Math.max(8, S.pondH - 8))
+    f.heading = spawn.heading
     f.phase = rnd(8) * 3
     f.depth = 0.72 + rnd(9) * 0.16
     const stillNow =
@@ -693,6 +751,7 @@ export function createAsciiBackground(canvas, options = {}) {
 
   function initFish() {
     FISHES.length = 0
+    S.spawnPattern = Math.floor(Math.random() * SPAWN_PATTERNS.length)
     const n = fishCountTarget()
     for (let i = 0; i < n; i++) FISHES.push(createFish(i, n))
     setFishLength()
@@ -1377,17 +1436,63 @@ export function createAsciiBackground(canvas, options = {}) {
     S.readingK = cfg.readingDim && !S.heroEl ? REDUCED_READING_K : 1
   }
 
+  function collectLineBoxes(container, out) {
+    const range = document.createRange()
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT
+        if (node.parentElement?.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) {
+          return NodeFilter.FILTER_REJECT
+        }
+        return NodeFilter.FILTER_ACCEPT
+      },
+    })
+
+    const padX = S.cw * 0.8
+    const padY = S.ch * 0.8
+    let node = walker.nextNode()
+
+    while (node) {
+      range.selectNodeContents(node)
+      for (const rect of range.getClientRects()) {
+        if (rect.width < 2 || rect.height < 2) continue
+        if (rect.bottom < -60 || rect.top > S.h + 60) continue
+        out.push([
+          (rect.left - padX) / S.cw,
+          (rect.top - padY) / S.ch,
+          (rect.right + padX) / S.cw,
+          (rect.bottom + padY) / S.ch,
+        ])
+      }
+      node = walker.nextNode()
+    }
+
+    range.detach?.()
+  }
+
   function measureDim() {
     if (S.destroyed) return
-    const hero = typeof document !== 'undefined' ? document.querySelector('.hero-section') : null
-    if (hero !== S.heroEl) {
+    const hero = typeof document !== 'undefined'
+      ? document.querySelector('[data-koi-pond], .hero-section')
+      : null
+    const previousHero = S.heroEl
+
+    if (hero !== previousHero) {
       S.heroEl = hero
-      if (!hero) {
-        FISHES.length = 0
-        WATER.pellets.length = 0
-        WATER.bites.length = 0
-        POINTER.active = false
-        POINTER.speed = 0
+      FISHES.length = 0
+      WATER.pellets.length = 0
+      WATER.bites.length = 0
+      POINTER.active = false
+      POINTER.speed = 0
+
+      if (hero) {
+        const r = hero.getBoundingClientRect()
+        S.pondLeft = r.left
+        S.pondTop = r.top
+        S.pondW = Math.max(1, r.width)
+        S.pondH = Math.max(1, r.height)
+        S.pondVisible = r.bottom > 0 && r.top < S.h && r.right > 0 && r.left < S.w
+        initFish()
       }
     }
 
@@ -1401,18 +1506,17 @@ export function createAsciiBackground(canvas, options = {}) {
       if (!FISHES.length) initFish()
     } else {
       S.pondVisible = false
-      S.pondW = Math.max(1, S.w)
-      S.pondH = Math.max(1, S.h)
     }
 
     // 水体让路用视口坐标：画布固定，页面滚动时文字在动，水不跟着动。
     const boxes = []
+    const lineBoxes = []
     const seen = new Set()
     const nodes = document.querySelectorAll(DIM_SELECTOR)
     for (const el of nodes) {
       if (seen.has(el)) continue
       seen.add(el)
-      if (el.closest('.bgp, .theme-switcher-global, .site-header')) continue
+      if (el.closest('[data-water-no-dim], [data-water-dim-lines], .bgp, .theme-switcher-global, .site-header')) continue
       const b = el.getBoundingClientRect()
       if (b.width < 2 || b.height < 2) continue
       if (b.bottom < -60 || b.top > S.h + 60) continue
@@ -1423,7 +1527,15 @@ export function createAsciiBackground(canvas, options = {}) {
         b.bottom / S.ch + 0.45,
       ])
     }
+
+    // 开放文字区按实际行框压暗，避免整段文字变成一个大气泡。
+    for (const container of document.querySelectorAll('[data-water-dim-lines]')) {
+      if (container.closest('[data-water-no-dim], .bgp, .theme-switcher-global, .site-header')) continue
+      collectLineBoxes(container, lineBoxes)
+    }
+
     S.dimBoxes = boxes
+    S.lineDimBoxes = lineBoxes
 
     // 鱼群避让只关心 hero 内的文字块，坐标仍用池内局部坐标。
     const avoid = []
@@ -1448,8 +1560,10 @@ export function createAsciiBackground(canvas, options = {}) {
     if (!dim.length) return
     dim.fill(0)
     const boxes = S.dimBoxes
-    if (!boxes.length) return
+    const lineBoxes = S.lineDimBoxes
+    if (!boxes.length && !lineBoxes.length) return
     const feather = 3.2
+    const lineFeather = 1.4
     for (let ry = 0; ry < S.rows; ry++) {
       const cy = ry + 0.5
       for (let rx = 0; rx < S.cols; rx++) {
@@ -1461,6 +1575,14 @@ export function createAsciiBackground(canvas, options = {}) {
           const dy = Math.max(b[1] - cy, 0, cy - b[3])
           const k = 1 - smoothstep(0, feather, Math.hypot(dx, dy))
           if (k > best) best = k
+        }
+        for (let i = 0; i < lineBoxes.length; i++) {
+          const b = lineBoxes[i]
+          const dx = Math.max(b[0] - cx, 0, cx - b[2])
+          const dy = Math.max(b[1] - cy, 0, cy - b[3])
+          const k = 1 - smoothstep(0, lineFeather, Math.hypot(dx, dy))
+          // 行级遮罩比块级更轻，避免文字周围出现暗斑
+          if (k * 0.72 > best) best = k * 0.72
         }
         if (best > 0.08) dim[ry * S.cols + rx] = Math.min(7, Math.ceil(best * 7))
       }
@@ -2076,6 +2198,7 @@ export function createAsciiBackground(canvas, options = {}) {
         cell: S.cw,
         dpr: +S.dpr.toFixed(2),
         fish: FISHES.length,
+        spawnPattern: SPAWN_PATTERNS[S.spawnPattern]?.name || null,
         pond: {
           left: Math.round(S.pondLeft),
           top: Math.round(S.pondTop),
@@ -2084,6 +2207,7 @@ export function createAsciiBackground(canvas, options = {}) {
           visible: S.pondVisible,
         },
         dimBoxes: S.dimBoxes.length,
+        lineDimBoxes: S.lineDimBoxes.length,
         avoidBoxes: S.avoidBoxes.length,
         waves: WATER.waves.length,
         pellets: WATER.pellets.length,
@@ -2110,6 +2234,7 @@ export function createAsciiBackground(canvas, options = {}) {
       FISHES.length = 0
       FISH_ORDER.length = 0
       S.dimBoxes = []
+      S.lineDimBoxes = []
       S.avoidBoxes = []
     },
   }

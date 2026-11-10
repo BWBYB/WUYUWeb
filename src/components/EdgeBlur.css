@@ -1,0 +1,31 @@
+/* 上下边缘纯模糊：mask 让强度向视口中间渐隐。
+   不叠底色，背景与正文保持原色，只损失清晰度。
+   z-index 高于正文、低于导航（100）；主题切换器是 dock 层，仍在上面。 */
+.edge-blur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: var(--z-raised);
+  height: var(--edge-blur-height, 150px);
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(var(--edge-blur-radius, 8px));
+  backdrop-filter: blur(var(--edge-blur-radius, 8px));
+}
+
+.edge-blur--top {
+  top: 0;
+  -webkit-mask-image: linear-gradient(to bottom, black var(--edge-blur-fade, 50%), transparent);
+  mask-image: linear-gradient(to bottom, black var(--edge-blur-fade, 50%), transparent);
+}
+
+.edge-blur--bottom {
+  bottom: 0;
+  -webkit-mask-image: linear-gradient(to top, black var(--edge-blur-fade, 50%), transparent);
+  mask-image: linear-gradient(to top, black var(--edge-blur-fade, 50%), transparent);
+}
+
+@media print {
+  .edge-blur {
+    display: none !important;
+  }
+}

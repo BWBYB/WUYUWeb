@@ -131,7 +131,7 @@ export default function ThemeSwitcherCustomizer() {
               ))}
             </select>
           </label>
-          <button type="button" className="theme-customizer-reset" onClick={resetSettings}>
+          <button type="button" className="theme-customizer-reset btn btn--text btn--sm" onClick={resetSettings}>
             恢复默认
           </button>
         </div>

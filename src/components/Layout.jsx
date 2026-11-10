@@ -4,6 +4,7 @@ import Footer from './Footer'
 import AuroraBackground from './AuroraBackground'
 import AsciiBackground from './AsciiBackground'
 import AsciiBackgroundPanel from './AsciiBackgroundPanel'
+import EdgeBlur from './EdgeBlur'
 import {
   normalizeBackgroundSettings,
   readInitialBackgroundSettings,
@@ -107,6 +108,7 @@ function LayoutContent({ children }) {
       </main>
       <Footer />
       <GlobalThemeSwitcher paper={paper} />
+      <EdgeBlur />
     </div>
   )
 }

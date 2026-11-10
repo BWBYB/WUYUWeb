@@ -13,6 +13,7 @@
 }
 
 .footer-text {
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   color: var(--text-muted);
 }
@@ -24,13 +25,15 @@
 }
 
 .footer-links a {
+  font-family: var(--accent-font);
   font-size: var(--fs-ui);
   color: var(--text-muted);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.footer-links a:hover {
+.footer-links a:hover,
+.footer-links a:active {
   color: var(--text-h);
 }
 

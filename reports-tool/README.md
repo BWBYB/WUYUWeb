@@ -49,11 +49,33 @@ cd /Users/Admin/Projects/WUYUWeb/reports-tool
 实测过一次用了 **25 次调用、433 万 token**，其中 19 次是在查「lint 要什么字段」「格式对不对」，
 这些本该由 `prepare.py` 和 `verify.py` 一次性给出。
 
+### 四个「别做」（2026-11-08 实测总结）
+
+这四件事每次都要白烧 2–4 次调用，是下面「20 次调用」的真正来源：
+
+**1. 别查锁。** 看到 `.run-daily.lock` 目录**不代表有人在跑**——它是本次运行自己创建的。
+`run-daily.sh` 现在开头印 `[lock] 已获取`、结尾印 `[lock] 本次运行结束`，看这两行就够了。
+2026-11-08 有 4 次调用（`ls` 锁、`kill -0`、翻 `/proc`、复查）全是为这件事白跑的。
+
+**2. 别把 `prepare.py` 的输出分两段读。**
+现在输出 162 行，**一次读完**。以前 200+ 行时会有人写 `| head -120` 再 `| sed -n '120,220p'`，
+等于**把 `prepare.py` 跑了两遍**（每遍都是全量计算 + 一次上下文）。
+
+**3. 别手写脚本验格式。**
+`verify.py` 已经覆盖 20 项（BOM/CRLF/字段顺序/slug/date/status/分节/裸 HTML/图片/
+`[EN]` 残留/summary 字数/解读稿空字段）。2026-11-08 又手写 Python 验 summary 长度和单行，
+纯属重复。**信 `verify.py` 的结论。**
+
+**4. 别在流程外 curl 抓信息。**
+`prepare.py` 已含写稿所需的全部字段（摘要、星数、语言、描述、`streak_days`、`prev_why`）。
+2026-11-08 额外 `curl` 了 4 个仓库的 API 和 1 个 README —— 这些信息要么已在简报里，
+要么不属于「日报该写的」。**只有描述为空的仓库才值得去翻 README**，且一次批量查完。
+
 ### 两个脚本是你的主要工具
 
 | 命令 | 作用 |
 |---|---|
-| `prepare.py --date X` | 一次输出 8 节：精读/速览论文全文摘要、精读/速览仓库、**必须给的 plain 清单**、insights 结构、写作要求、下一步 |
+| `prepare.py --date X` | 一次输出 8 节，**162 行，一次读完**：精读/速览论文摘要、精读/速览仓库（含 `streak_days` 与 `prev_why`）、**必须给的 plain 清单**、insights 结构概要、写作要求、下一步 |
 | `prepare.py --date X --template` | 生成 insights 骨架，**每个需要 plain 的 ID 都摆好（含速览区）** |
 | `verify.py --date X` | 一条命令验 20 项，**一次性列出所有问题**，不用修一个跑一次 |
 
@@ -74,6 +96,56 @@ cd /Users/Admin/Projects/WUYUWeb/reports-tool
 `content/reports/README.md`、`content/updates.md`、`src/` 下任何文件都不属于本工具。
 `content/reports/` 里也不要 `git init`——一旦出现 `.git/`，父仓库就不再跟踪日报文件，
 上线时平台拿不到内容。
+
+### 提交与上线：自动 stage，人工推送
+
+**职责划分是本节的要点**：机械活自动化，判断留给人。
+
+`run-daily.sh` 在自检 0 ERROR 后**自动 `git add` 三个文件**（日报、快照、解读稿），
+然后打印下一步命令。它**不会 commit，也不会 push** —— 因为站点规定
+（`AGENTS.md:23`、`content/reports/README.md:107`）明确要求提交与推送需用户授权。
+
+```bash
+# 每天日报跑完后，你只需要：
+cd /Users/Admin/Projects/WUYUWeb
+git commit -m "content(reports): 2026-11-06 日报"
+git push          # ← 上线动作，永远人工确认
+```
+
+**为什么 push 必须人工**：2026-11-05 那次 SSE 超时产出了残报告（45 个 lint ERROR、
+10 处 `[EN]`、summary 为空）。如果当时全自动 push，坏日报直接上线。
+`commit` 提供可回滚的检查点，`push` 是不可逆的上线动作——把它留给人。
+
+### 失败告警（无人值守的前提）
+
+只要本次没出合格成品，`run-daily.sh` 会在日志与 stdout 打出：
+
+```
+########## DAILY-DIGEST-FAILED ##########
+日期     : 2026-11-05
+原因     : fetch=0 render=0 lint_content=2 lint_final=1
+产出     : .../2026-11-05.md 存在但未通过自检
+重要     : 若产出「存在但未通过」，它已经在站点目录里，构建会读到它。
+########## DAILY-DIGEST-FAILED ##########
+```
+
+**为什么需要它**：无人值守时最危险的不是失败，是**失败了没人知道**。11-05 那次
+残报告一直躺在站点目录里，直到人去看才发现。定时任务的会话记录里搜
+`DAILY-DIGEST-FAILED` 就能定位。
+
+### 连续在榜仓库的写法（streak_days）
+
+`prepare.py` 会自动给每个精读仓库算出 `streak_days`（连续在榜天数，回溯最多 30 天）
+和 `prev_why`（昨天写的解读）。实测 11-05 ∩ 11-06 有 6/10 个仓库重叠，
+`Scrapling` / `mattpocock/skills` / `agent-desktop` 连续 5 天在榜——
+同一个仓库连着上榜时，「为什么今天火」的真实理由往往没变。
+
+规则：`streak_days ≥ 3` 时，`why` 要写**今天的新变化**（今日新增多少 star、
+有无新版本/新 issue），参考 `prev_why` 但**不要复述**。确实无变化就如实写
+「连续第 N 天在榜，今日新增 X star，热度未减」。
+
+**这不是「可以少写」的许可**：读者看的是当天独立一份日报，「一直在榜、没啥好说」
+会让人直接失去兴趣；也不许为了显得有新意而编造。
 
 ### 已知的架构限制（别想着「优化掉」）
 

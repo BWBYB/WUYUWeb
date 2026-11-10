@@ -1,0 +1,436 @@
+/* Dynamic island TOC：右下角药丸，展开为目录面板。
+   几何对齐分裂导航（实测 260×63、距顶 16、距右 46）：
+   宽度与高度沿用导航尺寸，右边缘对齐胶囊，底部 16 与导航距顶 16 镜像。
+   表面沿用 .glass-card；展开只增加高度，宽度不变。 */
+.toc-island__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dock-panel);
+  pointer-events: none;
+}
+
+.toc-island__backdrop.is-visible {
+  pointer-events: auto;
+}
+
+.toc-island.glass-card {
+  --toc-radius: calc(var(--toc-h, 63px) / 2);
+  --toc-ring-track: color-mix(in srgb, var(--content-strong) 16%, transparent);
+  position: fixed;
+  /* 46 = header 侧边 32 + 胶囊内衬 14，与分裂导航右边缘对齐 */
+  right: 46px;
+  bottom: var(--space-4);
+  z-index: var(--z-modal);
+  width: 260px;
+  height: var(--toc-h, 63px);
+  padding: 0;
+  border-radius: var(--toc-radius);
+  overflow: hidden;
+  font-family: var(--mono);
+  animation: toc-island-enter 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  transition:
+    height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@keyframes toc-island-enter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 展开高度 = 原 400 上浮 25%；顶到视口时按上下 16 留白收住。
+   圆角与收起态一致，保持胶囊半径不变。 */
+.toc-island.is-open {
+  height: min(500px, calc(100dvh - var(--space-4) * 2));
+}
+
+/* 原药丸位置常驻为底部操作条：收起显示章节标题，展开显示橙色计数。
+   列表在它上方展开，条本身不参与形变。 */
+.toc-island__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: var(--toc-h, 63px);
+}
+
+.toc-island__bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: var(--space-3);
+  left: var(--space-3);
+  height: 1px;
+  background: var(--border-subtle);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.toc-island.is-open .toc-island__bar::before {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.toc-island__bar-toggle {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--space-2) 0 var(--space-5);
+  border: 0;
+  background: none;
+  color: var(--content-strong);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toc-island__titles {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+  line-height: var(--lh-ui);
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    filter 0.35s ease 0.1s;
+}
+
+.toc-island.is-open .toc-island__titles {
+  opacity: 0;
+  transform: translateY(-6px);
+  filter: blur(4px);
+  transition-delay: 0s;
+}
+
+/* 展开后左侧换成橙色进度计数，位次与标题一致 */
+.toc-island__count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-2) 0 var(--space-5);
+  color: var(--accent);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  line-height: var(--lh-ui);
+  opacity: 0;
+  transform: translateY(6px);
+  filter: blur(4px);
+  pointer-events: none;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.35s ease;
+}
+
+.toc-island.is-open .toc-island__count {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition-delay: 0.1s;
+}
+
+.toc-island__title {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toc-island__title--in {
+  animation: toc-title-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.toc-island__title--out {
+  position: absolute;
+  inset: 0;
+  animation: toc-title-out 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes toc-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toc-title-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
+/* 上滑时反向：旧标题下沉，新标题从上方落入 */
+.toc-island__titles.is-up .toc-island__title--in {
+  animation-name: toc-title-in-up;
+}
+
+.toc-island__titles.is-up .toc-island__title--out {
+  animation-name: toc-title-out-up;
+}
+
+@keyframes toc-title-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toc-title-out-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+}
+
+/* 进度环即「回到标题」按钮：整块可点，箭头收在圆心 */
+.toc-island__ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  margin-right: var(--space-3);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: transparent;
+  color: var(--content-muted);
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.toc-island__ring:hover {
+  background-color: var(--toc-ring-track);
+  color: var(--content-strong);
+}
+
+.toc-island__ring-graphic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.toc-island__ring circle {
+  fill: none;
+  stroke-width: 2;
+}
+
+.toc-island__ring-track {
+  stroke: var(--toc-ring-track);
+  transition: opacity 0.18s ease;
+}
+
+/* 悬浮底色已复刻空轨道色，轨道淡出避免两层半透明叠加产生色差 */
+.toc-island__ring:hover .toc-island__ring-track {
+  opacity: 0;
+}
+
+.toc-island__ring-progress {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition:
+    stroke-dashoffset 0.15s ease-out,
+    opacity 0.2s ease;
+}
+
+.toc-island__ring-progress.is-empty {
+  opacity: 0;
+}
+
+.toc-island__bar-toggle:focus-visible,
+.toc-island__ring:focus-visible,
+.toc-island__item:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -2);
+}
+
+.toc-island__panel {
+  position: absolute;
+  inset: 0 0 var(--toc-h, 63px);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toc-island.is-open .toc-island__panel {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition-delay: 0.1s;
+}
+
+.toc-island__heading {
+  padding: var(--space-4) var(--space-4) var(--space-1);
+  color: var(--content-strong);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+}
+
+.toc-island__list {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-2) var(--space-3) var(--space-2);
+  scroll-padding-block: var(--space-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.toc-island__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--toc-indent, var(--space-3));
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-ui);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 0.3s ease-out,
+    background-color 0.3s ease-out,
+    box-shadow 0.3s ease-out;
+}
+
+.toc-island__item + .toc-island__item {
+  margin-top: calc(var(--space-1) / 2);
+}
+
+.toc-island__item:not(.is-current):hover {
+  background-color: color-mix(in srgb, var(--content-strong) 5%, transparent);
+  color: color-mix(in srgb, var(--content-strong) 85%, transparent);
+}
+
+/* 当前行沿用导航选中胶囊：36% 中性玻璃底 + 同一组 8 层内高光 */
+.toc-island__item.is-current {
+  background-color: color-mix(in srgb, var(--glass-neutral) 36%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+  color: var(--content-strong);
+  font-weight: var(--fw-medium);
+}
+
+.toc-island__item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: transform 0.3s ease-out;
+}
+
+.toc-island__item:hover .toc-island__item-title {
+  transform: translateX(var(--space-1));
+}
+
+@media (max-width: 1200px) {
+  .toc-island,
+  .toc-island__backdrop {
+    display: none;
+  }
+}
+
+@media print {
+  .toc-island,
+  .toc-island__backdrop {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc-island,
+  .toc-island.glass-card,
+  .toc-island__bar::before,
+  .toc-island__titles,
+  .toc-island__count,
+  .toc-island__panel,
+  .toc-island__ring,
+  .toc-island__ring-track,
+  .toc-island__ring-progress,
+  .toc-island__title--in,
+  .toc-island__title--out,
+  .toc-island__item,
+  .toc-island__item-title {
+    animation: none;
+    transition: none;
+  }
+
+  .toc-island__title--out {
+    display: none;
+  }
+
+  .toc-island__titles,
+  .toc-island.is-open .toc-island__titles,
+  .toc-island__count,
+  .toc-island.is-open .toc-island__count,
+  .toc-island__panel,
+  .toc-island.is-open .toc-island__panel {
+    transform: none;
+    filter: none;
+  }
+}

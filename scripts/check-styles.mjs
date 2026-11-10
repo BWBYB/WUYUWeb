@@ -4,7 +4,7 @@
 // 规则：
 //   1. font-size 必须是 var(--fs-*)，裸 px 只有图标/装饰例外（记在 baseline）
 //   2. 中文标题不许负字距（letter-spacing 为负），存量例外记在 baseline
-//   3. 裸 hex 颜色只允许出现在 token 源文件 src/index.css
+//   3. 裸 hex 颜色只允许出现在 token 源文件 src/styles/tokens.css
 //
 // 用法：
 //   node scripts/check-styles.mjs           只检查，超出 baseline 就退出 1
@@ -20,7 +20,7 @@ const SKIP_DIRS = [
   'src/pages/Lab.css',
   'src/components/ThreeHero.css',
 ]
-const COLOR_TOKEN_SOURCE = 'src/index.css'
+const COLOR_TOKEN_SOURCE = 'src/styles/tokens.css'
 
 function walk(dir, out = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -180,6 +180,59 @@ if (updating) {
   process.exit(0)
 }
 
+const MEDIA_WIDTHS = new Set([1200, 900, 768, 600])
+
+function checkMedia(files) {
+  const problems = []
+
+  for (const file of files) {
+    const css = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    let lastWidth = Infinity
+    let line = 1
+    let cursor = 0
+
+    for (const match of css.matchAll(/@media[^{]*?\((max|min)-width:\s*([\d.]+)px\)/g)) {
+      line += css.slice(cursor, match.index).split('\n').length - 1
+      cursor = match.index
+      const kind = match[1]
+      const width = Number(match[2])
+
+      if (kind === 'min') {
+        problems.push(`${file}:${line}  使用了 min-width，全站统一 max-width`)
+      } else if (!MEDIA_WIDTHS.has(width)) {
+        problems.push(`${file}:${line}  断点 ${width}px 不在白名单（1200 / 900 / 768 / 600）`)
+      } else if (width > lastWidth) {
+        problems.push(`${file}:${line}  断点 ${width}px 写在 ${lastWidth}px 之前，应降序`)
+      }
+
+      if (kind === 'max') lastWidth = width
+    }
+  }
+
+  return problems
+}
+
+function checkZIndex(files) {
+  const problems = []
+
+  for (const file of files) {
+    const css = fs.readFileSync(path.join(ROOT, file), 'utf8')
+    let line = 1
+    let cursor = 0
+
+    for (const match of css.matchAll(/z-index:\s*(-?\d+)/g)) {
+      line += css.slice(cursor, match.index).split('\n').length - 1
+      cursor = match.index
+      const value = Number(match[1])
+      if (Math.abs(value) >= 100) {
+        problems.push(`${file}:${line}  全局 z-index ${value} 必须使用 --z-* token`)
+      }
+    }
+  }
+
+  return problems
+}
+
 const baseline = loadBaseline()
 const groups = [
   ['裸 font-size', compare('fontSize', stats.fontSize, baseline.fontSize || {}, samples.fontSize)],
@@ -192,9 +245,11 @@ const groups = [
 ]
 
 let failed = false
+let hasBaselineProblems = false
 for (const [label, problems] of groups) {
   if (!problems.length) continue
   failed = true
+  hasBaselineProblems = true
   console.error(`\n✗ ${label}：${problems.length} 个文件超出 baseline`)
   for (const item of problems) {
     console.error(`  ${item.file}  ${item.count} > ${item.allowed}`)
@@ -202,10 +257,32 @@ for (const [label, problems] of groups) {
   }
 }
 
+const mediaProblems = checkMedia(files)
+if (mediaProblems.length) {
+  failed = true
+  console.error(`\n✗ 响应式断点：${mediaProblems.length} 处不符合规范`)
+  for (const problem of mediaProblems) console.error(`  ${problem}`)
+}
+
+const zIndexProblems = checkZIndex(files)
+if (zIndexProblems.length) {
+  failed = true
+  console.error(`\n✗ 全局 z-index：${zIndexProblems.length} 处不符合规范`)
+  for (const problem of zIndexProblems) console.error(`  ${problem}`)
+}
+
 if (failed) {
-  console.error('\n新增样式必须用 token。确认是合理例外后，运行：')
-  console.error('  node scripts/check-styles.mjs --update')
-  console.error('并把 baseline 的 diff 一起提交。')
+  if (hasBaselineProblems) {
+    console.error('\n新增样式必须用 token。确认是合理例外后，运行：')
+    console.error('  node scripts/check-styles.mjs --update')
+    console.error('并把 baseline 的 diff 一起提交。')
+  }
+  if (mediaProblems.length) {
+    console.error('\n断点只允许 1200 / 900 / 768 / 600，且同文件内必须降序。')
+  }
+  if (zIndexProblems.length) {
+    console.error('\n全局 z-index 只用 --z-background / --z-sticky / --z-dock / --z-dock-panel / --z-modal。')
+  }
   process.exit(1)
 }
 

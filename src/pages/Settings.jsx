@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import ThemeSwitcherCustomizer from '../components/ui/ThemeSwitcherCustomizer'
 import SurfaceCustomizer from '../components/ui/SurfaceCustomizer'
+import EdgeBlurCustomizer from '../components/ui/EdgeBlurCustomizer'
 import NavCustomizer from '../components/ui/NavCustomizer'
 import './Settings.css'
 
@@ -24,9 +25,11 @@ export default function Settings() {
 
       <SurfaceCustomizer />
 
+      <EdgeBlurCustomizer />
+
       <NavCustomizer />
 
-      <Link className="settings-page-back fade-in fade-in-5" to={returnTo}>
+      <Link className="settings-page-back btn btn--secondary fade-in fade-in-5" to={returnTo}>
         <span aria-hidden="true">←</span> 返回
       </Link>
     </div>

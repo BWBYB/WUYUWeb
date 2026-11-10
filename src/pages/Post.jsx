@@ -1,12 +1,45 @@
 import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getAdjacentPosts, getPostBySlug } from '../lib/content/posts'
+import ChapterRail from '../components/ChapterRail'
+import TocIsland from '../components/TocIsland'
 import '../styles/effects.css'
 import './Post.css'
 
 function formatReadingTime(wordCount) {
   const minutes = Math.max(1, Math.ceil(wordCount / 300))
   return `${minutes} 分钟阅读`
+}
+
+const numeralPattern = /\d+(?:-\d+)*/g
+
+function wrapNumerals(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!/\d/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT
+      if (node.parentElement.closest('code, pre, .post-numeral')) return NodeFilter.FILTER_REJECT
+      return NodeFilter.FILTER_ACCEPT
+    },
+  })
+
+  const textNodes = []
+  while (walker.nextNode()) textNodes.push(walker.currentNode)
+
+  for (const node of textNodes) {
+    const text = node.nodeValue
+    const fragment = document.createDocumentFragment()
+    let lastIndex = 0
+    for (const match of text.matchAll(numeralPattern)) {
+      fragment.append(text.slice(lastIndex, match.index))
+      const span = document.createElement('span')
+      span.className = 'post-numeral'
+      span.textContent = match[0]
+      fragment.append(span)
+      lastIndex = match.index + match[0].length
+    }
+    fragment.append(text.slice(lastIndex))
+    node.replaceWith(fragment)
+  }
 }
 
 export default function Post() {
@@ -18,10 +51,12 @@ export default function Post() {
     const container = contentRef.current
     if (!container) return undefined
 
+    wrapNumerals(container)
+
     const buttons = [...container.querySelectorAll('pre')].map((pre) => {
       const button = document.createElement('button')
       button.type = 'button'
-      button.className = 'code-copy-button'
+      button.className = 'code-copy-button btn btn--text btn--sm'
       button.textContent = '复制'
       button.addEventListener('click', async () => {
         const code = pre.querySelector('code')?.textContent || ''
@@ -71,24 +106,12 @@ export default function Post() {
         {post.cover && <img className="post-cover media media--wide" src={post.cover} alt="" />}
       </header>
 
-      <div className="post-layout">
-        {post.toc.length > 0 && (
-          <aside className="post-toc" aria-label="文章目录">
-            <strong>目录</strong>
-            <nav>
-              {post.toc.map((item) => (
-                <a key={item.id} className={`toc-level-${item.level}`} href={`#${item.id}`}>
-                  {item.title}
-                </a>
-              ))}
-            </nav>
-          </aside>
-        )}
-
-        <div className="post-content glass-card">
-          <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
-        </div>
+      <div className="post-content">
+        <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
+
+      {post.toc.length >= 3 && <ChapterRail key={`rail-${post.slug}`} chapters={post.toc} />}
+      {post.toc.length >= 3 && <TocIsland key={post.slug} chapters={post.toc} title={post.title} />}
 
       <nav className="post-navigation" aria-label="文章导航">
         {previous ? (

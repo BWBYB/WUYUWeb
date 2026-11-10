@@ -19,6 +19,12 @@ import {
   readSurfaceSettings,
   saveSurfaceSettings,
 } from './surface-settings'
+import {
+  DEFAULT_EDGE_BLUR_SETTINGS,
+  normalizeEdgeBlurSettings,
+  readEdgeBlurSettings,
+  saveEdgeBlurSettings,
+} from './edge-blur-settings'
 
 const STORAGE_KEY = 'my-blog-theme-switcher-theme'
 const themes = new Set(['light', 'dark', 'system'])
@@ -46,6 +52,7 @@ export function ThemeSwitcherProvider({ children }) {
   const [settings, setSettingsState] = useState(readThemeSwitcherSettings)
   const [navSettings, setNavSettingsState] = useState(readNavSettings)
   const [surfaceSettings, setSurfaceSettingsState] = useState(readSurfaceSettings)
+  const [edgeBlurSettings, setEdgeBlurSettingsState] = useState(readEdgeBlurSettings)
   const resolvedTheme = theme === 'system' ? systemTheme : theme
 
   useEffect(() => {
@@ -147,6 +154,20 @@ export function ThemeSwitcherProvider({ children }) {
     saveSurfaceSettings(next)
   }
 
+  const updateEdgeBlurSetting = (key, value) => {
+    setEdgeBlurSettingsState((current) => {
+      const next = normalizeEdgeBlurSettings({ ...current, [key]: value })
+      saveEdgeBlurSettings(next)
+      return next
+    })
+  }
+
+  const resetEdgeBlurSettings = () => {
+    const next = { ...DEFAULT_EDGE_BLUR_SETTINGS }
+    setEdgeBlurSettingsState(next)
+    saveEdgeBlurSettings(next)
+  }
+
   // 阴影与边框统一写根元素，页面和组件只读 CSS 变量
   useEffect(() => {
     const root = document.documentElement
@@ -157,6 +178,14 @@ export function ThemeSwitcherProvider({ children }) {
     root.style.setProperty('--border-strength', String(surfaceSettings.borderStrength))
     root.style.setProperty('--glass-strength', String(surfaceSettings.glassStrength))
   }, [surfaceSettings])
+
+  // 边缘模糊参数同样写根元素，EdgeBlur 只读 CSS 变量
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty('--edge-blur-radius', `${edgeBlurSettings.blur}px`)
+    root.style.setProperty('--edge-blur-height', `${edgeBlurSettings.height}px`)
+    root.style.setProperty('--edge-blur-fade', `${edgeBlurSettings.fade}%`)
+  }, [edgeBlurSettings])
 
   return (
     <ThemeSwitcherContext.Provider
@@ -174,6 +203,9 @@ export function ThemeSwitcherProvider({ children }) {
         surfaceSettings,
         updateSurfaceSetting,
         resetSurfaceSettings,
+        edgeBlurSettings,
+        updateEdgeBlurSetting,
+        resetEdgeBlurSettings,
       }}
     >
       {children}

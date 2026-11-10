@@ -3,13 +3,30 @@
 > 状态：现行。由 `scripts/check-styles.mjs` 守门，存量例外记在 `scripts/style-baseline.json`。
 > 适用范围：`src/` 下的 CSS 与组件样式。
 
+## 索引
+
+| 想查什么 | 章节 |
+| --- | --- |
+| 哪些文件受约束、哪些豁免 | 一、适用范围与豁免 |
+| 字号、字重、行高 | 二、字号 |
+| 语义颜色与三种模式 | 三、颜色 |
+| 页面骨架、断点、层级、间距、圆角 | 四、页面骨架、间距与圆角 |
+| 动效时长与降级 | 五、动效 |
+| 自动检查与 baseline | 六、检查 |
+| 提交前跑什么 | 七、提交前 |
+| 已知债务 | 八、已知债务 |
+| 改某个决定该动哪个文件 | 九、修改入口 |
+| 图片比例与图标 | 十、图片与图标 |
+| 按钮、表单、卡片、链接 | 十一、组件 |
+| 各 md 的职责 | 十二、文档分工 |
+
 ## 一、适用范围与豁免
 
 | 区域 | 约束 |
 | --- | --- |
 | 页面、共享组件、导航、主题切换器 | 完全约束 |
 | `src/pages/Player.css` | 文本受约束；磁带物理标签与图标例外 |
-| `src/index.css` | token 与颜色源文件，允许裸 hex |
+| `src/styles/tokens.css` | token 与颜色源文件，允许裸 hex |
 | `src/pages/Lab.css`、`src/components/lab/`、`ThreeHero.css` | 豁免，保留演示视觉语言 |
 
 豁免不是永久许可证。新增豁免必须写进本文件，并在 PR/提交说明里写原因。
@@ -21,7 +38,9 @@
 | `--fs-micro` | 12px | 元信息、标签、面板说明 |
 | `--fs-ui` | 14px | 导航、页脚、次要正文、控件 |
 | `--fs-body` | 16px | 正文、卡片标题 |
+| `--fs-lead` | 18px | 导语、列表摘要 |
 | `--fs-heading-sm` | 20px | 区块标题、文章 h2/h3 |
+| `--fs-heading-md` | 24px | 列表标题 |
 | `--fs-heading` | 28px | 大区块标题、移动端页面标题 |
 | `--fs-display` | 36px | 桌面页面标题、文章标题 |
 
@@ -35,7 +54,13 @@
 | `--fw-medium` | 500 | 标签、按钮、卡片次级标题 |
 | `--fw-semibold` | 600 | 页面标题、文章标题、强调 |
 
-`index.html` 实际加载 Inter 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
+`index.html` 实际加载 IBM Plex Mono 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
+
+全站 UI 与元信息使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 UI 数字使用 `--mono`（同为 IBM Plex Mono）；两者栈首都是得意黑数字子集，数字字形由它接管。文章/列表标题、文章正文与摘要使用 `--serif-editorial`（英文 New York → 中文思源宋体），引言等短句使用 `--serif`。中文由回退字体渲染，正文英文不再走等宽。
+
+全站阿拉伯数字统一为得意黑：`index.css` 声明了只含数字字形的 `Smiley Sans Digits`（`unicode-range` 限定 0–9），并挂在 `--sans`、`--mono`、`--serif`、`--serif-editorial` 的栈首；字母、中文与标点仍由各栈后面的原字体渲染。日期与文章正文数字使用 `--post-date-font`（得意黑整套，连字符也跟随）。
+
+信息型小字（分类、脚注、标签、kicker，12–14px）与页脚文字使用 `--accent-font`（得意黑 Smiley Sans，经 jsDelivr 加载，只有 400 一档）。导航项与更多面板使用 `--sans`。代码块、ASCII 画与等宽字体样张使用 `--mono-fixed`，数字必须留在等宽网格里，不参与得意黑替换。
 
 ### 行高
 
@@ -73,9 +98,9 @@
 
 规则：
 
-1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/index.css`。
+1. 新代码不出现 `#rrggbb`、`rgba()`；颜色定义只放在 `src/styles/tokens.css`。
 2. 主题差异只通过 `[data-site-theme]`、`[data-paper]`、`--paper-mix` 改变量，组件里禁止 `if (paper)` 分支。
-3. 纸色用 `--paper-mix` 在暖白与暖纸之间插值；强调色整组切换，不参与混合。
+3. 纸色用 `--paper-mix` 在白色与暖纸之间插值；强调色整组切换，不参与混合。
 4. 全站不引入蓝、紫、青作为强调色；需要新颜色时先判断它属于六组中的哪一组。
 5. 对比度：正文对画布/卡片 ≥ 4.5:1，弱文字 ≥ 3:1，强调色作为文字 ≥ 4.5:1，焦点圈对相邻色 ≥ 3:1。
 
@@ -85,18 +110,53 @@
 
 | Token | 值 | 用途 |
 | --- | --- | --- |
-| `--page-max` | 1100px | 首页、文章列表、关于、设置 |
-| `--page-compact` | 820px | 归档、时间线 |
+| `--page-max` | 1100px | 首页、关于、设置、简历 |
+| `--page-compact` | 820px | 文章列表、归档、时间线 |
 | `--page-top` | 16px | 所有页面统一顶部留白 |
 | `--page-header-gap` | 48px | 页头与正文之间 |
 
 规则：
 
 1. 页面外框统一 `width: 100%; max-width: var(--page-*); margin-inline: auto; padding-top: var(--page-top)`。
-2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`，并限制在 `--measure`。
+2. 页头标题统一 `--fs-display` / `--lh-heading`，描述统一 `--fs-body` / `--lh-body`；列表页描述限制在 `--measure`，文章页跟随 `--measure-post`。
 3. 页头与正文间距统一 `--page-header-gap`，不再各页写 32 / 40 / 64。
-4. 文章页宽度由目录列 + `--measure` + 内边距推导，不直接套 `--page-max`。
+4. 文章详情正文使用 `--measure-post`（65ch），页面宽度 = 正文 + 左右内边距；不设左侧目录列，章节目录用右下角目录岛（`TocIsland`，≤1200 与打印隐藏）。
 5. Player 与 Lab 不参与页面骨架。
+
+### 响应式断点（已落地）
+
+| 名称 | 值 | 用途 |
+| --- | --- | --- |
+| `wide` | 1200px | 宽屏、浮层避让 |
+| `tablet` | 900px | 平板横向、小桌面 |
+| `mobile` | 768px | 移动端主断点 |
+| `small` | 600px | 窄屏 |
+
+规则：
+
+1. 全站桌面优先，只用 `max-width`，禁止 `min-width`。
+2. 同一文件内断点必须从大到小排列。
+3. CSS 的 `@media` 不能写 `var()`；断点值以本表为准，JS 用 `src/lib/breakpoints.js`。
+4. 不允许新增 1024、992、480 这类近似值；由 `check-styles` 拦截。
+5. `≤600` 时导航常驻分裂态，滚动与回顶部都不再合并；行为在 `Header.jsx` 的 `MEDIA.small` 判断里。
+
+### 层级（已落地）
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--z-background` | -1 | 画布、玻璃伪元素 |
+| `--z-raised` | 10 | 组件内抬升（预留） |
+| `--z-sticky` | 100 | 顶栏 |
+| `--z-dock` | 1000 | 底部主题切换器 |
+| `--z-dock-panel` | 1100 | 背景设置面板，盖住 dock |
+| `--z-modal` | 1200 | 右下目录岛（TocIsland） |
+
+规则：
+
+1. 全局浮层只用 `var(--z-*)`；组件内部相对层级保留小整数（导航 2 / 12 / 16、Player 1 / 10）。
+2. 导航内部使用局部变量 `--nav-z-base` / `--nav-z-panel` / `--nav-z-fieldset`，不进入全局阶梯。
+3. z-index 不能跨 stacking context；弹窗必须 portal 到根层级，否则写 9999 也盖不过 header。
+4. 背景只用负层，内容不用负值；禁止新增 999、9999。
 
 ### 间距（已落地）
 
@@ -140,7 +200,7 @@
 规则：
 
 1. 组件不写裸 `box-shadow`；卡片用 `--shadow-1`，浮层用 `--shadow-2`，导航用 `--shadow-3`。
-2. 玻璃的内部高光（inset）属于材质例外，可以保留；外部投影必须走层级 token。
+2. 玻璃的 8 层 inset 高光属于材质例外，保留在 `Header.css` / `theme-switcher.css` / `components.css`（玻璃按钮）；外投影仍必须走 `--shadow-2/3`。
 3. 设置页「阴影与边框」卡片是唯一入口，导航与主题切换器不再各自提供阴影滑块。
 4. Player、Lab 的物理阴影豁免。
 
@@ -183,7 +243,8 @@ npm run check:styles
 | 裸圆角 | 新增 px / % 圆角；胶囊与正圆必须用 token |
 | 裸字重 | 新增数字字重即失败 |
 | 裸行高 | 新增无单位 / px 行高即失败（`1` 的图标例外走 baseline） |
-| 裸 hex | `src/index.css` 之外新增颜色即失败 |
+| 全局 z-index | ≥100 的裸值即失败，必须用 `--z-*` |
+| 裸 hex | `src/styles/tokens.css` 之外新增颜色即失败 |
 
 确认是合理例外时：
 
@@ -220,18 +281,26 @@ npm run build
 
 | 想改什么 | 入口 | 注意 |
 | --- | --- | --- |
-| 全局颜色 / 语义 | `src/index.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
-| 新增一个语义色 | 同上，三种模式都要给值 | 深色、暖白、纸色缺一不可；纸色用 `--paper-mix` 插值 |
+| 全局颜色 / 语义 | `src/styles/tokens.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
+| 新增一个语义色 | 同上，三种模式都要给值 | 深色、白色、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
-| 字号 | `src/index.css` 的 `--fs-*` | 6 档已固定；移动端在 `max-width: 768px` 覆盖 |
-| 字重 | `src/index.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
-| 行高 | `src/index.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
-| 间距 | `src/index.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
-| 页面骨架 / 容器宽度 | `src/index.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
-| 正文栏宽 | `src/index.css` 的 `--measure`、`src/pages/Post.css` | 默认 35 字；页面宽度由目录列 + 栏宽 + 内边距推导 |
-| 圆角 | `src/index.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
-| 图片比例 | `src/index.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
+| 字号 | `src/styles/tokens.css` 的 `--fs-*` | 8 档已固定；移动端在 `max-width: 768px` 覆盖 |
+| 字重 | `src/styles/tokens.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
+| 行高 | `src/styles/tokens.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
+| 间距 | `src/styles/tokens.css` 的 `--space-1..8` | 只用于 padding / margin / gap；几何与装饰值豁免 |
+| 页面骨架 / 容器宽度 | `src/styles/tokens.css` 的 `--page-*`、各页面根类 | wide 1100 / compact 820；页头间距与顶部留白统一走 token |
+| 响应式断点 | `src/lib/breakpoints.js`、各 CSS 的 `@media` | 只用 1200 / 900 / 768 / 600；桌面优先、同文件降序 |
+| 全局层级 | `src/styles/tokens.css` 的 `--z-*`、`src/components/Header.css` 的 `--nav-z-*` | 浮层用 token；组件内部小整数保留 |
+| 正文栏宽 | `src/styles/tokens.css` 的 `--measure`、`--measure-post`、`src/pages/Post.css` | 列表摘要 35em；文章详情 65ch，居中且无左侧目录列 |
+| 文章目录 | `src/components/ChapterRail.jsx`、`src/components/TocIsland.jsx`、`src/hooks/useTocActive.js` | 右侧刻度轨与右下目录岛共用同一份滚动定位；目录岛高度跟导航设置（`settings.height * 0.9`） |
+| 圆角 | `src/styles/tokens.css` 的 `--radius-*` | 常规三档 + 胶囊/正圆；几何半高与 Player 豁免 |
+| 图片比例 | `src/styles/tokens.css` 的 `--ratio-*`、`src/styles/media.css` | 封面 16:9 / 卡片 4:3 / 头像 1:1 |
 | 图标 | `src/components/ui/Icon.jsx` | 24 网格、1.75 描边、currentColor |
+| 按钮 / 表单 | `src/components/ui/Button.jsx`、`Field.jsx`、`src/styles/components.css` | 主/次/文字按钮；控件 40 / 密集 36 / 移动 44 |
+| 卡片内边距 | `src/styles/tokens.css` 的 `--card-pad*`、`src/styles/effects.css` | 面板 24、内容主卡 32 |
+| 链接 | `src/styles/components.css`、`src/pages/Post.css` | 正文常下划线；操作链接无下划线 |
+| favicon | `public/favicon.svg` | 32 网格、无渐变无滤镜、≤ 2 KB |
+| 动效时长 / 缓动 | `src/components/ui/nav-settings.js`、`src/components/ui/theme-switcher-settings.js`、组件 CSS | 导航时长与缓动走设置；主题过渡 700ms 在 Provider |
 | 阴影 / 边框强度 | `src/components/ui/surface-settings.js`、`src/components/ui/SurfaceCustomizer.jsx` | 全局唯一入口；组件只读 `--shadow-1/2/3` 与 `--border-*` |
 | 导航 / 切换器玻璃 | `src/components/Header.css`、`src/components/ui/theme-switcher.css` | 内部高光保留，外部投影走全局阴影层级 |
 | 主题切换逻辑 | `src/components/ui/ThemeSwitcherProvider.jsx` | 只写 `data-site-theme` / `data-paper`，不要在组件里判断 |
@@ -274,7 +343,103 @@ npm run build
 4. 纯装饰图标 `aria-hidden="true"`；只有图标的按钮必须有 `aria-label`。
 5. 新增图标先加进 `Icon.jsx`，不要在组件里散装 `<svg>`。
 
-## 十一、文档分工
+## 十一、组件
+
+### 控件尺寸
+
+| Token | 值 | 用途 |
+| --- | --- | --- |
+| `--control-h` | 40px | 默认按钮、输入框、select |
+| `--control-h-sm` | 36px | 密集设置面板 |
+| `--control-h-touch` | 44px | ≤600 触控目标 |
+| `--control-px` | 16px | 默认水平内边距 |
+| `--control-px-sm` | 12px | 紧凑按钮 / 输入框 |
+| `--control-radius` | 12px | 标准控件圆角 |
+
+### 按钮
+
+`src/components/ui/Button.jsx`：
+
+```jsx
+<Button variant="primary | secondary | text | glass" size="md | sm" />
+```
+
+| 类型 | 默认 | hover | active |
+| --- | --- | --- | --- |
+| primary | `--accent` 底 / `--content-on-accent` | `--accent-secondary` | 内压 1px |
+| secondary | 透明 / `--content-default` / `--border-subtle` | `--surface-card-hover` / `--border-strong` | `--surface-card` |
+| text | 透明 / `--accent` | `--accent-soft` / `--accent-secondary` | 同 hover |
+| glass | 中性玻璃 12% / 胶囊 / `--content-strong` | 同底 / `--accent` | 玻璃 36% / `--content-strong` |
+
+禁用：透明度 0.45，`pointer-events: none`。胶囊形用于分类筛选和导航同源玻璃按钮，普通按钮仍用 `--control-radius`。玻璃按钮复用导航的三层状态（容器 12% → hover 赭石文字 → 按下 36% 选中胶囊）；滑动胶囊与单选逻辑仍归 switcher。
+
+### 表单
+
+`src/components/ui/Field.jsx` + `.control`：
+
+- 高度 40，移动端 44
+- 边框 `--border-subtle`，圆角 `--control-radius`
+- focus：边框 `--accent` + 2px `--focus-ring`，offset 2
+- error：边框 `--danger`，`.field__error`
+- textarea 最小高度 96，行高 `--lh-body`
+- select 与 input 同高，option 使用 `--surface-canvas` / `--content-strong`
+
+### 卡片
+
+| 类 | 内边距 | 用途 |
+| --- | --- | --- |
+| `.glass-card` | `--card-pad` 24 | 设置、工具、普通面板 |
+| `.bento-card` / `.blog-post-card` / `.about-card` | `--card-pad-feature` 32 | 首页、博客、关于的内容主卡 |
+
+- 圆角 `--radius-lg`，边框 `--border-glass`，阴影 `--shadow-1`
+- 静态卡不位移；整卡可点时加 `.card--interactive`，hover 抬 2px、阴影升到 `--shadow-2`
+- 卡片标题 20 / 600，正文 16 / 400
+
+### 链接
+
+| 类型 | 默认 | hover |
+| --- | --- | --- |
+| 正文链接 `.link-inline` / `.post-content a` | `--accent` + 1px 下划线，offset 2 | `--accent-secondary` + 2px 下划线 |
+| 操作链接 `.link-action` | `--content-default`，无下划线 | `--accent` |
+
+- visited 不改色
+- 键盘焦点统一 `--focus-ring`，2px + offset 2
+- 导航、主题切换器、Player、Lab 为材质/物理例外，不套普通按钮与链接
+
+### 导航小设置栏（紧凑例外）
+
+固定在 280px 高的导航胶囊里，不跟随移动端 44px：
+
+| 项 | 值 |
+| --- | --- |
+| 行高 | 36px，行距 8px |
+| 分段按钮 | 32px 高，胶囊 |
+| 滑块 | 轨道 4px，拇指 14px |
+| 开关 | 36 × 20，拇指 16px |
+| 底部按钮 | `btn--text btn--sm` 36px |
+| 焦点 | 局部 `--focus-ring: var(--nav-action-color)` |
+
+行高固定 36 是为了保证 4 行 + footer 在 280px 内闭合；移动端也不改成 44。底部“详细设置”是文字按钮 + 箭头，不用强调色胶囊。
+
+### 导航更多面板
+
+- `NavMorePanel` 复用设置面板的展开/关闭节奏，高度 176px
+- 只放「探索 `/lab`」和「CD机 `/player`」两个入口
+- 面板打开时隐藏其余导航图标与选中胶囊，只保留「更多」按钮，点击外部也可关闭
+- `≤600` 常驻分裂时同样可用
+
+### 入口
+
+| 想改什么 | 改哪里 |
+| --- | --- |
+| 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
+| 导航小设置栏 | `src/components/NavSettingsPanel.jsx`、`src/components/Header.css` |
+| 导航更多面板 | `src/components/NavMorePanel.jsx`、`Header.jsx` |
+| 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
+| 卡片内边距 / 圆角 | `src/styles/tokens.css` 的 `--card-*`、`src/styles/effects.css` |
+| 链接 | `src/styles/components.css`、`src/pages/Post.css` |
+
+## 十二、文档分工
 
 | 文件 | 管什么 |
 | --- | --- |

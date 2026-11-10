@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1125" viewBox="0 0 800 1125">
+  <rect width="800" height="1125" fill="#efe7d6"/>
+  <rect x="46" y="46" width="708" height="1033" rx="26" fill="none" stroke="#26221c" stroke-opacity="0.16" stroke-width="2"/>
+  <g fill="#c4713f">
+    <rect x="46" y="46" width="44" height="3"/>
+    <rect x="46" y="46" width="3" height="44"/>
+    <rect x="710" y="1076" width="44" height="3"/>
+    <rect x="754" y="1035" width="3" height="44"/>
+  </g>
+
+  <g font-family="Menlo, Consolas, 'PingFang SC', monospace" fill="#26221c">
+    <text x="78" y="192" font-size="23" letter-spacing="5" fill="#7a7063">WUYU / RESUME</text>
+    <text x="722" y="192" font-size="23" letter-spacing="3" fill="#7a7063" text-anchor="end">NO. 001</text>
+
+    <text x="400" y="560" font-size="126" font-weight="600" letter-spacing="22" text-anchor="middle">WUYU</text>
+
+    <g fill="#c4713f">
+      <rect x="340" y="612" width="120" height="6"/>
+      <rect x="340" y="612" width="6" height="6" fill="#26221c"/>
+    </g>
+
+    <text x="400" y="700" font-size="35" text-anchor="middle" fill="#4a4339">全栈工程师 → Agent 开发</text>
+    <text x="400" y="752" font-size="24" letter-spacing="3" text-anchor="middle" fill="#7a7063">BUILD · SHIP · ITERATE</text>
+
+    <line x1="78" y1="968" x2="722" y2="968" stroke="#26221c" stroke-opacity="0.16" stroke-width="2"/>
+    <text x="78" y="1022" font-size="23" letter-spacing="4" fill="#7a7063">深圳 · SHENZHEN</text>
+    <text x="722" y="1022" font-size="23" letter-spacing="3" fill="#7a7063" text-anchor="end">WEB / ASCII / AGENT</text>
+  </g>
+</svg>

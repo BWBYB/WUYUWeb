@@ -1,0 +1,108 @@
+/* 「更多」小面板：与设置面板同一套展开方式，内容换成两个入口 */
+.nav-more-panel {
+  --focus-ring: var(--nav-action-color);
+  position: absolute;
+  inset: 0;
+  z-index: var(--nav-z-panel);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  padding: var(--space-7) var(--space-3) var(--space-3);
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--nav-content-color) 7%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.94);
+  transform-origin: top right;
+  transition:
+    opacity var(--nav-panel-fade) ease,
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear var(--nav-stretch-duration, 0.5s);
+}
+
+.nav-pill[data-more-open="true"] .nav-more-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity var(--nav-panel-fade) ease var(--nav-panel-delay),
+    transform var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    visibility 0s linear 0s;
+}
+
+/* 面板打开时让出下方图标，只保留「更多」按钮用于再次点击关闭 */
+.nav-pill[data-more-open="true"] .switcher--navigation .switcher__option:not(.navigation-more-link),
+.nav-pill[data-more-open="true"] .switcher--navigation::after {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.nav-pill[data-more-open="true"] .switcher--navigation .navigation-more-link {
+  position: relative;
+  z-index: var(--nav-z-fieldset);
+}
+
+.nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--nav-content-color);
+  text-decoration: none;
+  transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* 与导航按钮一致：悬停只变强调色，选中才铺玻璃胶囊 */
+.nav-more-item:not(.is-active):hover {
+  color: var(--nav-action-color);
+}
+
+.nav-more-item.is-active {
+  background: color-mix(in srgb, var(--nav-glass-color) var(--nav-active-opacity, 36%), transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 2px 1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 -4px 1px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent),
+    0 3px 6px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 8%), transparent);
+}
+
+.nav-more-icon {
+  flex: 0 0 20px;
+  transition: transform 0.2s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.nav-more-item:hover .nav-more-icon {
+  transform: scale(1.2);
+}
+
+.nav-more-label {
+  flex: none;
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+}
+
+.nav-more-desc {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  color: var(--nav-content-color);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  opacity: 0.6;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -13,17 +13,11 @@
      4. logo WUYU → 圆形 W；导航 图标+标签 → 纯图标
    ═══════════════════════════════════════ */
 
-/* 注册 --logo-width / --mask-fade 为可插值长度，让 width 与 mask 渐变带随它平滑过渡 */
+/* 注册 --logo-width 为可插值长度，让 width 与文字裁切平滑过渡 */
 @property --logo-width {
   syntax: '<length>';
   inherits: false;
-  initial-value: 65px;
-}
-
-@property --mask-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 8px;
+  initial-value: 48px;
 }
 
 /* 合并态：只有父级 .site-header 是唯一的胶囊（带玻璃）。
@@ -34,7 +28,11 @@
   position: fixed;
   top: 16px;
   left: 50%;
-  z-index: 100;
+  z-index: var(--z-sticky);
+  /* header 内部相对层级：不进入全局阶梯 */
+  --nav-z-base: 2;
+  --nav-z-panel: 12;
+  --nav-z-fieldset: 16;
   display: flex;
   /* 不写死 height（对齐 Legacy header-wrapper）：高度由最高子元素撑开。
      常态 = nav-pill 的 fieldset 高度（--nav-height 63px）；
@@ -58,11 +56,18 @@
   --nav-panel-delay: calc(var(--nav-stretch-duration, 0.5s) * 0.16);
   --nav-panel-fade: calc(var(--nav-stretch-duration, 0.5s) * 0.4);
   --nav-icon-exit: calc(var(--nav-stretch-duration, 0.5s) * 0.28);
-  /* ── 玻璃配方（实验：单层大投影 + 单描边）──
-     参考 liquid-glass-js：厚度交给背景模糊与边缘，而不是 8 层 inset 高光。
-     外壳与导航胶囊共用这一份；分裂后两块玻璃观感与合并态一致。 */
+  /* ── 玻璃配方 ──
+     与主题切换器同源：8 层 inset 高光 + 2 层外投影。
+     外壳、logo 胶囊、导航胶囊共用这一份，分裂后三块玻璃观感一致。 */
   --glass-shadow-inset:
-    inset 0 0 0 1px color-mix(in srgb, var(--nav-content-color) 18%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent);
   --glass-shadow-outer: var(--shadow-3);
   transition: width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
@@ -72,7 +77,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: var(--radius-pill);
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -101,7 +106,7 @@
 /* ── 左 logo 胶囊 ─────────────────────────── */
 .logo-pill {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +137,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: inherit;
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -163,7 +168,7 @@
 
 .site-header-logo {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: inline-flex;
   height: 40px;
   align-items: center;
@@ -171,21 +176,19 @@
      flex-start 让内容靠左，overflow:hidden 收缩时只裁右边，始终露出最左边的 W */
   justify-content: flex-start;
   /* 单一字符串 WUYU：用明确 width 过渡 + overflow:hidden 从右往左裁切，
-     分裂时只露 W（15px），合并时露完整 WUYU（57px）。
+     分裂时只露 W，合并时露完整 WUYU。
+     宽度跟随字体走：4 个等宽字符 + 3 段字距（末尾字距是空白，会被裁掉）+ 左右各 1px。
      不再拆 W/UYU 两个 span —— 那样在 flex 里父容器会随内容瞬跳重排，
      打断 max-width 抽屉过渡，导致「突变」。 */
-  width: var(--logo-width, 65px); /* 合并态 = 文字宽 57px + 8px 软边余量，让 mask 渐变带落在文字外 */
-  --logo-width: 65px; /* 基础态（合并态）宽度，供 @property 过渡 */
-  --mask-fade: 8px; /* 合并态渐变带 8px，落在文字(57px)外的 57~65px 空白区，Y 清晰 */
+  width: var(--logo-width, 48px);
+  --logo-width: calc(4ch + 0.48em + 2px);
+  padding-inline: 1px;
   overflow: hidden;
-  /* 软裁切（交界处渐变带）：
-     渐变带 = [--logo-width - --mask-fade, --logo-width]，透明起点随 --logo-width 平滑左移：
-     - 合并态 --logo-width=65px/--mask-fade=8px：渐变带 57~65px（文字外），Y 完整清晰
-     - 过渡中 --logo-width 65→15、--mask-fade 8→2：UYU 交界处持续柔和淡出
-     - 分裂态 --logo-width=15px/--mask-fade=2px：渐变带 13~15px（仅 W 右端 2px 轻微淡，基本清晰） */
-  -webkit-mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
-  mask-image: linear-gradient(to right, black, black calc(var(--logo-width, 65px) - var(--mask-fade, 8px)), transparent var(--logo-width, 65px));
   white-space: nowrap;
+  /* 裁切宽度按 ch 计算，ch 取栈首字体的数字宽：全站数字字体
+     得意黑（0 ≈ .49em）比 WUYU 实际落到的 IBM Plex Mono（.6em）窄，
+     会让盒子缩到裁掉末尾字母。这里固定回纯等宽栈，ch 与字母同度量。 */
+  font-family: var(--mono-fixed);
   color: var(--nav-content-color);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -193,7 +196,6 @@
   text-decoration: none;
   transition: color .2s ease, transform .2s ease,
     --logo-width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
-    --mask-fade var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     width var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1)),
     letter-spacing var(--nav-stretch-duration, 0.5s) var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
@@ -221,19 +223,17 @@
   border-radius: var(--radius-sm);
 }
 
-/* 分裂态：宽度收到 W 单字（15px），字距归零（单字无字距），
-   UYU 被 overflow:hidden 从右往左裁掉。
-   --mask-fade 收到 2px（渐变带很窄，仅轻微柔化 W 右端，不模糊 W 本体） */
+/* 分裂态：宽度收到单个等宽字符，W 在盒内居中，胶囊圆心也随之对准；
+   UYU 仍被 overflow:hidden 从右往左裁掉 */
 .site-header.is-split .site-header-logo {
-  --logo-width: 15px; /* 实测 W=14.91px（无字距） */
-  --mask-fade: 2px;
+  --logo-width: calc(1ch + 2px);
   letter-spacing: 0;
 }
 
 /* ── 右导航胶囊 ─────────────────────────── */
 .nav-pill {
   position: relative;
-  z-index: 2;
+  z-index: var(--nav-z-base);
   display: flex;
   align-items: center;
   margin-left: auto;
@@ -252,7 +252,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   border-radius: inherit;
   pointer-events: none;
   background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
@@ -270,7 +270,7 @@
 }
 
 .site-header > .nav-pill > .switcher--navigation {
-  z-index: 2;
+  z-index: var(--nav-z-base);
   align-self: center;
   flex: 0 1 auto;
 }
@@ -303,6 +303,7 @@
 }
 
 /* 「关于」页（点 logo）或「设置」页（点 ⚙）：导航没有对应按钮，选中胶囊完全淡出隐藏。
+   「更多」里的页面（探索 / CD机）例外：胶囊停在「更多」按钮上，见 NavigationSwitcher。
    离开时淡入/恢复。 */
 .site-header[data-hide-capsule="true"] .nav-pill > .switcher--navigation::after {
   opacity: 0 !important;
@@ -311,7 +312,7 @@
 /* 仅「关于」页：logo 文字用 action 色高亮（合并态 WUYU 亮 / 分裂态 W 亮）。
    分裂态 logo 圆形胶囊玻璃保留（分裂态下 logo 需要玻璃撑起液态外观，
    淡出会导致 W 裸露无边框），只靠文字变色提示。 */
-.site-header[data-on-about="true"] .site-header-logo {
+.site-header[data-on-resume="true"] .site-header-logo {
   color: var(--nav-action-color);
 }
 
@@ -387,6 +388,11 @@
   /* 圆角保持 calc(var(--nav-height)/2) 不变，上圆角不动、只向下拉伸 */
 }
 
+/* 更多面板：只放两个入口，高度比设置面板矮 */
+.site-header.is-split .nav-pill[data-more-open="true"] {
+  height: 176px;
+}
+
 /* 打开面板时不再改 fieldset 的定位方式。
    以前为了让设置按钮的 absolute 锚定到 .nav-pill 而把它改成 static，副作用是
    导航选中胶囊（fieldset::after，top:4/left:4）也失去定位基准、改锚到 nav-pill。
@@ -396,13 +402,17 @@
 .nav-settings-panel {
   position: absolute;
   inset: 0;
-  z-index: 12; /* 对齐 Legacy：面板盖在玻璃(::before z:-1)与 fieldset(z:2) 之上 */
+  z-index: var(--nav-z-panel); /* 面板盖在玻璃与 fieldset 之上 */
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
   box-sizing: border-box;
   padding: 48px 12px 12px; /* 顶部留白给右上角锚定的 ⚙ */
+  /* 密集面板：控件固定 36，不跟随移动端 44；焦点圈跟导航高亮 */
+  --control-h: 36px;
+  --control-h-sm: 36px;
+  --focus-ring: var(--nav-action-color);
   /* 面板自带的极淡底色：浅色主题下玻璃几乎看不见，不加这层小窗口会和页面糊成一片。
      用内容色的低透明度叠加，深浅两个主题都朝「与正文相反」的方向偏一点。 */
   background: color-mix(in srgb, var(--nav-content-color) 6%, transparent);
@@ -437,7 +447,9 @@
 .nav-settings-rows {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-2);
+  /* 主题行离右上角 ⚙ 再让出 8px，行间距保持不变 */
+  padding-top: var(--space-2);
   min-width: 0;
 }
 
@@ -478,8 +490,8 @@
 .nav-setting-segment-btn {
   flex: 1 1 0;
   min-width: 0;
-  height: 26px;
-  padding: 0 4px;
+  height: 32px;
+  padding: 0 var(--space-1);
   border: 0;
   border-radius: var(--radius-pill);
   background: transparent;
@@ -510,7 +522,7 @@
 }
 
 .nav-setting-range::-webkit-slider-runnable-track {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: linear-gradient(
     to right,
@@ -520,9 +532,9 @@
 }
 
 .nav-setting-range::-webkit-slider-thumb {
-  width: 12px;
-  height: 12px;
-  margin-top: -4.5px;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
   appearance: none;
   -webkit-appearance: none;
   border: 0;
@@ -531,20 +543,20 @@
 }
 
 .nav-setting-range::-moz-range-track {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--nav-content-color) 18%, transparent);
 }
 
 .nav-setting-range::-moz-range-progress {
-  height: 3px;
+  height: 4px;
   border-radius: var(--radius-pill);
   background: var(--nav-action-color);
 }
 
 .nav-setting-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border: 0;
   border-radius: var(--radius-circle);
   background: var(--nav-action-color);
@@ -563,7 +575,7 @@
 /* 开关 */
 .nav-setting-switch {
   position: relative;
-  width: 34px;
+  width: 36px;
   height: 20px;
   margin-left: auto;
   padding: 0;
@@ -585,12 +597,12 @@
   width: 16px;
   height: 16px;
   border-radius: var(--radius-circle);
-  background: #fff;
+  background: var(--nav-light-color);
   transition: transform .2s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .nav-setting-switch[aria-checked="true"] .nav-setting-switch-knob {
-  transform: translateX(14px);
+  transform: translateX(16px);
 }
 
 /* 底部操作 */
@@ -605,50 +617,24 @@
   color: var(--nav-content-color);
 }
 
-.nav-settings-reset {
-  padding: 6px 2px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: var(--fs-micro);
-  line-height: 1;
-  white-space: nowrap;
-  opacity: .8;
-  cursor: pointer;
-  transition: opacity .18s ease;
-}
-
-.nav-settings-reset:hover {
-  opacity: 1;
-}
-
-.nav-settings-detail {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--nav-action-color) 10%, transparent);
+/* 面板内的共享按钮：文字色跟导航高亮，不抢主页面 accent */
+.nav-settings-panel .btn {
   color: var(--nav-action-color);
-  font-size: var(--fs-micro);
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background-color .18s ease;
+  opacity: .82;
 }
 
-.nav-settings-detail:hover {
-  background: color-mix(in srgb, var(--nav-action-color) 18%, transparent);
+.nav-settings-panel .btn:hover {
+  background: color-mix(in srgb, var(--nav-action-color) 14%, transparent);
+  color: var(--nav-action-color);
+  opacity: 1;
 }
 
 .nav-setting-segment-btn:focus-visible,
 .nav-setting-switch:focus-visible,
-.nav-settings-reset:focus-visible,
-.nav-settings-detail:focus-visible {
-  outline: 2px solid var(--nav-action-color);
-  outline-offset: 2px;
+.nav-setting-range:focus-visible,
+.nav-settings-panel .btn:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* 面板打开时：4 个导航图标淡出上移隐藏（保留 ⚙） */
@@ -670,7 +656,7 @@
    一条覆盖全部属性的过渡，不锁住 width/height 就会抖。 */
 .nav-pill[data-settings-open="true"] .switcher--navigation .navigation-settings-link {
   position: relative !important;
-  z-index: 16;
+  z-index: var(--nav-z-fieldset);
   border-radius: var(--radius-circle);
   background-color: transparent;
   box-shadow: none;
@@ -681,7 +667,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: -1; /* 让图标压在圆上 */
+  z-index: var(--z-background); /* 让图标压在圆上 */
   width: 30px;
   height: 30px;
   translate: -50% -50%;
@@ -715,8 +701,31 @@
   transition: opacity var(--nav-stretch-duration, 0.5s) ease !important;
 }
 
+/* ── 平板：压缩导航密度，保留文字 ─────────── */
+@media (max-width: 900px) {
+  .site-header .nav-pill > .switcher--navigation {
+    --switcher-option-width: 72px !important;
+    --switcher-gap: 6px !important;
+    --switcher-capsule-width: 84px !important;
+  }
+
+  .site-header .nav-pill > .switcher--navigation .switcher__option {
+    padding: 0 4px;
+    gap: 3px;
+  }
+
+  .site-header .nav-pill > .switcher--navigation .navigation-option-label {
+    max-width: 44px;
+    font-size: var(--fs-micro);
+  }
+
+  .site-header .nav-pill > .switcher--navigation::after {
+    left: 6px !important;
+  }
+}
+
 /* ── 移动端 ─────────────────────────────── */
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .site-header {
     width: calc(90vw - 34px);
     gap: 8px;
@@ -728,9 +737,17 @@
   }
 
   .site-header-logo {
-    /* 移动端字号缩小，WUYU 实际宽度变小，但宽度由单字符串方案的
-       width 明确值控制，这里只缩字号、不动 width/letter-spacing 结构 */
-    font-size: var(--fs-micro);
+    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与裁切盒（1ch + 2px）匹配。
+       若缩到 12px，不等宽回退字体的 W 会靠左，看起来偏离圆心。 */
+    font-size: var(--fs-body);
+  }
+}
+
+/* ── 窄屏：常驻分裂，只收紧外壳 ─────────── */
+@media (max-width: 600px) {
+  .site-header {
+    gap: 6px;
+    padding: 0 4px;
   }
 }
 

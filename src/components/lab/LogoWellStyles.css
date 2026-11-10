@@ -1,0 +1,423 @@
+.logo-wells {
+  --well-paper: #eceef0;
+  --well-ink: #14181c;
+  --well-rule: rgba(20, 24, 28, 0.26);
+  padding: 6px var(--card-pad) var(--space-5);
+}
+
+.logo-wells__note {
+  margin: 0 0 var(--space-4);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.62;
+}
+
+.logo-wells__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.logo-wells__row:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.logo-wells__row:last-of-type {
+  padding-bottom: 0;
+}
+
+.logo-wells__meta {
+  flex: 0 0 186px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-top: 2px;
+}
+
+.logo-wells__tag {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--surface-inset);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--text-h);
+}
+
+.logo-wells__name {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: var(--lh-ui);
+  color: var(--text-h);
+}
+
+.logo-wells__desc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.logo-wells__items {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 14px;
+}
+
+.logo-wells__item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 176px;
+  margin: 0;
+}
+
+.logo-wells__tile {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.logo-wells__tile .ascii-logo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.logo-wells__label {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.55;
+}
+
+.logo-wells__foot {
+  position: absolute;
+  right: 9px;
+  bottom: 7px;
+  z-index: 2;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: rgba(20, 24, 28, 0.38);
+}
+
+/* A · 字符标本卡 */
+.logo-wells__tile--specimen {
+  padding: 24px 16px 28px;
+  border: 1px dashed var(--well-rule);
+  background: var(--well-paper);
+}
+
+.logo-wells__tile--specimen::before {
+  content: attr(data-index);
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  z-index: 2;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  color: rgba(20, 24, 28, 0.42);
+}
+
+.logo-wells__tile--specimen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(20, 24, 28, 0.07) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(0deg, rgba(20, 24, 28, 0.07) 0 1px, transparent 1px 8px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.logo-wells__tile--specimen:hover::after {
+  opacity: 1;
+}
+
+.logo-wells__plus {
+  position: absolute;
+  inset: 5px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(20, 24, 28, 0.45);
+  pointer-events: none;
+}
+
+.logo-wells__plus i {
+  font-style: normal;
+}
+
+.logo-wells__plus i:nth-child(1) {
+  justify-self: start;
+  align-self: start;
+}
+
+.logo-wells__plus i:nth-child(2) {
+  justify-self: end;
+  align-self: start;
+}
+
+.logo-wells__plus i:nth-child(3) {
+  justify-self: start;
+  align-self: end;
+}
+
+.logo-wells__plus i:nth-child(4) {
+  justify-self: end;
+  align-self: end;
+}
+
+/* A+ · 打孔纸带 */
+.logo-wells__tile--tape {
+  padding: 20px 18px;
+  border-top: 1px dashed var(--well-rule);
+  border-bottom: 1px dashed var(--well-rule);
+  background: var(--well-paper);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.logo-wells__tile--tape::before,
+.logo-wells__tile--tape::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  width: 7px;
+  background-image: radial-gradient(circle at center, rgba(20, 24, 28, 0.3) 1.6px, transparent 2px);
+  background-size: 7px 13px;
+  background-repeat: repeat-y;
+  pointer-events: none;
+}
+
+.logo-wells__tile--tape::before {
+  left: 6px;
+}
+
+.logo-wells__tile--tape::after {
+  right: 6px;
+}
+
+.logo-wells__pin {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--well-paper);
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* B · 终端窗框 */
+.logo-wells__tile--terminal {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  background: #11161b;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.logo-wells__bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 27px;
+  padding: 0 10px;
+  font-size: 8px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  color: rgba(236, 238, 240, 0.55);
+}
+
+.logo-wells__dots {
+  display: flex;
+  gap: 4px;
+}
+
+.logo-wells__dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(236, 238, 240, 0.24);
+}
+
+.logo-wells__dots i:first-child {
+  background: var(--accent);
+}
+
+.logo-wells__bar-title {
+  white-space: nowrap;
+}
+
+.logo-wells__screen {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 16px 14px 20px;
+  background-color: var(--well-paper);
+  background-image: repeating-linear-gradient(0deg, rgba(20, 24, 28, 0.045) 0 1px, transparent 1px 3px);
+}
+
+.logo-wells__screen .ascii-logo {
+  width: 100%;
+}
+
+/* C · 蓝图坐标纸 */
+.logo-wells__tile--blueprint {
+  padding: 24px 16px 28px;
+  border: 1px solid rgba(28, 52, 70, 0.3);
+  border-radius: 2px;
+  background-color: #e9edf0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(28, 52, 70, 0.045) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(90deg, rgba(28, 52, 70, 0.045) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(0deg, rgba(28, 52, 70, 0.06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(28, 52, 70, 0.06) 0 1px, transparent 1px 40px);
+}
+
+.logo-wells__tile--blueprint::before {
+  content: attr(data-coord);
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  z-index: 2;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  color: rgba(28, 52, 70, 0.5);
+}
+
+.logo-wells__crops {
+  position: absolute;
+  inset: 7px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  pointer-events: none;
+}
+
+.logo-wells__crops i {
+  width: 6px;
+  height: 6px;
+  border: 0 solid rgba(28, 52, 70, 0.5);
+}
+
+.logo-wells__crops i:nth-child(1) {
+  justify-self: start;
+  align-self: start;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.logo-wells__crops i:nth-child(2) {
+  justify-self: end;
+  align-self: start;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.logo-wells__crops i:nth-child(3) {
+  justify-self: start;
+  align-self: end;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.logo-wells__crops i:nth-child(4) {
+  justify-self: end;
+  align-self: end;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+/* D · 裸字符光斑 */
+.logo-wells__tile--halo {
+  padding: 30px 16px;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.logo-wells__tile--halo::before {
+  content: '';
+  position: absolute;
+  inset: 4px -16px;
+  z-index: 0;
+  border-radius: 46%;
+  background: #eceef0;
+  filter: blur(13px);
+  opacity: 0.98;
+  pointer-events: none;
+}
+
+html[data-site-theme='light'] .logo-wells__tile--halo::before {
+  background: #e4e0d6;
+}
+
+@media (max-width: 900px) {
+  .logo-wells__row {
+    flex-wrap: wrap;
+  }
+
+  .logo-wells__meta {
+    flex: 1 0 100%;
+  }
+
+  .logo-wells__items {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-wells {
+    padding: 4px var(--space-4) var(--space-5);
+  }
+
+  .logo-wells__item {
+    width: 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-wells__tile--specimen::after {
+    transition: none;
+  }
+}
