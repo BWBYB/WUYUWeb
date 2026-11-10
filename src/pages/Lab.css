@@ -2135,7 +2135,7 @@
 .lab-type-ascii {
   margin: 0;
   color: var(--content-strong);
-  font-family: var(--mono);
+  font-family: var(--mono-fixed);
   font-size: var(--fs-ui);
   line-height: var(--lh-tight);
   white-space: pre;
@@ -2248,7 +2248,7 @@
 .lab-type-direction__mono {
   margin: 0;
   color: var(--accent);
-  font-family: var(--mono);
+  font-family: var(--mono-fixed);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
   letter-spacing: 0.08em;

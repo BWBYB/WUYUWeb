@@ -46,7 +46,7 @@
 .resume-code span {
   position: absolute;
   color: var(--accent);
-  font-family: var(--mono);
+  font-family: var(--mono-fixed);
   font-size: var(--fs-heading);
   letter-spacing: 0.08em;
   opacity: 0.08;

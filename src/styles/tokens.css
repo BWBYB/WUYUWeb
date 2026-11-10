@@ -97,14 +97,18 @@
   /* 纸色强度：0% 暖白，100% 暖纸；由 Layout 按设置写到根元素 */
   --paper-mix: 0%;
 
-  --sans: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
-  --serif: 'Noto Serif SC', Georgia, serif;
-  --mono: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+  /* 全站数字统一走得意黑数字子集（见 index.css @font-face），
+     字母、中文与标点仍落到各栈原本的字体。 */
+  --sans: 'Smiley Sans Digits', 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+  --serif: 'Smiley Sans Digits', 'Noto Serif SC', Georgia, serif;
+  --mono: 'Smiley Sans Digits', 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
   --accent-font: 'Smiley Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* 纯等宽：代码块、ASCII 画与等宽样张，数字必须留在网格里 */
+  --mono-fixed: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
   /* 文章标题与正文：英文 New York，中文思源宋体 */
-  --serif-editorial: ui-serif, Georgia, 'Noto Serif SC', serif;
-  /* 日期与正文数字：SF Mono，和列表标题数字同一套等宽 */
-  --post-date-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --serif-editorial: 'Smiley Sans Digits', ui-serif, Georgia, 'Noto Serif SC', serif;
+  /* 日期与正文数字：得意黑整套，连字符也跟随，不再走等宽 */
+  --post-date-font: 'Smiley Sans', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
   /* ── 字号阶梯（8 档）──
      组件与页面只引用这些变量，不再写裸 px。
@@ -163,8 +167,9 @@
 
   /* 正文栏宽：35 个汉字（1em ≈ 1 个汉字），30–40 字的中间值 */
   --measure: 35em;
-  /* 文章详情正文：65ch ≈ 39 个汉字（16px IBM Plex Mono） */
-  --measure-post: 65ch;
+  /* 文章详情正文：39 个汉字（1em ≈ 1 个汉字）
+     不用 ch：ch 随栈首数字字体变化，全站数字换字体后栏宽会漂移 */
+  --measure-post: 39em;
 
   /* ── 圆角阶梯 ──
      常规圆角 3 档；胶囊与正圆是形状，不是设计档位，单独给 token。 */

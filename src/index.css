@@ -12,6 +12,17 @@
   src: url("https://cdn.jsdelivr.net/npm/font-smiley-sans@1.0.0/SmileySans-Oblique.ttf.woff2") format("woff2");
 }
 
+/* 数字子集：同一份 woff2，只接管阿拉伯数字；
+   字母、中文与标点仍落到各字体栈后面的原字体。 */
+@font-face {
+  font-family: 'Smiley Sans Digits';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/font-smiley-sans@1.0.0/SmileySans-Oblique.ttf.woff2") format("woff2");
+  unicode-range: U+0030-0039, U+FF10-FF19;
+}
+
 @theme {
   --color-background: var(--surface-canvas);
   --color-foreground: var(--content-strong);
@@ -43,6 +54,14 @@
 
 * {
   box-sizing: border-box;
+}
+
+/* 代码与 ASCII 必须保持等宽网格，不参与全站数字替换 */
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--mono-fixed);
 }
 
 body {

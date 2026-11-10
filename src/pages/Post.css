@@ -246,7 +246,7 @@
 }
 
 .post-content code {
-  font-family: var(--mono);
+  font-family: var(--mono-fixed);
   font-size: var(--fs-ui);
   background: var(--code-bg);
   padding: var(--space-1) var(--space-2);
