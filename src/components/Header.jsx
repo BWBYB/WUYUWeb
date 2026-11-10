@@ -133,26 +133,38 @@ export default function Header({ paper = false }) {
 
       const beyondThreshold = y >= navSettings.stretchThreshold
 
-      // 回到阈值以内：面板开着就先收面板，等高度收完再合并宽度
+      // 阈值内：只有真的向上回滑（净上滑 ≥ MERGE_UP_DISTANCE 或已到顶部）
+      // 才合并。不能只看 dir：小于 8px 的增量不会翻转上一段手势的方向，
+      // 向下滑会被残留的 -1 误判成「回顶」，出现合并后又分裂的往返。
       if (!beyondThreshold) {
-        upAccum = 0
         clearOpenTimer()
 
-        if (isSettingsOpenRef.current || isMoreOpenRef.current) {
-          clearMergeTimer()
+        const panelOpen = isSettingsOpenRef.current || isMoreOpenRef.current
+        if (panelOpen) {
           setIsSettingsOpen(false)
           setIsMoreOpen(false)
+        }
+
+        // 还要求当前帧确实在向上滚：回顶时累积的 upAccum 会残留到之后的下滑手势
+        const returningUp = dy < 0 && (upAccum >= MERGE_UP_DISTANCE || y <= 0)
+        if (!returningUp) {
+          clearMergeTimer()
+          return
+        }
+
+        // 向上回顶：有面板等它收完再合并，无面板立即合并
+        clearMergeTimer()
+        upAccum = 0
+        if (panelOpen) {
           mergeTimer = window.setTimeout(() => {
             mergeTimer = null
             setIsSplit(false)
             setIsForcedSplit(false)
           }, panelCloseMergeMs)
-          return
+        } else {
+          setIsSplit(false)
+          setIsForcedSplit(false)
         }
-
-        clearMergeTimer()
-        setIsSplit(false)
-        setIsForcedSplit(false)
         return
       }
 
@@ -166,22 +178,27 @@ export default function Header({ paper = false }) {
       // 上滑位移太小（方向还没明确）：不做任何切换
       if (dir !== -1) return
 
-      // 向上滑：面板开着就先收起（8px 即响应，遮挡物早收早好），等它淡出后再合并
+      // 向上滑：面板开着就先收起（8px 即响应，遮挡物早收早好），
+      // 等它淡出后再合并；只认当前帧向上，避免方向残留时向下滑也触发合并
       if (isSettingsOpenRef.current || isMoreOpenRef.current) {
         clearMergeTimer()
         setIsSettingsOpen(false)
         setIsMoreOpen(false)
-        mergeTimer = window.setTimeout(() => {
-          mergeTimer = null
-          setIsSplit(false)
-          setIsForcedSplit(false)
-        }, panelCloseMergeMs)
+        if (dy < 0) {
+          upAccum = 0
+          mergeTimer = window.setTimeout(() => {
+            mergeTimer = null
+            setIsSplit(false)
+            setIsForcedSplit(false)
+          }, panelCloseMergeMs)
+        }
         return
       }
 
       // 面板已关：净上滑要累计到 MERGE_UP_DISTANCE，避免阅读时轻蹭就收起导航。
       // 有定时器在等时不要提前合并，否则会绕开「先收起再合并」的节奏。
-      if (upAccum >= MERGE_UP_DISTANCE && mergeTimer === null) {
+      if (dy < 0 && upAccum >= MERGE_UP_DISTANCE && mergeTimer === null) {
+        upAccum = 0
         setIsSplit(false)
         setIsForcedSplit(false)
       }
