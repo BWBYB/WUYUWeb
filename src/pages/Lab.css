@@ -44,22 +44,6 @@
   line-height: 1.6;
 }
 
-/* ─── Section Titles ─── */
-.section-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--text-h);
-  margin: 0 0 6px;
-  text-align: center;
-}
-
-.section-desc {
-  font-size: 14px;
-  color: var(--text);
-  margin: 0 0 24px;
-  text-align: center;
-}
-
 /* ═══════════════════════════════════════
    3D Cube (Hero)
    ═══════════════════════════════════════ */
@@ -164,8 +148,33 @@
 /* ═══════════════════════════════════════
    Interactive Playgrounds
    ═══════════════════════════════════════ */
-.playgrounds-section {
-  margin-bottom: 56px;
+.lab-playground-group + .lab-playground-group {
+  margin-top: var(--space-6);
+}
+
+.lab-subgroup-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  letter-spacing: 0.08em;
+}
+
+.lab-subgroup-title::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.lab-subgroup-count {
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
 }
 
 .playgrounds-grid {
@@ -755,10 +764,6 @@
 /* ═══════════════════════════════════════
    Experiment Cards Grid
    ═══════════════════════════════════════ */
-.experiments-section {
-  margin-bottom: 48px;
-}
-
 .lab-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -839,15 +844,6 @@
 }
 
 /* ─── Performance-heavy demos ─── */
-.performance-section {
-  margin-bottom: 48px;
-  padding-top: 8px;
-}
-
-.performance-section.is-disabled .section-desc {
-  color: var(--text-muted);
-}
-
 .performance-three-section {
   margin-bottom: 32px;
   border-radius: 24px;
@@ -1905,10 +1901,6 @@
 /* ═══════════════════════════════════════
    Component Showcase
    ═══════════════════════════════════════ */
-.lab-components-section {
-  margin-bottom: var(--space-7);
-}
-
 .lab-components-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2279,10 +2271,6 @@
 /* ═══════════════════════════════════════
    LOGO / ASCII
    ═══════════════════════════════════════ */
-.lab-logo-section {
-  margin-bottom: var(--space-7);
-}
-
 .lab-logo-card {
   gap: var(--space-3);
   padding: var(--card-pad-feature) var(--card-pad);
@@ -2370,10 +2358,6 @@
 /* ═══════════════════════════════════════
    English Fonts / ASCII
    ═══════════════════════════════════════ */
-.lab-fonts-section {
-  margin-bottom: var(--space-7);
-}
-
 .lab-font-groups {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -2552,6 +2536,10 @@
   .cube-bottom {
     transform: rotateX(-90deg) translateZ(60px);
   }
+  .lab-playground-group + .lab-playground-group {
+    margin-top: var(--space-5);
+  }
+
   .playgrounds-grid,
   .lab-grid {
     grid-template-columns: 1fr;

@@ -76,12 +76,10 @@
     0 2px 10px color-mix(in srgb, var(--surface-canvas) 45%, transparent);
 }
 
-.resume-hello {
+.resume-greeting {
+  width: min(100%, 24rem);
   margin: 0 0 var(--space-2);
-  color: var(--content-muted);
-  font-size: calc(var(--fs-heading-sm) * 2);
-  font-weight: var(--fw-semibold);
-  line-height: var(--lh-heading);
+  color: var(--content-default);
 }
 
 .resume-title {

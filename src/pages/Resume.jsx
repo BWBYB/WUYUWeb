@@ -3,6 +3,8 @@ import Icon from '../components/ui/Icon'
 import { LogoLoop } from '../components/lab/LogoLoop'
 import CurvedLogoLoop from '../components/lab/CurvedLogoLoop'
 import ResumeLanyard from '../components/lab/ResumeLanyard'
+import ChapterRail from '../components/ChapterRail'
+import DissolveText from '../components/lab/DissolveText'
 import { PIECES } from '../components/lab/logoPieces'
 import { resume } from '../lib/content/resume'
 import useResumeIntro from '../hooks/useResumeIntro'
@@ -12,6 +14,13 @@ import '../styles/effects.css'
 import './Resume.css'
 
 const codeMarks = ['</>', '[]', '{}', '()', '==', '++', ';', '=>', '</>', '[]']
+
+const resumeChapters = [
+  { id: 'about', title: '关于', level: 2 },
+  { id: 'projects', title: '项目', level: 2 },
+  { id: 'experience', title: '在校经历', level: 2 },
+  { id: 'education', title: '教育', level: 2 },
+]
 
 function SectionHeading({ children }) {
   return (
@@ -35,6 +44,39 @@ export default function Resume() {
   // 每个整屏模块进入视口时再淡入。
   useSectionReveal()
 
+  // 桌面端四个板块在 sticky 窗口里平移，scrollIntoView 落不到正确位置，
+  // 需要把板块在窗口内的偏移换算成文档滚动距离。
+  function scrollToResumeSection(chapter) {
+    const target = document.getElementById(chapter.id)
+    if (!target) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const small = window.matchMedia('(max-width: 768px)').matches
+    const intro = introRef.current
+    const inner = windowInnerRef.current
+    const win = inner?.parentElement
+
+    if (!intro || !inner || !win || small) {
+      target.scrollIntoView({
+        behavior: reduce ? 'instant' : 'smooth',
+        block: 'start',
+      })
+      return
+    }
+
+    const hero = intro.querySelector('.resume-hero')
+    const introTop = intro.getBoundingClientRect().top + window.scrollY
+    const heroHeight = hero ? hero.offsetHeight : window.innerHeight
+    const limit = Math.max(0, inner.offsetHeight - win.offsetHeight)
+    const localTop = Math.min(Math.max(target.offsetTop, 0), limit)
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+    const top = Math.min(Math.max(introTop + heroHeight + localTop, 0), maxScroll)
+
+    window.scrollTo({
+      top,
+      behavior: reduce ? 'auto' : 'smooth',
+    })
+  }
+
   return (
     <div className="resume-page" id="top">
       <div className="resume-intro" ref={introRef}>
@@ -46,7 +88,7 @@ export default function Resume() {
           </div>
 
           <div className="resume-hero-inner fade-in fade-in-1" data-water-dim-lines>
-            <p className="resume-hello" data-water-avoid>HELLO</p>
+            <DissolveText className="resume-greeting" data-water-avoid />
             <h1 className="resume-title" data-water-avoid>
               我是 <span>{profile.name}</span>
             </h1>
@@ -204,6 +246,12 @@ export default function Resume() {
 
         <div className="resume-window-spacer" aria-hidden="true" />
       </div>
+
+      <ChapterRail
+        chapters={resumeChapters}
+        label="简历目录"
+        onSelect={scrollToResumeSection}
+      />
     </div>
   )
 }

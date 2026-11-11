@@ -38,6 +38,7 @@
   font-weight: var(--fw-medium);
   color: var(--text-h);
   margin: 0 0 var(--space-4);
+  scroll-margin-top: 88px;
 }
 
 /* Profile Card */

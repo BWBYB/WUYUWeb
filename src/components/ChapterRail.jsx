@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { audioEngine } from '../lib/audio-engine'
 import useTocActive from '../hooks/useTocActive'
+import './ChapterRail.css'
 
 const FALLOFF_ROWS = 2.6
 const MAX_ROWS = 18
 const MIN_ROWS = 10
+const PROGRESS_STEPS = 15
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 const pad = (value) => String(value).padStart(2, '0')
@@ -13,18 +15,70 @@ const bump = (distance) => (
   distance >= FALLOFF_ROWS ? 0 : 0.5 * (1 + Math.cos((Math.PI * distance) / FALLOFF_ROWS))
 )
 
-export default function ChapterRail({ chapters, label = '章节目录' }) {
+function usePageProgress(railRef, enabled) {
+  const [percent, setPercent] = useState(0)
+
+  useEffect(() => {
+    if (!enabled) return undefined
+    const rail = railRef.current
+    let frame = 0
+    let lastPercent = -1
+
+    const update = () => {
+      frame = 0
+      const root = document.documentElement
+      const maxScroll = root.scrollHeight - window.innerHeight
+      const value = maxScroll > 8 ? clamp(window.scrollY / maxScroll, 0, 1) : 1
+      rail?.style.setProperty('--page-progress', `${(value * 100).toFixed(2)}%`)
+      const next = Math.round(value * 100)
+      if (next !== lastPercent) {
+        lastPercent = next
+        setPercent(next)
+      }
+    }
+
+    const requestUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+
+    const observer = new ResizeObserver(requestUpdate)
+    observer.observe(document.body)
+    requestUpdate()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
+      if (frame) cancelAnimationFrame(frame)
+      rail?.style.removeProperty('--page-progress')
+    }
+  }, [enabled, railRef])
+
+  return percent
+}
+
+export default function ChapterRail({
+  chapters = [],
+  label = '章节目录',
+  mode,
+  onSelect,
+}) {
+  const isProgress = mode ? mode === 'progress' : chapters.length === 0
   const { current } = useTocActive(chapters)
   const [previewIndex, setPreviewIndex] = useState(0)
   const [previewOpen, setPreviewOpen] = useState(false)
 
+  const railRef = useRef(null)
   const navRef = useRef(null)
   const hoverRef = useRef(null)
   const reducedRef = useRef(false)
   const rafRef = useRef(0)
   const springRef = useRef({ pointer: 0, strength: 0, targetPointer: 0, targetStrength: 0 })
+  const percent = usePageProgress(railRef, isProgress)
 
-  const count = chapters.length
+  const count = isProgress ? 1 : chapters.length
+  const activeStep = Math.min(PROGRESS_STEPS - 1, Math.floor((percent / 100) * PROGRESS_STEPS))
   const rowHeight = Math.max(MIN_ROWS, Math.min(MAX_ROWS, 360 / Math.max(count, 1)))
   const safePreview = clamp(previewIndex, 0, Math.max(count - 1, 0))
 
@@ -41,8 +95,8 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
     let raf = 0
     let playing = false
     let timeData = null
-    const levels = new Float32Array(count)
     const ticks = navRef.current ? [...navRef.current.querySelectorAll('.chapter-rail__tick')] : []
+    const levels = new Float32Array(Math.max(ticks.length, 1))
 
     const clearWave = () => {
       ticks.forEach((tick) => tick.style.removeProperty('--wave'))
@@ -107,7 +161,7 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
       if (raf) cancelAnimationFrame(raf)
       clearWave()
     }
-  }, [count])
+  }, [count, isProgress])
 
   useEffect(() => () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
@@ -237,8 +291,14 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
     links[next]?.focus()
   }
 
-  function handleClick(event, chapter) {
+  function handleClick(event, chapter, index) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return
+    if (onSelect) {
+      event.preventDefault()
+      onSelect(chapter, index)
+      window.history.replaceState(null, '', `#${chapter.id}`)
+      return
+    }
     const heading = document.getElementById(chapter.id)
     if (!heading) return
     event.preventDefault()
@@ -247,6 +307,57 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
       block: 'start',
     })
     window.history.replaceState(null, '', `#${chapter.id}`)
+  }
+
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: reducedRef.current ? 'instant' : 'smooth',
+    })
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
+  }
+
+  if (isProgress) {
+    return createPortal(
+      <div className="chapter-rail chapter-rail--progress" ref={railRef}>
+        <div className="chapter-rail__progress">
+          <button
+            ref={navRef}
+            type="button"
+            className="chapter-rail__progress-button"
+            aria-label={`${label} ${percent}%，点击回到顶部`}
+            onPointerEnter={() => setPreviewOpen(true)}
+            onPointerLeave={() => setPreviewOpen(false)}
+            onFocus={() => setPreviewOpen(true)}
+            onBlur={() => setPreviewOpen(false)}
+            onClick={scrollToTop}
+          >
+            {Array.from({ length: PROGRESS_STEPS }, (_, index) => (
+              <span
+                key={index}
+                className={[
+                  'chapter-rail__progress-step',
+                  index < activeStep ? 'is-passed' : '',
+                  index === activeStep ? 'is-current' : '',
+                ].filter(Boolean).join(' ')}
+                aria-hidden="true"
+              >
+                <span className="chapter-rail__tick" />
+              </span>
+            ))}
+          </button>
+        </div>
+        <div
+          className={`chapter-rail__card${previewOpen ? ' is-visible' : ''}`}
+          aria-hidden="true"
+        >
+          <span className="chapter-rail__meta">{label}</span>
+          <span className="chapter-rail__title">{percent}%</span>
+          <span className="chapter-rail__hint">点击回到顶部</span>
+        </div>
+      </div>,
+      document.body,
+    )
   }
 
   if (!count) return null
@@ -277,7 +388,7 @@ export default function ChapterRail({ chapters, label = '章节目录' }) {
             aria-current={index === current ? 'location' : undefined}
             tabIndex={index === current ? 0 : -1}
             onFocus={() => handleFocus(index)}
-            onClick={(event) => handleClick(event, chapter)}
+            onClick={(event) => handleClick(event, chapter, index)}
           >
             <span className="chapter-rail__tick" aria-hidden="true" />
           </a>

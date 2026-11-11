@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { updates as defaultUpdates } from '../lib/content/updates'
+import ChapterRail from '../components/ChapterRail'
 import '../styles/effects.css'
 import './Timeline.css'
 
@@ -91,6 +92,8 @@ export default function Timeline({ records = defaultUpdates, preview = false }) 
       ) : (
         <div className="timeline-empty glass-card">还没有更新记录。</div>
       )}
+
+      {!preview && <ChapterRail mode="progress" label="页面进度" />}
     </div>
   )
 }

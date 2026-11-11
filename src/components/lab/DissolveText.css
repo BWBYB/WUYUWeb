@@ -1,0 +1,5 @@
+.dissolve-text {
+  display: block;
+  width: 100%;
+  font-family: var(--mono);
+}

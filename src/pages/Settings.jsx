@@ -3,7 +3,15 @@ import ThemeSwitcherCustomizer from '../components/ui/ThemeSwitcherCustomizer'
 import SurfaceCustomizer from '../components/ui/SurfaceCustomizer'
 import EdgeBlurCustomizer from '../components/ui/EdgeBlurCustomizer'
 import NavCustomizer from '../components/ui/NavCustomizer'
+import ChapterRail from '../components/ChapterRail'
 import './Settings.css'
+
+const settingsChapters = [
+  { id: 'theme-customizer-title', title: '主题切换器', level: 2 },
+  { id: 'surface-customizer-title', title: '阴影与边框', level: 2 },
+  { id: 'edge-blur-customizer-title', title: '边缘模糊', level: 2 },
+  { id: 'nav-customizer-title', title: '导航栏动效', level: 2 },
+]
 
 export default function Settings() {
   const location = useLocation()
@@ -32,6 +40,8 @@ export default function Settings() {
       <Link className="settings-page-back btn btn--secondary fade-in fade-in-5" to={returnTo}>
         <span aria-hidden="true">←</span> 返回
       </Link>
+
+      <ChapterRail chapters={settingsChapters} label="设置目录" />
     </div>
   )
 }

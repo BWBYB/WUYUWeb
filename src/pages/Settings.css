@@ -45,6 +45,10 @@
   margin-top: var(--space-5);
 }
 
+.settings-page .theme-customizer h2 {
+  scroll-margin-top: 88px;
+}
+
 @media (max-width: 768px) {
   .settings-page {
     padding-top: var(--space-3);

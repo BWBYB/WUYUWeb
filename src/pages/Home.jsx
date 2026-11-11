@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { posts } from '../lib/content/posts'
+import ChapterRail from '../components/ChapterRail'
 import '../styles/effects.css'
 import './Home.css'
 
@@ -96,6 +97,8 @@ export default function Home() {
           <p className="quote-author">— 写于深圳的秋天</p>
         </div>
       </div>
+
+      <ChapterRail mode="progress" label="页面进度" />
     </div>
   )
 }

@@ -110,7 +110,12 @@ export default function Post() {
         <div ref={contentRef} className="post-content-inner" dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
 
-      {post.toc.length >= 3 && <ChapterRail key={`rail-${post.slug}`} chapters={post.toc} />}
+      <ChapterRail
+        key={`rail-${post.slug}`}
+        chapters={post.toc.length >= 3 ? post.toc : []}
+        mode={post.toc.length >= 3 ? 'chapters' : 'progress'}
+        label={post.toc.length >= 3 ? '章节目录' : '页面进度'}
+      />
       {post.toc.length >= 3 && <TocIsland key={post.slug} chapters={post.toc} title={post.title} />}
 
       <nav className="post-navigation" aria-label="文章导航">

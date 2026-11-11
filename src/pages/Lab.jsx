@@ -23,8 +23,10 @@ import Button from '../components/ui/Button'
 import Field from '../components/ui/Field'
 import Switch from '../components/ui/Switch'
 import { useThemeSwitcherTheme } from '../components/ui/theme-switcher-context'
+import ChapterRail from '../components/ChapterRail'
 import LegacyHeaderNav from '../components/lab/LegacyHeaderNav'
 import IdentityCapsule from '../components/lab/IdentityCapsule'
+import LabSection from '../components/lab/LabSection'
 
 const ThreeHero = lazy(() => import('../components/ThreeHero'))
 
@@ -678,41 +680,48 @@ export default function Lab() {
     {
       title: 'Legacy Header Navigation',
       subtitle: '旧版导航栏备份',
+      group: '导航与身份',
       component: (
         <div className="legacy-header-nav-demo">
           <LegacyHeaderNav />
         </div>
       ),
     },
-    { title: 'Identity Capsule', subtitle: '分裂导航身份条', component: <IdentityCapsuleDemo />, wide: true },
-    { title: 'Magnetic Button', subtitle: '磁力按钮', component: <MagneticButton /> },
-    { title: 'Tilt Card', subtitle: '视差卡片', component: <TiltCard /> },
-    { title: 'Text Scramble', subtitle: '文字乱码', component: <ScrambleText /> },
-    { title: 'Neon Glow', subtitle: '霓虹灯', component: <NeonText /> },
-    { title: 'Parallax', subtitle: '视差滚动', component: <ParallaxScroll /> },
-    { title: 'Scroll Reveal', subtitle: '滚动触发', component: <ScrollReveal /> },
-    { title: 'Text Mask', subtitle: '文字遮罩', component: <TextMask /> },
-    { title: 'Spring', subtitle: '弹簧动画', component: <SpringAnim /> },
-    { title: 'Ripple', subtitle: '涟漪点击', component: <RippleClick /> },
-    { title: 'Drag Sort', subtitle: '拖拽排序', component: <DragSort /> },
-    { title: 'Tab Switch', subtitle: '标签切换', component: <TabSwitch /> },
-    { title: 'Accordion', subtitle: '手风琴', component: <Accordion /> },
-    { title: 'Modal', subtitle: '模态框', component: <ModalDemo /> },
-    { title: 'Flip Card', subtitle: '3D 翻转', component: <FlipCard /> },
-    { title: 'Grid BG', subtitle: '网格背景', component: <GridBg /> },
-    { title: 'Noise', subtitle: '噪点纹理', component: <NoiseTexture /> },
-    { title: 'Masonry', subtitle: '瀑布流', component: <Masonry /> },
-    { title: 'Shiny Text', subtitle: '金属光泽文字', component: <ShinyTextDemo /> },
-    { title: 'Logo Loop', subtitle: '无限滚动循环', component: <LogoLoopDemo /> },
-    { title: 'Curved Loop', subtitle: '曲线文字循环', component: <CurvedLoopDemo /> },
-    { title: 'Curved Logo Loop', subtitle: 'ASCII 徽标曲线', component: <CurvedLogoLoopDemo />, wide: true },
-    { title: 'Logo Wells', subtitle: 'ASCII 承接面五选', component: <LogoWellStyles />, wide: true },
-    { title: 'Paper Styles', subtitle: '纸质面板五选', component: <PaperStyles />, wide: true },
-    { title: 'Sticker Peel', subtitle: '可拖拽贴纸', component: <StickerPeelDemo /> },
-    { title: 'Crosshair', subtitle: '十字准星光标', component: <CrosshairDemo /> },
-    { title: 'Liquid Button', subtitle: '液态玻璃按钮', component: <LiquidGlassButtonDemo /> },
-    { title: 'Theme Switcher', subtitle: '主题切换器', component: <ThemeSwitcherDemo /> },
+    { title: 'Identity Capsule', subtitle: '分裂导航身份条', group: '导航与身份', component: <IdentityCapsuleDemo />, wide: true },
+    { title: 'Magnetic Button', subtitle: '磁力按钮', group: '动效与交互', component: <MagneticButton /> },
+    { title: 'Tilt Card', subtitle: '视差卡片', group: '动效与交互', component: <TiltCard /> },
+    { title: 'Text Scramble', subtitle: '文字乱码', group: '文字', component: <ScrambleText /> },
+    { title: 'Neon Glow', subtitle: '霓虹灯', group: '文字', component: <NeonText /> },
+    { title: 'Parallax', subtitle: '视差滚动', group: '动效与交互', component: <ParallaxScroll /> },
+    { title: 'Scroll Reveal', subtitle: '滚动触发', group: '动效与交互', component: <ScrollReveal /> },
+    { title: 'Text Mask', subtitle: '文字遮罩', group: '文字', component: <TextMask /> },
+    { title: 'Spring', subtitle: '弹簧动画', group: '动效与交互', component: <SpringAnim /> },
+    { title: 'Ripple', subtitle: '涟漪点击', group: '动效与交互', component: <RippleClick /> },
+    { title: 'Drag Sort', subtitle: '拖拽排序', group: '动效与交互', component: <DragSort /> },
+    { title: 'Tab Switch', subtitle: '标签切换', group: '动效与交互', component: <TabSwitch /> },
+    { title: 'Accordion', subtitle: '手风琴', group: '动效与交互', component: <Accordion /> },
+    { title: 'Modal', subtitle: '模态框', group: '动效与交互', component: <ModalDemo /> },
+    { title: 'Flip Card', subtitle: '3D 翻转', group: '动效与交互', component: <FlipCard /> },
+    { title: 'Grid BG', subtitle: '网格背景', group: '布局与材质', component: <GridBg /> },
+    { title: 'Noise', subtitle: '噪点纹理', group: '布局与材质', component: <NoiseTexture /> },
+    { title: 'Masonry', subtitle: '瀑布流', group: '布局与材质', component: <Masonry /> },
+    { title: 'Shiny Text', subtitle: '金属光泽文字', group: '文字', component: <ShinyTextDemo /> },
+    { title: 'Logo Loop', subtitle: '无限滚动循环', group: '循环与贴纸', component: <LogoLoopDemo /> },
+    { title: 'Curved Loop', subtitle: '曲线文字循环', group: '循环与贴纸', component: <CurvedLoopDemo /> },
+    { title: 'Curved Logo Loop', subtitle: 'ASCII 徽标曲线', group: '循环与贴纸', component: <CurvedLogoLoopDemo />, wide: true },
+    { title: 'Logo Wells', subtitle: 'ASCII 承接面五选', group: '布局与材质', component: <LogoWellStyles />, wide: true },
+    { title: 'Paper Styles', subtitle: '纸质面板五选', group: '布局与材质', component: <PaperStyles />, wide: true },
+    { title: 'Sticker Peel', subtitle: '可拖拽贴纸', group: '循环与贴纸', component: <StickerPeelDemo /> },
+    { title: 'Crosshair', subtitle: '十字准星光标', group: '动效与交互', component: <CrosshairDemo /> },
+    { title: 'Liquid Button', subtitle: '液态玻璃按钮', group: '布局与材质', component: <LiquidGlassButtonDemo /> },
+    { title: 'Theme Switcher', subtitle: '主题切换器', group: '动效与交互', component: <ThemeSwitcherDemo /> },
   ]
+
+  const playgroundGroupOrder = ['导航与身份', '文字', '动效与交互', '布局与材质', '循环与贴纸']
+  const playgroundGroups = playgroundGroupOrder.map((label) => ({
+    label,
+    items: playgrounds.filter((pg) => pg.group === label),
+  }))
 
   const performancePlaygrounds = [
     { title: 'Liquid Blob', subtitle: '液态变形', component: <LiquidBlob /> },
@@ -738,14 +747,18 @@ export default function Lab() {
         <div className="lab-badge">Frontend Lab</div>
         <h1 className="lab-title">前端探索</h1>
         <p className="lab-desc">
-          记录和实验各种前端样式与交互效果。每一个都可以直接体验。
+          记录和实验各种前端样式与交互效果。点击分区展开，随时收起回到目录。
         </p>
       </header>
 
-      <section id="lab-components" className="lab-components-section fade-in fade-in-2">
-        <h2 className="section-title">基础组件</h2>
-        <p className="section-desc">字体、按钮、表单、卡片与链接的统一状态</p>
-
+      <LabSection
+        id="lab-components"
+        index="01"
+        title="基础组件"
+        description="字体、按钮、表单、卡片与链接的统一状态"
+        count="6 张卡"
+        className="lab-components-section fade-in fade-in-2"
+      >
         <div className="lab-components-grid">
           <div className="lab-component-card lab-component-card--wide glass-card">
             <div>
@@ -898,11 +911,16 @@ export default function Lab() {
             </div>
           </div>
         </div>
-      </section>
+      </LabSection>
 
-      <section id="lab-logo" className="lab-logo-section fade-in fade-in-3">
-        <h2 className="section-title">LOGO</h2>
-        <p className="section-desc">ASCII 版技术栈徽标 · 光每 5 秒斜掠一次</p>
+      <LabSection
+        id="lab-logo"
+        index="02"
+        title="LOGO"
+        description="ASCII 版技术栈徽标 · 光每 5 秒斜掠一次"
+        count="17 枚"
+        className="lab-logo-section fade-in fade-in-3"
+      >
         <div className="lab-component-card lab-component-card--wide glass-card lab-logo-card">
           <div className="lab-logo-inner">
             <div className="lab-logo-grid">
@@ -926,12 +944,16 @@ export default function Lab() {
             </div>
           </div>
         </div>
-      </section>
+      </LabSection>
 
-      <section className="lab-fonts-section fade-in fade-in-3">
-        <h2 className="section-title">字体</h2>
-        <p className="section-desc">中文与英文各样张 · 横向滚动比较，末尾是组合方向</p>
-
+      <LabSection
+        id="lab-fonts"
+        index="03"
+        title="字体"
+        description="中文与英文各样张 · 横向滚动比较，末尾是组合方向"
+        count="3 组"
+        className="lab-fonts-section fade-in fade-in-3"
+      >
         <div className="lab-font-groups">
           <div className="lab-component-card lab-component-card--wide glass-card">
             <div className="lab-font-header">
@@ -1038,29 +1060,49 @@ export default function Lab() {
             </div>
           </div>
         </div>
-      </section>
+      </LabSection>
 
       {/* Interactive Playgrounds */}
-      <section className="playgrounds-section fade-in fade-in-3">
-        <h2 className="section-title">互动组件</h2>
-        <p className="section-desc">可以直接体验的交互效果</p>
-        <div className="playgrounds-grid">
-          {playgrounds.map((pg, i) => (
-            <div key={pg.title} className={`playground-card glass-card${pg.wide ? ' playground-card--wide' : ''} fade-in fade-in-${Math.min(i + 2, 5)}`}>
-              <div className="playground-header">
-                <h3 className="playground-title">{pg.title}</h3>
-                <span className="playground-subtitle">{pg.subtitle}</span>
+      <LabSection
+        id="lab-playgrounds"
+        index="04"
+        title="互动组件"
+        description="可以直接体验的交互效果"
+        count={`${playgrounds.length} 个`}
+        className="playgrounds-section fade-in fade-in-3"
+      >
+        <div className="lab-playground-groups">
+          {playgroundGroups.map((group) => (
+            <div className="lab-playground-group" key={group.label}>
+              <h3 className="lab-subgroup-title">
+                {group.label}
+                <span className="lab-subgroup-count">{group.items.length}</span>
+              </h3>
+              <div className="playgrounds-grid">
+                {group.items.map((pg, i) => (
+                  <div key={pg.title} className={`playground-card glass-card${pg.wide ? ' playground-card--wide' : ''} fade-in fade-in-${Math.min(i + 2, 5)}`}>
+                    <div className="playground-header">
+                      <h4 className="playground-title">{pg.title}</h4>
+                      <span className="playground-subtitle">{pg.subtitle}</span>
+                    </div>
+                    {pg.component}
+                  </div>
+                ))}
               </div>
-              {pg.component}
             </div>
           ))}
         </div>
-      </section>
+      </LabSection>
 
       {/* Experiment Cards Grid */}
-      <section className="experiments-section fade-in fade-in-4">
-        <h2 className="section-title">样式实验</h2>
-        <p className="section-desc">已实现的前端样式与效果</p>
+      <LabSection
+        id="lab-experiments"
+        index="05"
+        title="样式实验"
+        description="已实现的前端样式与效果"
+        count="8 个"
+        className="experiments-section fade-in fade-in-4"
+      >
         <div className="lab-grid">
           {experiments.map((exp, index) => (
             <div
@@ -1085,17 +1127,22 @@ export default function Lab() {
             </div>
           ))}
         </div>
-      </section>
+      </LabSection>
 
       {/* Performance-heavy demos stay at the bottom and can be disabled in Settings. */}
-      <section className={`performance-section fade-in fade-in-5 ${performanceEffectsEnabled ? 'is-enabled' : 'is-disabled'}`}>
-        <h2 className="section-title">高耗能动态组件</h2>
-        <p className="section-desc">
-          {performanceEffectsEnabled
-            ? 'Canvas、持续帧循环和动态滤镜实验已开启'
-            : '当前已关闭，可在设置中开启探索页的动态实验'}
-        </p>
-
+      <LabSection
+        key={performanceEffectsEnabled ? 'performance-on' : 'performance-off'}
+        id="lab-performance"
+        index="06"
+        title="高耗能动态组件"
+        description={performanceEffectsEnabled
+          ? 'Canvas、持续帧循环和动态滤镜实验已开启'
+          : '当前已关闭，可在设置中开启探索页的动态实验'}
+        count="17 个"
+        status={performanceEffectsEnabled ? undefined : '设置中开启'}
+        disabled={!performanceEffectsEnabled}
+        className="performance-section fade-in fade-in-5"
+      >
         {performanceEffectsEnabled && (
           <>
             <div className="performance-three-section">
@@ -1157,11 +1204,13 @@ export default function Lab() {
             </div>
           </>
         )}
-      </section>
+      </LabSection>
 
       <footer className="lab-footer fade-in fade-in-5">
         <p>持续更新中 · 有新想法随时实验</p>
       </footer>
+
+      <ChapterRail mode="progress" label="页面进度" />
     </div>
   )
 }

@@ -1,7 +1,15 @@
 import { Link } from 'react-router-dom'
 import { resume } from '../lib/content/resume'
+import ChapterRail from '../components/ChapterRail'
 import '../styles/effects.css'
 import './About.css'
+
+const aboutChapters = [
+  { id: 'about-overview', title: '这里有什么', level: 2 },
+  { id: 'about-stack', title: '技术栈', level: 2 },
+  { id: 'about-contact', title: '联系', level: 2 },
+  { id: 'about-why', title: '为什么做这个站', level: 2 },
+]
 
 export default function About() {
   return (
@@ -22,7 +30,7 @@ export default function About() {
         </div>
 
         <div className="about-card glass-card fade-in fade-in-3">
-          <h2 className="about-card-title">这里有什么</h2>
+          <h2 id="about-overview" className="about-card-title">这里有什么</h2>
           <ul className="about-list">
             <li>文章：学习笔记与技术复盘</li>
             <li>时间线：站点和生活的更新记录</li>
@@ -32,7 +40,7 @@ export default function About() {
         </div>
 
         <div className="about-card glass-card fade-in fade-in-4">
-          <h2 className="about-card-title">技术栈</h2>
+          <h2 id="about-stack" className="about-card-title">技术栈</h2>
           <div className="tech-tags">
             {['React', 'Vite', 'JavaScript', 'CSS', 'Web Audio', 'Three.js'].map(tech => (
               <span key={tech} className="tech-tag">{tech}</span>
@@ -41,7 +49,7 @@ export default function About() {
         </div>
 
         <div className="about-card glass-card fade-in fade-in-5">
-          <h2 className="about-card-title">联系</h2>
+          <h2 id="about-contact" className="about-card-title">联系</h2>
           <div className="contact-links">
             <a href={resume.profile.github} target="_blank" rel="noopener noreferrer" className="contact-link">
               <span className="contact-icon">GH</span>
@@ -55,7 +63,7 @@ export default function About() {
         </div>
 
         <div className="about-card about-wide glass-card fade-in fade-in-5">
-          <h2 className="about-card-title">为什么做这个站</h2>
+          <h2 id="about-why" className="about-card-title">为什么做这个站</h2>
           <p className="about-site-desc">
             这个网站不追热点，也不做信息流。它更像一个长期维护的笔记本：
             内容优先，设计有规则，改动可回退。希望若干年后回头看，
@@ -76,6 +84,8 @@ export default function About() {
           </div>
         </div>
       </div>
+
+      <ChapterRail chapters={aboutChapters} label="关于目录" />
     </div>
   )
 }

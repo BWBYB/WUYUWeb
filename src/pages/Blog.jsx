@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getCategories, getPostsByCategory } from '../lib/content/posts'
+import ChapterRail from '../components/ChapterRail'
 import '../styles/effects.css'
 import './Blog.css'
 
@@ -73,6 +74,8 @@ export default function Blog() {
           <p>这个分类下还没有文章</p>
         </div>
       )}
+
+      <ChapterRail mode="progress" label="页面进度" />
     </div>
   )
 }
