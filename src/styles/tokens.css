@@ -97,18 +97,21 @@
   /* 纸色强度：0% 暖白，100% 暖纸；由 Layout 按设置写到根元素 */
   --paper-mix: 0%;
 
-  /* 全站数字统一走得意黑数字子集（见 index.css @font-face），
-     字母、中文与标点仍落到各栈原本的字体。 */
-  --sans: 'Smiley Sans Digits', 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
-  --serif: 'Smiley Sans Digits', 'Noto Serif SC', Georgia, serif;
-  --mono: 'Smiley Sans Digits', 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
-  --accent-font: 'Smiley Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  /* 纯等宽：代码块、ASCII 画与等宽样张，数字必须留在网格里 */
+  /* 全站只保留 Anthropic Serif 一套；中文回落思源宋。
+     --sans / --mono / --accent-font / --post-date-font 都指向同一栈。
+     例外只有两处：导航回到原来的黑体栈，标签走得意黑。 */
+  --serif-editorial: 'Anthropic Serif', 'Noto Serif SC', ui-serif, Georgia, serif;
+  --sans: var(--serif-editorial);
+  --serif: var(--serif-editorial);
+  --mono: var(--serif-editorial);
+  --accent-font: var(--serif-editorial);
+  --post-date-font: var(--serif-editorial);
+  /* 纯等宽：代码块、ASCII 画、Logo 与 Player 面板，数字必须留在网格里 */
   --mono-fixed: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
-  /* 文章标题与正文：英文 New York，中文思源宋体 */
-  --serif-editorial: 'Smiley Sans Digits', ui-serif, Georgia, 'Noto Serif SC', serif;
-  /* 日期与正文数字：得意黑整套，连字符也跟随，不再走等宽 */
-  --post-date-font: 'Smiley Sans', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  /* 导航恢复原来的黑体栈：Anthropic Serif 没有中文字形，导航标签只显示中文 */
+  --nav-font: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
+  /* 标签：得意黑，技术名词与缩写也走它，缺字回落黑体 */
+  --tag-font: 'Smiley Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 
   /* ── 字号阶梯（8 档）──
      组件与页面只引用这些变量，不再写裸 px。

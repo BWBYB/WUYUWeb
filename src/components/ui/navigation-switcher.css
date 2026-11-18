@@ -25,6 +25,7 @@
 
 .switcher--navigation .switcher__option {
   --c: var(--c-content);
+  font-family: var(--nav-font);
   box-sizing: border-box;
   align-items: center;
   justify-content: center;

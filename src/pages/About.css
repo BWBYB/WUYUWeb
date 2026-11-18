@@ -113,7 +113,7 @@
 }
 
 .tech-tag {
-  font-family: var(--accent-font);
+  font-family: var(--tag-font);
   font-size: var(--fs-micro);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-md);
