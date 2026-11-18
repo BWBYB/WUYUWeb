@@ -17,7 +17,7 @@
 | 已知债务 | 八、已知债务 |
 | 改某个决定该动哪个文件 | 九、修改入口 |
 | 图片比例与图标 | 十、图片与图标 |
-| 按钮、表单、卡片、链接 | 十一、组件 |
+| 按钮、表单、卡片、链接与展示组件 | 十一、组件 |
 | 各 md 的职责 | 十二、文档分工 |
 
 ## 一、适用范围与豁免
@@ -54,13 +54,13 @@
 | `--fw-medium` | 500 | 标签、按钮、卡片次级标题 |
 | `--fw-semibold` | 600 | 页面标题、文章标题、强调 |
 
-`index.html` 实际加载 IBM Plex Mono 300/400/500/600、Noto Serif SC 400/600。新增字重前必须先改字体 URL。
+`index.html` 加载 IBM Plex Mono 300/400/500/600（代码、ASCII 与 Lab 样张）、Noto Serif SC 400/600（中文衬线），`src/index.css` 另声明得意黑 Smiley Sans（标签）。英文与数字全站统一使用自托管的 Anthropic Serif TTF（`src/assets/fonts/AnthropicSerifWebText.ttf`，只有 400 一档，`src/index.css` 声明）；Anthropic Sans 与 Anthropic Mono 已停止加载。新增字重前必须先改字体 URL。
 
-全站 UI 与元信息使用 `--sans`（IBM Plex Mono → PingFang SC → 系统 mono 回退），标签与 UI 数字使用 `--mono`（同为 IBM Plex Mono）；两者栈首都是得意黑数字子集，数字字形由它接管。文章/列表标题、文章正文与摘要使用 `--serif-editorial`（英文 New York → 中文思源宋体），引言等短句使用 `--serif`。中文由回退字体渲染，正文英文不再走等宽。
+全站正文、标题、元信息与日期统一使用同一套 `--serif-editorial`（英文 Anthropic Serif → 中文思源宋体）；`--sans`、`--serif`、`--mono`、`--accent-font`、`--post-date-font` 都是它的别名，不再引入第二种 Anthropic 字体。中文统一由回退字体渲染（Anthropic Serif 无中文字形）。仅两处例外：导航走 `--nav-font`（PingFang 黑体栈），标签走 `--tag-font`（得意黑）。
 
-全站阿拉伯数字统一为得意黑：`index.css` 声明了只含数字字形的 `Smiley Sans Digits`（`unicode-range` 限定 0–9），并挂在 `--sans`、`--mono`、`--serif`、`--serif-editorial` 的栈首；字母、中文与标点仍由各栈后面的原字体渲染。日期与文章正文数字使用 `--post-date-font`（得意黑整套，连字符也跟随）。
+全站英文与数字统一为 Anthropic Serif；单字重 400，`font-synthesis: none` 关闭合成粗体，500/600 的英文按 400 渲染，中文仍按思源宋 600 渲染。日期、正文数字与标题数字都走同一套栈，不再区分等宽。
 
-信息型小字（分类、脚注、标签、kicker，12–14px）与页脚文字使用 `--accent-font`（得意黑 Smiley Sans，经 jsDelivr 加载，只有 400 一档）。导航项与更多面板使用 `--sans`。代码块、ASCII 画与等宽字体样张使用 `--mono-fixed`，数字必须留在等宽网格里，不参与得意黑替换。
+信息型小字（分类、脚注、kicker，12–14px）与页脚文字使用 `--accent-font`（同一 Serif 栈）；导航项与更多面板使用 `--nav-font`（PingFang 黑体）；所有标签（分类、文章标签、技术栈胶囊）使用 `--tag-font`（得意黑）；导航 Logo 用 Serif 600（合成粗体，宽度按实测 em 值裁切）。代码块、ASCII 画与等宽字体样张使用 `--mono-fixed`（IBM Plex Mono），数字必须留在等宽网格里。
 
 ### 行高
 
@@ -204,6 +204,23 @@
 3. 设置页「阴影与边框」卡片是唯一入口，导航与主题切换器不再各自提供阴影滑块。
 4. Player、Lab 的物理阴影豁免。
 
+### 玻璃材质（已落地）
+
+三档强度，全部来自 `--glass-neutral`，不新增第四档：
+
+| 层 | 透明底 | 用途 |
+| --- | --- | --- |
+| 容器 | 12%（`--glass-card-opacity`） | 卡片、空状态面板、分段轨道、面包屑胶囊 |
+| 选中 | 32% | 分段指示器、导航选中胶囊 |
+| 强调 | `--accent-soft` + 赭石描边 | accent 标签、状态徽标 |
+
+规则：
+
+1. 8 层 inset 只给厚玻璃面板（卡片、空状态、按钮、导航）；标签、分段轨道、面包屑等小件用 4 层，避免描边过密。
+2. 一层 blur：同一组件树只让最外层容器挂 `backdrop-filter`，子元素只做 inset 高光。分段轨道的 blur 在轨道上，指示器不再叠。
+3. 亮暗差异只由 `--glass-reflex-light` / `--glass-reflex-dark` 控制，组件不写模式分支。
+4. 玻璃只包裹有表面的组件；正文链接与默认面包屑保持纯文字。
+
 ### 圆角（已落地）
 
 | Token | 值 | 用途 |
@@ -273,6 +290,7 @@ npm run build
 | 几何圆角 | Header 的 `calc(高度 / 2)`、Player 的 39 处物理圆角保留裸值 |
 | 几何间距 | Header / 导航 / 切换器 / Player 的胶囊与磁带尺寸仍用裸 px |
 | `Player.css` | 20 处装饰字号、56 处物理间距保留，等装饰 token 方案 |
+| 单字重 | Anthropic Serif 只有 400，英文 500/600 默认无合成粗体；导航 Logo 例外，单独开了 `font-synthesis: weight` |
 | `Lab` | 永久豁免，不参与统一 |
 
 ## 九、修改入口
@@ -284,6 +302,7 @@ npm run build
 | 全局颜色 / 语义 | `src/styles/tokens.css` 的 `:root`、`[data-site-theme="light"]`、`[data-paper="on"]` | 先判断属于六组中的哪一组；组件里不写颜色 |
 | 新增一个语义色 | 同上，三种模式都要给值 | 深色、白色、纸色缺一不可；纸色用 `--paper-mix` 插值 |
 | 纸色强度 / 开关 | `src/components/ui/background-settings.js`、`src/components/Layout.jsx` | 默认值与范围在 settings；`--paper-mix` 由 Layout 写到根元素 |
+| 基础字体 | `src/styles/tokens.css` 的字栈、`src/index.css` 的 `@font-face` | 全站只用 Anthropic Serif；Sans/Mono 已停用；导航 `--nav-font`（黑体）、标签 `--tag-font`（得意黑）、Logo Serif 合成粗体、代码/ASCII `--mono-fixed` |
 | 字号 | `src/styles/tokens.css` 的 `--fs-*` | 8 档已固定；移动端在 `max-width: 768px` 覆盖 |
 | 字重 | `src/styles/tokens.css` 的 `--fw-*`、`index.html` 的字体 URL | 三档 400/500/600；不声明 700 |
 | 行高 | `src/styles/tokens.css` 的 `--lh-*` | 四档；`1` 只用于图标几何对齐 |
@@ -361,28 +380,35 @@ npm run build
 `src/components/ui/Button.jsx`：
 
 ```jsx
-<Button variant="primary | secondary | text | glass" size="md | sm" />
+<Button variant="primary | secondary | text" size="md | sm" />
 ```
 
 | 类型 | 默认 | hover | active |
 | --- | --- | --- | --- |
-| primary | `--accent` 底 / `--content-on-accent` | `--accent-secondary` | 内压 1px |
-| secondary | 透明 / `--content-default` / `--border-subtle` | `--surface-card-hover` / `--border-strong` | `--surface-card` |
+| primary | 赭石玻璃 22% / 胶囊 / `--content-strong` | 赭石玻璃 30% | 赭石玻璃 36% / 内压 1px |
+| secondary | 中性玻璃 12% / 胶囊 / `--content-strong` | 中性玻璃 18% / `--accent` 文字 | 中性玻璃 36% / `--content-strong` |
 | text | 透明 / `--accent` | `--accent-soft` / `--accent-secondary` | 同 hover |
-| glass | 中性玻璃 12% / 胶囊 / `--content-strong` | 同底 / `--accent` | 玻璃 36% / `--content-strong` |
 
-禁用：透明度 0.45，`pointer-events: none`。胶囊形用于分类筛选和导航同源玻璃按钮，普通按钮仍用 `--control-radius`。玻璃按钮复用导航的三层状态（容器 12% → hover 赭石文字 → 按下 36% 选中胶囊）；滑动胶囊与单选逻辑仍归 switcher。
+禁用：透明度 0.45，`pointer-events: none`。主/次按钮都是胶囊玻璃，8 层 inset 高光与导航栏、主题切换器同源；按下落到 36% 选中胶囊。滑动胶囊与单选逻辑仍归 switcher。
 
 ### 表单
 
 `src/components/ui/Field.jsx` + `.control`：
 
 - 高度 40，移动端 44
-- 边框 `--border-subtle`，圆角 `--control-radius`
-- focus：边框 `--accent` + 2px `--focus-ring`，offset 2
+- 透明边框 + 中性玻璃 12% 底，沿用导航同源 8 层 inset 高光与 `--glass-blur`
+- hover 玻璃提亮 6%；focus：边框 `--accent` + 2px `--focus-ring`，offset 2
 - error：边框 `--danger`，`.field__error`
-- textarea 最小高度 96，行高 `--lh-body`
+- textarea 与 input 同一材质，最小高度 96，行高 `--lh-body`
 - select 与 input 同高，option 使用 `--surface-canvas` / `--content-strong`
+
+### 开关
+
+`src/components/ui/Switch.jsx`：
+
+- 36 × 20 胶囊轨道，16px 玻璃滑块，滑块带高光渐变与 1px 暗边
+- 关：中性玻璃 30%，hover 38%；开：赭石玻璃 36%，hover 44%
+- 轨道与按钮共用 8 层 inset 高光；focus-visible 用 `--focus-ring`
 
 ### 卡片
 
@@ -406,6 +432,97 @@ npm run build
 - 键盘焦点统一 `--focus-ring`，2px + offset 2
 - 导航、主题切换器、Player、Lab 为材质/物理例外，不套普通按钮与链接
 
+### 排版
+
+`src/styles/tokens.css` 的字体与字号阶梯：
+
+- 正文、标题、元信息统一 `--serif-editorial`（Anthropic Serif + 思源宋），`--sans` / `--mono` / `--accent-font` / `--post-date-font` 都是同一栈的别名
+- 导航单独走 `--nav-font`（PingFang 黑体栈），所有标签走 `--tag-font`（得意黑）；除此之外不再引入别的字体栈
+- 导航 Logo 用 `--serif-editorial` 的 600 合成粗体；比例字不能用 ch 量宽，裁切盒按实测 advance 写成 em 值
+- 只有代码、ASCII 与 Player 面板使用 `--mono-fixed`（IBM Plex Mono，等宽）
+- 字号只走 `--fs-display / heading / heading-md / heading-sm / body / lead / ui / micro` 八档，不临时写 px
+- 英文与数字由 Anthropic Serif 接管（单字重 400，不启用合成粗体）；标题不做负字距，行高走 `--lh-tight / heading / body / ui`
+
+### 标签
+
+`src/components/ui/Tag.jsx`：
+
+- 24px 高胶囊，得意黑 12（`--tag-font`）；默认中性玻璃 12% + 4 层 inset（轮廓、顶高光、底暗边、内影），不挂 blur
+- `tone="accent"` 用 `--accent-soft` 底 + 赭石描边与高光
+- 只做归类，不承载点击
+
+### 状态徽标
+
+`src/components/ui/Badge.jsx`：
+
+- 6px 圆点 + 微字 12；默认中性色，`tone="accent"` 赭石，`tone="muted"` 第三强调色
+- 只做成熟度与状态说明，不承载点击
+- 组件库卡片与详情页元信息共用，页面里不再各写一套圆点样式
+
+### 图片
+
+`src/styles/media.css`：
+
+- `.media--wide` 16:9、`.media--card` 4:3、`.media--square` 1:1，一律 `object-fit: cover`
+- 正文插图用 `.prose-image`，不裁切并保留完整构图与说明位
+- 图片写死 `width` / `height` 占位，避免加载时页面抖动
+
+### 空状态
+
+`src/components/ui/Empty.jsx`：
+
+- 标记 + 一句话 + 可选动作；默认无外框，`.empty--panel` 复用卡片 8 层玻璃
+- 搜索空结果与文章空分类都用 `.empty--panel`，不再另写虚线框
+- 标记默认 ∅，`--fs-heading` + 赭石，透明度 0.7
+
+### 分段控件
+
+`src/components/ui/Segmented.jsx`：
+
+- 选项 40px 高；轨道是 12% 中性玻璃凹槽 + 4 层 inset，承担唯一一层 blur
+- 指示器为 32% 中性玻璃 + 4 层 inset，不叠 blur；0.45s `cubic-bezier(0.22, 1, 0.36, 1)` 滑动，减少动效时关闭
+- options 传 `id / title / count`，`role="radiogroup"`，方向键 / Home / End 切换
+
+### 面包屑
+
+`src/components/ui/Breadcrumb.jsx`：
+
+- 默认纯文字：微字 12，斜线分隔，末级 `aria-current="page"` + `--content-strong`
+- `.breadcrumb--capsule` 是 36px 玻璃胶囊，只在详情页头部使用
+- 链接 hover 到 `--accent`，focus 用统一焦距环
+
+### 导航与展示补充
+
+| 组件 | 文件 | 规则 |
+| --- | --- | --- |
+| 标签页 Tabs | `Tabs.jsx` + `tabs.css` | 40px 高，下划线 `scaleX` 过渡；`role="tab"` + roving tabindex，方向键 / Home / End 切换 |
+| 分页 Pagination | `Pagination.jsx` + `pagination.css` | 32px 方形玻璃页码，当前页 32% 选中胶囊 + `aria-current="page"`；省略号只做视觉 |
+| 分割线 Divider | `Divider.jsx` + `divider.css` | 1px `--border-subtle`；`dashed` 变体；带文字时居中微字，`role="separator"` |
+| 时间线 / 统计数值 / 表格 / 列表 | 组件库标本 | 仅组件库展示，无独立组件；轨道、数值、表格与列表统一走 token 与语义标签 |
+
+### 数据录入补充
+
+| 组件 | 文件 | 规则 |
+| --- | --- | --- |
+| 滑块 Slider | `Slider.jsx` + `slider.css` | 轨道 4px、拇指 18px 玻璃；进度用内联 `--slider-progress`；label 经 `useId` 关联 |
+| 复选框 Checkbox | `Checkbox.jsx` + `checkbox.css` | 18px 玻璃方框，选中赭石底 + 白勾；原生 input 隐身，键盘与读屏仍走浏览器默认 |
+| 选择器 Select | `Select.jsx` + `select.css` | 复用 `.field` / `.control`，右侧 chevronDown；`appearance: none`，不另写一套高度 |
+
+### 反馈补充
+
+| 组件 | 文件 | 规则 |
+| --- | --- | --- |
+| 警告提示 Alert | `Alert.jsx` + `alert.css` | 左侧 2px 色条 + 图标；`danger` 用 `role="alert"`，其余 `role="status"`；关闭按钮可省 |
+| 进度条 Progress | `Progress.jsx` + `progress.css` | 6px 轨道，赭石渐变填充；`role="progressbar"` + 数值；`tone` 只换填充色 |
+| 骨架屏 Skeleton | `Skeleton.jsx` + `skeleton.css` | 文本行 / 卡片两种；shimmer 在 `prefers-reduced-motion` 下改为静态 |
+| 加载中 Spin | `Spin.jsx` + `spin.css` | 环形 spinner，默认 22px；`role="status"` + 视觉隐藏文案；减少动效时放慢而非停转 |
+| 结果页 Result | `Result.jsx` + `result.css` | 48px 标记 + 标题 + 说明 + 动作；`success / info / empty` 三态，标记色跟随语义 |
+| 对话框 Modal | `Modal.jsx` + `modal.css` | portal 到 body，`--z-modal`；遮罩承担唯一一层 blur，面板 92% 画布；Escape / 遮罩关闭、焦点圈定与复原、body 滚动锁 |
+
+### 布局（标本）
+
+栅格 Grid 与间距 Space 只作为组件库标本（12 列、`--space-1..4`），不产出通用组件，避免页面里出现第二套布局系统。
+
 ### 导航小设置栏（紧凑例外）
 
 固定在 280px 高的导航胶囊里，不跟随移动端 44px：
@@ -423,8 +540,8 @@ npm run build
 
 ### 导航更多面板
 
-- `NavMorePanel` 复用设置面板的展开/关闭节奏，高度 176px
-- 只放「探索 `/lab`」和「CD机 `/player`」两个入口
+- `NavMorePanel` 复用设置面板的展开/关闭节奏，高度按入口数量自动计算（行高 × 条目 + 间距 + 内边距）
+- 入口数据在 `src/components/navMoreItems.js`，当前为探索 / 组件库 / CD机三项
 - 面板打开时隐藏其余导航图标与选中胶囊，只保留「更多」按钮，点击外部也可关闭
 - `≤600` 常驻分裂时同样可用
 
@@ -433,6 +550,14 @@ npm run build
 | 想改什么 | 改哪里 |
 | --- | --- |
 | 按钮 | `src/components/ui/Button.jsx`、`src/styles/components.css` |
+| 标签 / 状态徽标 / 空状态 | `src/components/ui/Tag.jsx`、`Badge.jsx`、`badge.css`、`Empty.jsx`、`src/styles/components.css` |
+| 排版 | `src/styles/tokens.css` 的字体与 `--fs-*` 阶梯 |
+| 图片 | `src/styles/media.css` |
+| 分段控件 | `src/components/ui/Segmented.jsx`、`segmented.css` |
+| 面包屑 | `src/components/ui/Breadcrumb.jsx`、`breadcrumb.css` |
+| 标签页 / 分页 / 分割线 | `src/components/ui/Tabs.jsx`、`Pagination.jsx`、`Divider.jsx` 及同名 css |
+| 滑块 / 复选框 / 选择器 | `src/components/ui/Slider.jsx`、`Checkbox.jsx`、`Select.jsx` 及同名 css |
+| 提示 / 进度 / 骨架 / 加载 / 结果 / 对话框 | `src/components/ui/Alert.jsx`、`Progress.jsx`、`Skeleton.jsx`、`Spin.jsx`、`Result.jsx`、`Modal.jsx` 及同名 css |
 | 导航小设置栏 | `src/components/NavSettingsPanel.jsx`、`src/components/Header.css` |
 | 导航更多面板 | `src/components/NavMorePanel.jsx`、`Header.jsx` |
 | 表单 | `src/components/ui/Field.jsx`、`src/styles/components.css` |
