@@ -1,11 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import Icon from './ui/Icon'
+import { moreItems } from './navMoreItems'
 import './NavMorePanel.css'
-
-const moreItems = [
-  { path: '/lab', label: '探索', description: '实验与交互演示', icon: 'compass' },
-  { path: '/player', label: 'CD机', description: '磁带播放器', icon: 'disc' },
-]
 
 export default function NavMorePanel({ open, onClose }) {
   const { pathname } = useLocation()

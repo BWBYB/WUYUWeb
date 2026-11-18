@@ -6,6 +6,7 @@ import { MEDIA } from '../lib/breakpoints'
 import NavigationSwitcher from './ui/NavigationSwitcher'
 import NavSettingsPanel from './NavSettingsPanel'
 import NavMorePanel from './NavMorePanel'
+import { moreItems } from './navMoreItems'
 import './Header.css'
 
 // ≤600 时导航常驻分裂态，不随滚动合并。
@@ -85,8 +86,9 @@ export default function Header({ paper = false }) {
   const isResumePage = location.pathname === '/resume' || location.pathname.startsWith('/resume/')
   // 「设置」页（点 ⚙ 进入）：只让导航选中胶囊淡出，logo 不变。
   const isSettingsPage = location.pathname === '/settings' || location.pathname.startsWith('/settings/')
-  // 探索 / CD机 属于「更多」板块：选中胶囊停在「更多」按钮上，提示当前板块
+  // 探索 / 组件库 / CD机 属于「更多」板块：选中胶囊停在「更多」按钮上，提示当前板块
   const isMorePage = location.pathname === '/lab' || location.pathname.startsWith('/lab/') ||
+    location.pathname === '/components' || location.pathname.startsWith('/components/') ||
     location.pathname === '/player' || location.pathname.startsWith('/player/')
 
   useEffect(() => {
@@ -307,6 +309,7 @@ export default function Header({ paper = false }) {
     '--nav-saturation': `${settings.saturation}%`,
     '--nav-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
     '--nav-reflex-dark': resolvedTheme === 'light' ? 1 : 2,
+    '--nav-more-items': moreItems.length,
     // 分裂动效（动画快慢 / 缓动 / 时长）
     '--nav-stretch-duration': scaledDuration(navSettings.stretchDuration, navSettings.animationSpeed),
     '--nav-stretch-easing': easingFromControls(

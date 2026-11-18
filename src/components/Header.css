@@ -17,7 +17,7 @@
 @property --logo-width {
   syntax: '<length>';
   inherits: false;
-  initial-value: 48px;
+  initial-value: 64px;
 }
 
 /* 合并态：只有父级 .site-header 是唯一的胶囊（带玻璃）。
@@ -33,6 +33,7 @@
   --nav-z-base: 2;
   --nav-z-panel: 12;
   --nav-z-fieldset: 16;
+  --nav-more-row: 44px;
   display: flex;
   /* 不写死 height（对齐 Legacy header-wrapper）：高度由最高子元素撑开。
      常态 = nav-pill 的 fieldset 高度（--nav-height 63px）；
@@ -177,18 +178,19 @@
   justify-content: flex-start;
   /* 单一字符串 WUYU：用明确 width 过渡 + overflow:hidden 从右往左裁切，
      分裂时只露 W，合并时露完整 WUYU。
-     宽度跟随字体走：4 个等宽字符 + 3 段字距（末尾字距是空白，会被裁掉）+ 左右各 1px。
+     宽度跟随字体走：Serif 是比例字，实测 16px 下四字母 advance =
+     54.125px（3.383em），加 3 段 0.16em 字距与左右各 1px。
      不再拆 W/UYU 两个 span —— 那样在 flex 里父容器会随内容瞬跳重排，
      打断 max-width 抽屉过渡，导致「突变」。 */
-  width: var(--logo-width, 48px);
-  --logo-width: calc(4ch + 0.48em + 2px);
+  width: var(--logo-width, 64px);
+  --logo-width: calc(3.383em + 0.48em + 2px);
   padding-inline: 1px;
   overflow: hidden;
   white-space: nowrap;
-  /* 裁切宽度按 ch 计算，ch 取栈首字体的数字宽：全站数字字体
-     得意黑（0 ≈ .49em）比 WUYU 实际落到的 IBM Plex Mono（.6em）窄，
-     会让盒子缩到裁掉末尾字母。这里固定回纯等宽栈，ch 与字母同度量。 */
-  font-family: var(--mono-fixed);
+  /* Logo 用 Serif 加粗：字体只有 400 一档，这里单独放开 weight 合成。
+     比例字不能用 ch 量宽，宽度按上面的实测 advance 换算。 */
+  font-family: var(--serif-editorial);
+  font-synthesis: weight;
   color: var(--nav-content-color);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -223,10 +225,10 @@
   border-radius: var(--radius-sm);
 }
 
-/* 分裂态：宽度收到单个等宽字符，W 在盒内居中，胶囊圆心也随之对准；
-   UYU 仍被 overflow:hidden 从右往左裁掉 */
+/* 分裂态：宽度收到单个 W 的 advance（16px 下 17px = 1.0625em）+ 2px，
+   W 在盒内居中，胶囊圆心也随之对准；UYU 仍被 overflow:hidden 从右往左裁掉 */
 .site-header.is-split .site-header-logo {
-  --logo-width: calc(1ch + 2px);
+  --logo-width: calc(1.0625em + 2px);
   letter-spacing: 0;
 }
 
@@ -237,6 +239,8 @@
   display: flex;
   align-items: center;
   margin-left: auto;
+  /* 导航文字回到原来的黑体栈，面板内文本一并继承 */
+  font-family: var(--nav-font);
   flex: 0 1 auto;
   box-sizing: border-box;
   border: none;
@@ -388,9 +392,14 @@
   /* 圆角保持 calc(var(--nav-height)/2) 不变，上圆角不动、只向下拉伸 */
 }
 
-/* 更多面板：只放两个入口，高度比设置面板矮 */
+/* 更多面板：按入口数量长高，新增条目不用再手改高度 */
 .site-header.is-split .nav-pill[data-more-open="true"] {
-  height: 176px;
+  height: calc(
+    var(--nav-more-row, 44px) * var(--nav-more-items, 3)
+    + var(--space-2) * (var(--nav-more-items, 3) - 1)
+    + var(--space-7)
+    + var(--space-3)
+  );
 }
 
 /* 打开面板时不再改 fieldset 的定位方式。
@@ -737,8 +746,7 @@
   }
 
   .site-header-logo {
-    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与裁切盒（1ch + 2px）匹配。
-       若缩到 12px，不等宽回退字体的 W 会靠左，看起来偏离圆心。 */
+    /* 小屏保持与桌面相同的 16px：分裂态 W 的宽度与裁切盒（1.0625em + 2px）匹配。 */
     font-size: var(--fs-body);
   }
 }
