@@ -26,7 +26,8 @@ html[data-site-theme="light"] .home .hero-section {
   position: absolute;
   left: 0;
   bottom: 24px;
-  z-index: 1;
+  /* 高于 EdgeBlur（--z-raised），否则首屏身份会被边缘模糊吃掉；仍低于 sticky 导航 */
+  z-index: calc(var(--z-raised) + 1);
   display: grid;
   gap: var(--space-2);
   max-width: 280px;
@@ -101,7 +102,8 @@ html[data-site-theme="light"] .home .hero-section {
   position: absolute;
   right: 0;
   bottom: 24px;
-  z-index: 1;
+  /* 同 hero-label：滚动提示也是页面骨架，不被边缘模糊削弱 */
+  z-index: calc(var(--z-raised) + 1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,13 +190,15 @@ html[data-site-theme="light"] .home .hero-section {
   grid-column: span 1;
 }
 
-.bento-wide {
-  grid-column: span 3;
-}
-
 /* Glass Card Base */
 .bento-card {
   padding: var(--card-pad-feature);
+}
+
+/* 浅色下 12% 灰玻璃贴白底几乎不可见：卡片加深一档，并用强边收口 */
+html[data-site-theme="light"] .home .bento-card {
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 8%), transparent);
+  border-color: var(--border-strong);
 }
 
 .card-header {
@@ -205,17 +209,25 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .card-title {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
-  color: var(--text-h);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
   margin: 0;
 }
 
 .card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   font-size: var(--fs-ui);
   color: var(--text-muted);
   text-decoration: none;
   transition: color 0.2s;
+}
+
+.card-link svg {
+  flex: none;
 }
 
 .card-link:hover {
@@ -279,18 +291,90 @@ html[data-site-theme="light"] .home .hero-section {
   line-height: var(--lh-heading);
 }
 
-/* Small Card */
-.card-small-title {
+/* Now Card */
+.bento-now {
+  display: flex;
+  flex-direction: column;
+}
+
+.now-book {
   font-size: var(--fs-ui);
   font-weight: var(--fw-medium);
   color: var(--text-h);
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-3);
 }
 
-.card-small-text {
-  font-size: var(--fs-ui);
+.now-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.now-label {
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* Works Card */
+.work-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.work-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.work-item:first-child {
+  padding-top: 0;
+}
+
+.work-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.work-item:hover {
+  opacity: 0.8;
+}
+
+.work-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card-hover);
   color: var(--text);
-  margin: 0 0 var(--space-3);
+}
+
+.work-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-h);
+}
+
+.work-meta {
+  margin-left: auto;
+  font-family: var(--accent-font);
+  font-size: var(--fs-micro);
+  color: var(--text-muted);
+}
+
+.work-arrow {
+  flex: none;
+  color: var(--text-muted);
 }
 
 /* Progress Bar */
@@ -324,6 +408,7 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 .tech-pill {
+  font-family: var(--tag-font);
   font-size: var(--fs-micro);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-md);
@@ -333,14 +418,16 @@ html[data-site-theme="light"] .home .hero-section {
 }
 
 /* Quote Card */
-.bento-wide {
+.quote-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  padding: var(--space-7) var(--space-6);
 }
 
 .bento-quote {
   font-family: var(--serif);
-  font-size: var(--fs-heading-sm);
+  font-size: var(--fs-lead);
   color: var(--text-h);
   line-height: var(--lh-body);
   margin: 0 0 var(--space-3);
@@ -369,12 +456,8 @@ html[data-site-theme="light"] .home .hero-section {
     scroll-margin-top: 80px;
   }
   .bento-large,
-  .bento-small,
-  .bento-wide {
+  .bento-small {
     grid-column: span 1;
-  }
-  .bento-quote {
-    font-size: var(--fs-heading-sm);
   }
 }
 
