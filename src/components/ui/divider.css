@@ -1,0 +1,34 @@
+/* 分割线：一条纸面横线；带标题时左右各留一段。
+   虚线只换线的画法，不引入第二层玻璃。 */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+.divider__line {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.divider--dashed .divider__line {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--border-subtle) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.divider__label {
+  flex: none;
+  color: var(--content-muted);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}

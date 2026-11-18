@@ -1,0 +1,40 @@
+/* 加载中：一圈玻璃轨道，赭石弧线顺时针旋转。
+   文案只给读屏，视觉上用环本身说明状态。 */
+
+.spin {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--content-muted);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
+}
+
+.spin__ring {
+  display: block;
+  width: var(--spin-size);
+  height: var(--spin-size);
+  border: 2px solid color-mix(in srgb, var(--content-strong) 14%, transparent);
+  border-top-color: var(--accent);
+  border-radius: var(--radius-circle);
+  animation: spin-rotate 0.8s linear infinite;
+}
+
+.spin__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes spin-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin__ring {
+    animation-duration: 2.4s;
+  }
+}

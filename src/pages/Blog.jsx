@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getCategories, getPostsByCategory } from '../lib/content/posts'
 import ChapterRail from '../components/ChapterRail'
+import Empty from '../components/ui/Empty'
 import '../styles/effects.css'
 import './Blog.css'
 
@@ -70,9 +71,7 @@ export default function Blog() {
       </div>
 
       {filteredPosts.length === 0 && (
-        <div className="empty-state glass-card">
-          <p>这个分类下还没有文章</p>
-        </div>
+        <Empty className="empty--panel" text="这个分类下还没有文章" />
       )}
 
       <ChapterRail mode="progress" label="页面进度" />

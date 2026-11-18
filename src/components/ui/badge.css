@@ -1,0 +1,28 @@
+/* 状态徽标：6px 圆点 + 微字，只做说明，不承载点击 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-circle);
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.badge--accent {
+  color: var(--accent);
+}
+
+.badge--muted {
+  color: var(--accent-tertiary);
+}

@@ -1,0 +1,109 @@
+/* 对话框：遮罩承担唯一一层 blur，面板只用高不透明纸面 + inset 高光，
+   避免玻璃树里再叠一层 backdrop-filter。 */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--surface-canvas) 58%, transparent);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 2)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(calc(var(--glass-blur) * 2)) saturate(var(--glass-saturation));
+  animation: modal-fade 0.2s ease both;
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100%);
+  max-height: calc(100dvh - var(--space-7));
+  overflow: auto;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-canvas) 92%, transparent);
+  box-shadow:
+    var(--shadow-3),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 70%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 14%), transparent);
+  animation: modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal__title {
+  margin: 0;
+  color: var(--content-strong);
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-heading);
+}
+
+.modal__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--content-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.modal__close:hover {
+  background: var(--accent-soft);
+  color: var(--content-strong);
+}
+
+.modal__close:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.modal__body {
+  padding: var(--space-5);
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+.modal__body p {
+  margin: 0;
+}
+
+.modal__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal__panel {
+    animation: none;
+  }
+}

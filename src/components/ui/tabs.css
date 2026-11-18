@@ -1,0 +1,83 @@
+/* 标签页：纸面下划线形态，和玻璃指示器的 Segmented 分工。
+   轨道只有一条 1px 基线，选中项用赭石线从左展开。 */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-subtle);
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs__tab {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--content-muted);
+  font: inherit;
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tabs__tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tabs__tab:hover {
+  color: var(--content-strong);
+}
+
+.tabs__tab.is-active {
+  color: var(--content-strong);
+}
+
+.tabs__tab.is-active::after {
+  transform: scaleX(1);
+}
+
+.tabs__tab:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.tabs__count {
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
+}
+
+.tabs__tab.is-active .tabs__count {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs__tab::after {
+    transition: none;
+  }
+}

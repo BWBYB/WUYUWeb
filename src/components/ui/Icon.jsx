@@ -72,6 +72,42 @@ const icons = {
       <circle cx="12" cy="12" r="3" />
     </>
   ),
+  grid: (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m16.5 16.5 4 4" />
+    </>
+  ),
+  close: (
+    <path d="M6 6l12 12M18 6 6 18" />
+  ),
+  check: (
+    <path d="m5 12.5 4.5 4.5L19 7" />
+  ),
+  alert: (
+    <>
+      <path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+      <path d="M12 9v4" />
+      <path d="M12 16.5h.01" strokeWidth="2" />
+    </>
+  ),
+  chevronLeft: (
+    <path d="m14.5 5-7 7 7 7" />
+  ),
+  chevronRight: (
+    <path d="m9.5 5 7 7-7 7" />
+  ),
+  chevronDown: (
+    <path d="m5 9.5 7 7 7-7" />
+  ),
 }
 
 export default function Icon({ name, size = 20, className = '', ...props }) {

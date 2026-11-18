@@ -61,9 +61,10 @@
   }
 }
 
-/* Glass card：与导航栏同源的 8 层 inset + 中性玻璃底 */
-.glass-card {
-  padding: var(--card-pad);
+/* Glass card：与导航栏同源的 8 层 inset + 中性玻璃底；
+   空状态面板复用同一材质，内边距仍由 .empty 决定 */
+.glass-card,
+.empty--panel {
   background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
@@ -80,6 +81,10 @@
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
   transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card {
+  padding: var(--card-pad);
 }
 
 /* 只有整卡可点时才抬升；静态卡片保持稳定 */

@@ -851,7 +851,7 @@ export default function Lab() {
           <div className="lab-component-card glass-card">
             <div>
               <h3 className="lab-component-title">Button</h3>
-              <p className="lab-component-desc">primary / secondary / text / glass（导航同源玻璃）</p>
+              <p className="lab-component-desc">导航同源玻璃：赭石 / 中性 / 文字</p>
             </div>
             <div className="lab-component-row">
               <Button variant="primary">主按钮</Button>
@@ -859,11 +859,9 @@ export default function Lab() {
               <Button variant="text">文字按钮</Button>
             </div>
             <div className="lab-component-row">
-              <Button variant="glass">玻璃按钮</Button>
-              <Button variant="glass" size="sm">小号玻璃</Button>
+              <Button size="sm">小号</Button>
               <Button disabled>禁用</Button>
             </div>
-            <p className="lab-component-desc">默认 12% 玻璃 / hover 赭石 / 按下 36% 胶囊，与导航同源。</p>
           </div>
 
           <div className="lab-component-card glass-card">

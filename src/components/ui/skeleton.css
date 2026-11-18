@@ -1,0 +1,56 @@
+/* 骨架屏：占位块只用中性色，不抢真实内容的层级。
+   微光沿 X 轴扫过；减少动效时停在静态灰块。 */
+
+.skeleton {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.skeleton--text {
+  max-width: 340px;
+}
+
+.skeleton--card {
+  width: min(240px, 100%);
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.skeleton__line,
+.skeleton__media {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--content-strong) 7%, transparent) 25%,
+    color-mix(in srgb, var(--content-strong) 14%, transparent) 37%,
+    color-mix(in srgb, var(--content-strong) 7%, transparent) 63%
+  );
+  background-size: 300% 100%;
+  animation: skeleton-shimmer 1.8s ease infinite;
+}
+
+.skeleton__line {
+  height: 10px;
+}
+
+.skeleton__media {
+  aspect-ratio: var(--ratio-wide);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-1);
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton__line,
+  .skeleton__media {
+    animation: none;
+    background: color-mix(in srgb, var(--content-strong) 10%, transparent);
+  }
+}

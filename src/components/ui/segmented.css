@@ -1,0 +1,87 @@
+/* 分段控件：导航胶囊的紧凑版本。
+   轨道是 12% 中性玻璃凹槽，承担唯一一层 blur；
+   指示器只用 32% 玻璃 + inset 高光，不再叠 backdrop-filter。 */
+
+.segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--segmented-count), minmax(0, 1fr));
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--border-glass),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 16%), transparent),
+    inset 0 2px 4px -3px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+}
+
+.segmented__indicator {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  width: calc(100% / var(--segmented-count));
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) 32%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2px 1px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 70%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent);
+  transform: translateX(calc(100% * var(--segmented-index)));
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.segmented__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--content-muted);
+  font: inherit;
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.segmented__option:not(.is-active):hover {
+  color: var(--accent);
+}
+
+.segmented__option.is-active {
+  color: var(--content-strong);
+}
+
+.segmented__option:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.segmented__count {
+  color: var(--content-muted);
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-regular);
+  opacity: 0.7;
+}
+
+.segmented__option.is-active .segmented__count {
+  color: var(--accent);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmented__indicator {
+    transition: none;
+  }
+}

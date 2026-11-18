@@ -1,5 +1,8 @@
-/* 组件基础层：按钮、表单、链接。卡片皮肤仍在 effects.css。 */
+/* 组件基础层：按钮、表单、链接、标签与空状态。卡片皮肤仍在 effects.css。 */
 
+/* 玻璃按钮：与导航栏、主题切换器同源。
+   中性玻璃 12% / 赭石玻璃 22%，共用同一份 8 层 inset 高光；
+   hover 提亮，按下落到 36% 玻璃胶囊（导航选中态）。 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -8,7 +11,7 @@
   height: var(--control-h);
   padding: 0 var(--control-px);
   border: 1px solid transparent;
-  border-radius: var(--control-radius);
+  border-radius: var(--radius-pill);
   font: inherit;
   font-size: var(--fs-ui);
   font-weight: var(--fw-medium);
@@ -28,36 +31,49 @@
   font-size: var(--fs-micro);
 }
 
-.btn--primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--content-on-accent);
-}
-
-.btn--primary:hover {
-  border-color: var(--accent-secondary);
-  background: var(--accent-secondary);
-}
-
-.btn--primary:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.18);
-}
-
+.btn--primary,
 .btn--secondary {
-  border-color: var(--border-subtle);
-  background: transparent;
-  color: var(--content-default);
+  border-color: transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
 }
 
-.btn--secondary:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-card-hover);
+.btn--primary {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
   color: var(--content-strong);
 }
 
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.btn--primary:active {
+  background: color-mix(in srgb, var(--accent) 36%, transparent);
+  transform: translateY(1px);
+}
+
+.btn--secondary {
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  color: var(--content-strong);
+}
+
+.btn--secondary:hover {
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 6%), transparent);
+  color: var(--accent);
+}
+
 .btn--secondary:active {
-  background: var(--surface-card);
+  background: color-mix(in srgb, var(--glass-neutral) 36%, transparent);
+  color: var(--content-strong);
 }
 
 .btn--text {
@@ -77,13 +93,25 @@
   background: var(--accent-soft);
 }
 
-/* 玻璃按钮：复用导航的三层状态——容器 12% → hover 赭石 → 按下 36% 胶囊。
-   边缘由 8 层 inset 高光承担，不画可见边框，和导航玻璃一致。 */
-.btn--glass {
-  border-color: transparent;
-  border-radius: var(--radius-pill);
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 输入框与开关同样沿用导航玻璃：中性玻璃底 + 同源 inset 高光，
+   focus 仍靠赭石描边与焦距环，不靠填充色抢注意力。 */
+.control {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--control-px-sm);
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
   background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
   color: var(--content-strong);
+  font: inherit;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
     inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
@@ -95,34 +123,6 @@
     inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-}
-
-.btn--glass:hover {
-  color: var(--accent);
-}
-
-.btn--glass:active {
-  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 24%), transparent);
-  color: var(--content-strong);
-}
-
-.btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.control {
-  width: 100%;
-  height: var(--control-h);
-  padding: 0 var(--control-px-sm);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--control-radius);
-  background: var(--surface-card);
-  color: var(--content-strong);
-  font: inherit;
-  font-size: var(--fs-ui);
-  line-height: var(--lh-ui);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -131,11 +131,12 @@
 }
 
 .control:hover {
-  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 6%), transparent);
 }
 
 .control:focus {
   border-color: var(--accent);
+  background: color-mix(in srgb, var(--glass-neutral) calc(var(--glass-card-opacity) + 6%), transparent);
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
@@ -179,7 +180,7 @@ textarea.control {
   color: var(--danger);
 }
 
-/* Switch：与导航小设置栏同尺寸的 36 × 20 胶囊 */
+/* Switch：与导航小设置栏同尺寸的 36 × 20 玻璃胶囊 */
 .switch {
   position: relative;
   flex: none;
@@ -188,13 +189,20 @@ textarea.control {
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--content-strong) 26%, transparent);
+  background: color-mix(in srgb, var(--glass-neutral) 30%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1px 2px 0 -1.5px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -1px -1px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 55%), transparent),
+    inset 0 -2px 3px -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .switch:hover {
-  background: color-mix(in srgb, var(--content-strong) 34%, transparent);
+  background: color-mix(in srgb, var(--glass-neutral) 38%, transparent);
 }
 
 .switch__thumb {
@@ -204,16 +212,27 @@ textarea.control {
   width: 16px;
   height: 16px;
   border-radius: var(--radius-circle);
-  background: var(--surface-canvas);
+  background:
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--glass-highlight) 96%, transparent),
+      color-mix(in srgb, var(--glass-highlight) 68%, transparent)
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) 55%, transparent),
+    inset 0 1px 1px color-mix(in srgb, var(--glass-highlight) 85%, transparent),
+    inset 0 -1px 2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent),
+    0 0 0 1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0 1px 2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent);
   transition: transform 0.2s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .switch--on {
-  background: var(--accent);
+  background: color-mix(in srgb, var(--accent) 36%, transparent);
 }
 
 .switch--on:hover {
-  background: var(--accent-secondary);
+  background: color-mix(in srgb, var(--accent) 44%, transparent);
 }
 
 .switch--on .switch__thumb {
@@ -255,6 +274,61 @@ textarea.control {
 .link-action:hover,
 .link-action:active {
   color: var(--accent);
+}
+
+/* 标签：紧凑玻璃，4 层 inset 与导航同源；高度太小，不单独开 blur */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--border-subtle),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent),
+    inset 0 2px 3px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+  color: var(--content-default);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+}
+
+.tag--accent {
+  background: var(--accent-soft);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 70%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+/* 空状态：标记 + 一句话 + 可选恢复动作，外框交给调用方 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--space-5);
+  color: var(--content-muted);
+  text-align: center;
+}
+
+.empty__mark {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: var(--fs-heading);
+  line-height: var(--lh-tight);
+  opacity: 0.7;
+}
+
+.empty__text {
+  margin: 0;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
 }
 
 /* 键盘焦点统一；组件内更高优先级的材质例外可以覆盖 */

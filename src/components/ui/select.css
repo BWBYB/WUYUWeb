@@ -1,0 +1,33 @@
+/* 选择器：原生 select 套 .control 玻璃，右侧换成自绘箭头。
+   展开列表交给系统，避免再维护一套浮层定位。 */
+
+.select {
+  position: relative;
+  display: block;
+}
+
+.select__control {
+  padding-right: calc(var(--control-px-sm) + var(--space-6));
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.select__control::-ms-expand {
+  display: none;
+}
+
+.select__icon {
+  position: absolute;
+  top: 50%;
+  right: var(--control-px-sm);
+  color: var(--content-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: color 0.2s ease;
+}
+
+.select:hover .select__icon,
+.select__control:focus + .select__icon {
+  color: var(--accent);
+}

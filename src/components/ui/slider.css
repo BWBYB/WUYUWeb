@@ -1,0 +1,98 @@
+/* 滑块：4px 玻璃凹槽 + 赭石进度 + 18px 玻璃圆钮。
+   进度靠 --slider-progress 画在轨道渐变里，不额外加一层元素。 */
+
+.slider {
+  --slider-track-height: 4px;
+  --slider-thumb-size: 18px;
+
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.slider__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.slider__label {
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
+}
+
+.slider__value {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-ui);
+}
+
+.slider__input {
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider__input::-webkit-slider-runnable-track {
+  width: 100%;
+  height: var(--slider-track-height);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0 var(--slider-progress),
+    color-mix(in srgb, var(--content-strong) 14%, transparent) var(--slider-progress) 100%
+  );
+}
+
+.slider__input::-moz-range-track {
+  width: 100%;
+  height: var(--slider-track-height);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0 var(--slider-progress),
+    color-mix(in srgb, var(--content-strong) 14%, transparent) var(--slider-progress) 100%
+  );
+}
+
+.slider__input::-webkit-slider-thumb {
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  margin-top: calc((var(--slider-track-height) - var(--slider-thumb-size)) / 2);
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: color-mix(in srgb, var(--surface-canvas) 82%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--border-glass),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent),
+    0 2px 6px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 14%), transparent);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider__input::-moz-range-thumb {
+  width: var(--slider-thumb-size);
+  height: var(--slider-thumb-size);
+  border: 0;
+  border-radius: var(--radius-circle);
+  background: color-mix(in srgb, var(--surface-canvas) 82%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--border-glass),
+    inset 1px 1.5px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1px -1.5px 0 -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 18%), transparent),
+    0 2px 6px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 14%), transparent);
+}
+
+.slider__input:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

@@ -157,7 +157,7 @@ export default function Resume() {
                         {project.href && (
                           <div className="resume-project-actions">
                             <a
-                              className="btn btn--glass resume-project-github"
+                              className="btn btn--secondary resume-project-github"
                               href={project.href}
                               target={project.href.startsWith('http') ? '_blank' : undefined}
                               rel={project.href.startsWith('http') ? 'noopener noreferrer' : undefined}

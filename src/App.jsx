@@ -16,6 +16,8 @@ import './App.css'
 // 重交互页（three.js / 音频）路由级懒加载，避免首屏为它们买单
 const Lab = lazy(() => import('./pages/Lab'))
 const Player = lazy(() => import('./pages/Player'))
+const Library = lazy(() => import('./pages/Library'))
+const LibraryDetail = lazy(() => import('./pages/LibraryDetail'))
 const UpdatesEditor = import.meta.env.DEV
   ? lazy(() => import('./pages/UpdatesEditor'))
   : null
@@ -46,6 +48,8 @@ function App() {
           )}
           <Route path="/lab" element={<Suspense fallback={<div className="route-loading">正在加载探索页…</div>}><Lab /></Suspense>} />
           <Route path="/player" element={<Suspense fallback={<div className="route-loading">正在加载播放器…</div>}><Player /></Suspense>} />
+          <Route path="/components" element={<Suspense fallback={<div className="route-loading">正在加载组件库…</div>}><Library /></Suspense>} />
+          <Route path="/components/:slug" element={<Suspense fallback={<div className="route-loading">正在加载组件详情…</div>}><LibraryDetail /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
