@@ -20,8 +20,9 @@
   aspect-ratio: var(--ratio-square);
 }
 
-/* 架构图、截图、公式：不裁切，按原比例缩放 */
-.prose-image {
+/* 架构图、截图、公式：不裁切，按原比例缩放；正文 Markdown 图片自动等同 */
+.prose-image,
+.post-content-inner img {
   display: block;
   max-width: 100%;
   height: auto;

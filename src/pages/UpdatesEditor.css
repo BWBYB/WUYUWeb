@@ -1,14 +1,5 @@
-.updates-editor-page {
-  width: 100%;
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding-top: var(--page-top);
-}
-.updates-editor-header { display: flex; align-items: end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--page-header-gap); }
-.updates-editor-eyebrow { margin: 0 0 var(--space-2); color: var(--accent-2); font-size: var(--fs-micro); letter-spacing: .08em; }
-.updates-editor-header h1 { margin: 0 0 var(--space-2); color: var(--text-h); font-size: var(--fs-display); line-height: var(--lh-tight); }
-.updates-editor-header p:not(.updates-editor-eyebrow) { max-width: var(--measure); margin: 0; color: var(--text); font-size: var(--fs-body); line-height: var(--lh-body); }
-.updates-editor-header code { color: var(--accent-2); }
+.updates-editor-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--page-header-gap); }
+.updates-editor-header h1 { margin: 0; color: var(--text-h); font-size: var(--fs-display); line-height: var(--lh-tight); }
 .updates-editor-actions { display: flex; gap: var(--space-3); flex: none; }
 .updates-editor-add, .updates-editor-remove { border: 1px solid var(--border-subtle); border-radius: var(--control-radius); font: inherit; cursor: pointer; }
 .updates-editor-status { margin: 0 0 var(--space-5); padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); font-size: var(--fs-ui); }
@@ -22,7 +13,7 @@
 .updates-editor-remove:disabled { cursor: not-allowed; opacity: .4; }
 .updates-editor-add { padding: var(--space-3); }
 .updates-editor-add:hover, .updates-editor-secondary:hover { border-color: var(--border-hover); color: var(--text-h); }
-.updates-editor-preview { position: sticky; top: 92px; min-width: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); }
+.updates-editor-preview { position: sticky; top: var(--nav-offset); min-width: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); }
 .updates-editor-preview-heading { display: flex; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-5); color: var(--text-h); font-size: var(--fs-ui); font-weight: var(--fw-semibold); }
 .updates-editor-preview-heading a { color: var(--accent-2); font-size: var(--fs-micro); font-weight: var(--fw-regular); text-decoration: none; }
 

@@ -120,11 +120,7 @@ export default function UpdatesEditor() {
   return (
     <div className="updates-editor-page">
       <header className="updates-editor-header">
-        <div>
-          <p className="updates-editor-eyebrow">仅本地开发环境</p>
-          <h1>编辑更新记录</h1>
-          <p>填写后保存到 <code>content/updates.md</code>，Vercel 公网版本不会包含此编辑入口。</p>
-        </div>
+        <h1>编辑更新记录</h1>
         <div className="updates-editor-actions">
           <Button variant="secondary" onClick={() => setEntries(updates.map(toEditableEntry))}>重置</Button>
           <Button variant="primary" onClick={save} disabled={saving}>{saving ? '保存中…' : '保存记录'}</Button>

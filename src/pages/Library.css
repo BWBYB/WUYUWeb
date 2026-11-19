@@ -1,27 +1,12 @@
 /* 组件库：总览与详情共用一套纸面语言。
    列表与卡片保持平面，只有吸顶筛选条和预览样本使用玻璃。 */
 
-.library-page {
-  width: 100%;
-  padding-top: var(--page-top);
-}
-
-/* ─── 总览头部 ─── */
 .library-header {
-  margin-bottom: var(--space-6);
-}
-
-.library-kicker {
-  display: block;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: var(--fs-micro);
-  line-height: var(--lh-ui);
-  letter-spacing: 0.12em;
+  margin-bottom: var(--page-header-gap);
 }
 
 .library-title {
-  margin: var(--space-2) 0 var(--space-3);
+  margin: 0;
   color: var(--content-strong);
   font-family: var(--serif-editorial);
   font-size: var(--fs-display);
@@ -32,7 +17,7 @@
 /* ─── 吸顶筛选条 ─── */
 .library-toolbar {
   position: sticky;
-  top: calc(72px + var(--space-3));
+  top: var(--nav-offset);
   z-index: var(--z-sticky);
   display: flex;
   align-items: center;
@@ -135,11 +120,12 @@
 
 /* ─── 分类与卡片 ─── */
 .library-group {
-  scroll-margin-top: 160px;
+  /* 吸顶筛选条下的锚点：导航基准 + 筛选条高度（36+8）+ 12 */
+  scroll-margin-top: calc(var(--nav-offset) + var(--control-h-sm) + 2 * var(--space-1) + var(--space-3));
 }
 
 .library-group + .library-group {
-  margin-top: var(--space-8);
+  margin-top: var(--space-7);
 }
 
 .library-group__head {
@@ -1537,7 +1523,7 @@
 }
 
 .library-detail__section {
-  scroll-margin-top: 104px;
+  scroll-margin-top: var(--nav-offset);
   margin-top: var(--space-7);
   padding-top: var(--space-5);
   border-top: 1px solid var(--border-subtle);

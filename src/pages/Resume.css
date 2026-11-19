@@ -1,10 +1,3 @@
-.resume-page {
-  width: 100%;
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding-top: var(--page-top);
-}
-
 /* 首屏 + 内容窗口的滚动容器；进度变量由 useResumeIntro 写入。 */
 .resume-intro {
   --intro-progress: 0;

@@ -2,7 +2,6 @@
   width: 100%;
   max-width: var(--page-compact);
   margin-inline: auto;
-  padding-top: var(--page-top);
 }
 
 .blog-header {
@@ -21,17 +20,9 @@
   font-size: var(--fs-display);
   font-weight: var(--fw-semibold);
   color: var(--text-h);
-  margin: 0 0 var(--space-2);
+  margin: 0;
   line-height: var(--lh-tight);
   letter-spacing: 0;
-}
-
-.blog-desc {
-  max-width: var(--measure);
-  font-size: var(--fs-body);
-  color: var(--text);
-  line-height: var(--lh-body);
-  margin: 0;
 }
 
 .archive-link {

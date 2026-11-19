@@ -1,7 +1,6 @@
 .post-page {
   --post-gutter: var(--space-7);
-  padding-top: var(--page-top);
-  /* 正文 65ch + 卡片左右内边距 */
+  /* 正文 39em + 卡片左右内边距 */
   max-width: calc(var(--measure-post) + 2 * var(--post-gutter));
   margin: 0 auto;
 }
@@ -126,7 +125,7 @@
 }
 
 .post-content :is(h2, h3) {
-  scroll-margin-top: 104px;
+  scroll-margin-top: var(--nav-offset);
 }
 
 .post-content ul,

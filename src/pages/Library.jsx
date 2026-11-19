@@ -109,7 +109,6 @@ export default function Library() {
   return (
     <div className="library-page">
       <header className="library-header fade-in fade-in-1">
-        <span className="library-kicker">COMPONENT LIBRARY</span>
         <h1 className="library-title">组件库</h1>
       </header>
 

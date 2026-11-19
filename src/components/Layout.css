@@ -1,5 +1,10 @@
 .layout {
   --nav-top: var(--space-4);
+  /* 内容起点 = 导航实际下沿；导航高度可调，首屏高度公式引用它 */
+  --layout-top: calc(var(--nav-top) + var(--nav-height, 63px));
+  /* 浮层统一贴在导航下方的基准：下沿 + 12；
+     吸顶 top 与锚点 scroll-margin 只用它，禁止写裸值 */
+  --nav-offset: calc(var(--layout-top) + var(--space-3));
   --nav-split-pill-width: 260px;
   --nav-radius: calc(var(--nav-height, 63px) / 2);
   /* ── 玻璃配方 ──
@@ -19,7 +24,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-top: 72px;
+  padding-top: var(--layout-top);
 }
 
 .main {
@@ -27,15 +32,12 @@
   max-width: var(--page-max);
   width: 100%;
   margin: 0 auto;
-  padding: var(--space-5) var(--space-5) var(--space-7);
+  padding: var(--page-top) var(--space-5) var(--space-7);
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
-  .layout {
-    padding-top: var(--space-8);
-  }
   .main {
-    padding: var(--space-4) var(--space-4) var(--space-6);
+    padding: var(--page-top) var(--space-4) var(--space-6);
   }
 }

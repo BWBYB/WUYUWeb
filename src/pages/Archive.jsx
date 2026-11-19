@@ -17,7 +17,6 @@ export default function Archive() {
     <div className="archive-page">
       <header className="archive-header fade-in fade-in-1">
         <h1 className="archive-title">文章归档</h1>
-        <p className="archive-desc">按时间回看写下的内容</p>
       </header>
 
       <div className="archive-groups">

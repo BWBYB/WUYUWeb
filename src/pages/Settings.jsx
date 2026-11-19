@@ -22,11 +22,7 @@ export default function Settings() {
   return (
     <div className="settings-page">
       <header className="settings-page-header fade-in fade-in-1">
-        <span className="settings-page-kicker">CONTROL CENTER</span>
         <h1 className="settings-page-title">详细设置</h1>
-        <p className="settings-page-intro">
-          集中管理网站的显示、动效和性能选项。
-        </p>
       </header>
 
       <ThemeSwitcherCustomizer />

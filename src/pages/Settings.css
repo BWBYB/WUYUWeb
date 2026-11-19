@@ -1,22 +1,5 @@
-.settings-page {
-  width: 100%;
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: var(--page-top) 0 var(--space-7);
-}
-
 .settings-page-header {
   margin-bottom: var(--page-header-gap);
-}
-
-.settings-page-kicker {
-  display: inline-block;
-  margin-bottom: var(--space-3);
-  color: var(--accent);
-  font-family: var(--accent-font);
-  font-size: var(--fs-micro);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.18em;
 }
 
 .settings-page-title {
@@ -28,32 +11,20 @@
   letter-spacing: 0;
 }
 
-.settings-page-intro {
-  max-width: var(--measure);
-  margin: var(--space-3) 0 0;
-  color: var(--text);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-}
-
 .settings-page-back {
   margin-top: var(--space-5);
 }
 
 /* 两个设置模块之间的间距 */
 .settings-page .glass-card + .glass-card {
-  margin-top: var(--space-5);
+  margin-top: var(--space-7);
 }
 
 .settings-page .theme-customizer h2 {
-  scroll-margin-top: 88px;
+  scroll-margin-top: var(--nav-offset);
 }
 
 @media (max-width: 768px) {
-  .settings-page {
-    padding-top: var(--space-3);
-  }
-
   .settings-page-title {
     font-size: var(--fs-heading);
   }

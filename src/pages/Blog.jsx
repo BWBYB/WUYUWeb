@@ -27,7 +27,6 @@ export default function Blog() {
         <div className="blog-heading-row">
           <div>
             <h1 className="blog-title">文章</h1>
-            <p className="blog-desc">记录想法、技术和生活</p>
           </div>
           <Link to="/archive" className="archive-link">按时间归档 &rarr;</Link>
         </div>

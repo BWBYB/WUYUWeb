@@ -195,7 +195,8 @@
      所有页面共用同一套外框与顶部节奏；文章页另有按栏宽推导的宽度。 */
   --page-max: 1100px;
   --page-compact: 820px;
-  --page-top: var(--space-4);
+  /* 开场线：导航预留之后的页面起点；只由 .main 承担，页面不再各自加 */
+  --page-top: 40px;
   --page-header-gap: var(--space-7);
 }
 
@@ -263,6 +264,7 @@
   :root {
     --fs-heading: 1.5rem;   /* 28 → 24 */
     --fs-display: 1.75rem;  /* 36 → 28 */
+    --page-top: 32px;
   }
 }
 
