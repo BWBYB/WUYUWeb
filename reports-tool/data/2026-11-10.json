@@ -1,0 +1,342 @@
+{
+  "date": "2026-11-10",
+  "fetched_at": "2026-11-10 12:00:05",
+  "sources": {
+    "hf": {
+      "endpoint": "https://huggingface.co",
+      "days_seen": [
+        "2026-11-10",
+        "2026-11-09",
+        "2026-11-06"
+      ],
+      "note": null
+    },
+    "gh": {
+      "engine": "scrapling(curl)",
+      "note": ""
+    }
+  },
+  "hf_papers": [
+    {
+      "id": "2611.10771",
+      "title": "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+      "summary": "Visual generative models increasingly blur the line between synthesizing observations and simulating environments. Yet visual plausibility alone does not constitute successful world modeling: compelling outputs may lack persistent state, physical dynamics, or causally consistent responses to interactions. We define a generative world model as a predictive dynamical system that maintains a persistent, history-conditioned representation of an environment, updates that representation in response to actions or interventions, and generates temporally coherent trajectories that reflect outcomes under observed and counterfactual interventions. From this definition, we derive an intelligence-oriented framework spanning perceptual grounding, persistent state modeling, controllable transformation, dynamics-aware prediction, and closed-loop interaction. We present WorldFoundry, open-source infrastructure for reproducible inference and evaluation across video, 3D and 4D, embodied action, and interactive world systems. WorldFoundry unifies model and benchmark discovery, runtime and asset preparation, execution orchestration, artifact management, and interactive visualization, while modality-specific adapters preserve native inputs, execution semantics, output representations, and evaluation protocols. Explicit manifests, durable artifact contracts, and evidence-aware scorecards separate execution readiness from evaluative claims, making each claim traceable to its supporting artifacts. The catalog contains 270 model entries, 74 benchmarks, and 62 registered metric entries, with readiness and execution evidence recorded separately. WorldFoundry enables reproducible comparison of persistent, controllable dynamics across heterogeneous systems, advancing the field from perceptual synthesis toward measurable world intelligence.",
+      "ai_summary": "WorldFoundry offers open-source infrastructure for reproducible inference and evaluation of generative world models across video, 3D/4D, embodied action, and interactive systems, with traceable evidence and benchmarks.",
+      "keywords": [
+        "visual generative models",
+        "generative world model",
+        "predictive dynamical system",
+        "persistent history-conditioned representation",
+        "temporally coherent trajectories",
+        "counterfactual interventions",
+        "perceptual grounding",
+        "persistent state modeling",
+        "controllable transformation",
+        "dynamics-aware prediction",
+        "closed-loop interaction",
+        "video",
+        "3D and 4D",
+        "embodied action",
+        "interactive world systems",
+        "modality-specific adapters",
+        "evidence-aware scorecards",
+        "execution orchestration",
+        "artifact management",
+        "interactive visualization"
+      ],
+      "upvotes": 6,
+      "comments": 1,
+      "published_at": "2026-11-07",
+      "submitted_on": "2026-11-10",
+      "org": "OpenEnvision",
+      "first_author": "Juanxi Tian",
+      "n_authors": 16,
+      "github": "https://github.com/OpenEnvision/WorldFoundry",
+      "project_page": "https://openenvision.org/WorldFoundry/",
+      "url": "https://huggingface.co/papers/2611.10771",
+      "arxiv": "https://arxiv.org/abs/2611.10771",
+      "thumbnail": ""
+    }
+  ],
+  "hf_papers_all": [
+    {
+      "id": "2611.10771",
+      "title": "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+      "summary": "Visual generative models increasingly blur the line between synthesizing observations and simulating environments. Yet visual plausibility alone does not constitute successful world modeling: compelling outputs may lack persistent state, physical dynamics, or causally consistent responses to interactions. We define a generative world model as a predictive dynamical system that maintains a persistent, history-conditioned representation of an environment, updates that representation in response to actions or interventions, and generates temporally coherent trajectories that reflect outcomes under observed and counterfactual interventions. From this definition, we derive an intelligence-oriented framework spanning perceptual grounding, persistent state modeling, controllable transformation, dynamics-aware prediction, and closed-loop interaction. We present WorldFoundry, open-source infrastructure for reproducible inference and evaluation across video, 3D and 4D, embodied action, and interactive world systems. WorldFoundry unifies model and benchmark discovery, runtime and asset preparation, execution orchestration, artifact management, and interactive visualization, while modality-specific adapters preserve native inputs, execution semantics, output representations, and evaluation protocols. Explicit manifests, durable artifact contracts, and evidence-aware scorecards separate execution readiness from evaluative claims, making each claim traceable to its supporting artifacts. The catalog contains 270 model entries, 74 benchmarks, and 62 registered metric entries, with readiness and execution evidence recorded separately. WorldFoundry enables reproducible comparison of persistent, controllable dynamics across heterogeneous systems, advancing the field from perceptual synthesis toward measurable world intelligence.",
+      "ai_summary": "WorldFoundry offers open-source infrastructure for reproducible inference and evaluation of generative world models across video, 3D/4D, embodied action, and interactive systems, with traceable evidence and benchmarks.",
+      "keywords": [
+        "visual generative models",
+        "generative world model",
+        "predictive dynamical system",
+        "persistent history-conditioned representation",
+        "temporally coherent trajectories",
+        "counterfactual interventions",
+        "perceptual grounding",
+        "persistent state modeling",
+        "controllable transformation",
+        "dynamics-aware prediction",
+        "closed-loop interaction",
+        "video",
+        "3D and 4D",
+        "embodied action",
+        "interactive world systems",
+        "modality-specific adapters",
+        "evidence-aware scorecards",
+        "execution orchestration",
+        "artifact management",
+        "interactive visualization"
+      ],
+      "upvotes": 6,
+      "comments": 1,
+      "published_at": "2026-11-07",
+      "submitted_on": "2026-11-10",
+      "org": "OpenEnvision",
+      "first_author": "Juanxi Tian",
+      "n_authors": 16,
+      "github": "https://github.com/OpenEnvision/WorldFoundry",
+      "project_page": "https://openenvision.org/WorldFoundry/",
+      "url": "https://huggingface.co/papers/2611.10771",
+      "arxiv": "https://arxiv.org/abs/2611.10771",
+      "thumbnail": ""
+    }
+  ],
+  "gh_repos": [
+    {
+      "rank": 3,
+      "full_name": "sherlock-project/sherlock",
+      "owner": "sherlock-project",
+      "name": "sherlock",
+      "description": "Hunt down social media accounts by username across social networks",
+      "language": "Python",
+      "stars_total": "107451",
+      "stars_today": "4267",
+      "forks": "12433",
+      "url": "https://github.com/sherlock-project/sherlock"
+    },
+    {
+      "rank": 2,
+      "full_name": "meta/astryx",
+      "owner": "meta",
+      "name": "astryx",
+      "description": "An open source design system that's fully customizable and agent ready",
+      "language": "TypeScript",
+      "stars_total": "20517",
+      "stars_today": "3278",
+      "forks": "1553",
+      "url": "https://github.com/meta/astryx"
+    },
+    {
+      "rank": 11,
+      "full_name": "milind-soni/OpenMausBot",
+      "owner": "milind-soni",
+      "name": "OpenMausBot",
+      "description": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "language": "TypeScript",
+      "stars_total": "19912",
+      "stars_today": "1587",
+      "forks": "2715",
+      "url": "https://github.com/milind-soni/OpenMausBot"
+    },
+    {
+      "rank": 1,
+      "full_name": "anthropics/skills",
+      "owner": "anthropics",
+      "name": "skills",
+      "description": "Public repository for Agent Skills",
+      "language": "Python",
+      "stars_total": "191217",
+      "stars_today": "1038",
+      "forks": "22463",
+      "url": "https://github.com/anthropics/skills"
+    },
+    {
+      "rank": 7,
+      "full_name": "vercel-labs/agent-browser",
+      "owner": "vercel-labs",
+      "name": "agent-browser",
+      "description": "Browser automation CLI for AI agents",
+      "language": "Rust",
+      "stars_total": "48609",
+      "stars_today": "916",
+      "forks": "3309",
+      "url": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "rank": 4,
+      "full_name": "google-deepmind/mujoco",
+      "owner": "google-deepmind",
+      "name": "mujoco",
+      "description": "Multi-Joint dynamics with Contact. A general purpose physics simulator.",
+      "language": "C++",
+      "stars_total": "16999",
+      "stars_today": "574",
+      "forks": "2000",
+      "url": "https://github.com/google-deepmind/mujoco"
+    },
+    {
+      "rank": 5,
+      "full_name": "anthropics/claude-quickstarts",
+      "owner": "anthropics",
+      "name": "claude-quickstarts",
+      "description": "A collection of projects designed to help developers quickly get started with building deployable applications using the Claude API",
+      "language": "Python",
+      "stars_total": "20102",
+      "stars_today": "551",
+      "forks": "3320",
+      "url": "https://github.com/anthropics/claude-quickstarts"
+    },
+    {
+      "rank": 9,
+      "full_name": "ZhuLinsen/daily_stock_analysis",
+      "owner": "ZhuLinsen",
+      "name": "daily_stock_analysis",
+      "description": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "language": "Python",
+      "stars_total": "69076",
+      "stars_today": "506",
+      "forks": "56442",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis"
+    }
+  ],
+  "gh_repos_all": [
+    {
+      "rank": 3,
+      "full_name": "sherlock-project/sherlock",
+      "owner": "sherlock-project",
+      "name": "sherlock",
+      "description": "Hunt down social media accounts by username across social networks",
+      "language": "Python",
+      "stars_total": "107451",
+      "stars_today": "4267",
+      "forks": "12433",
+      "url": "https://github.com/sherlock-project/sherlock"
+    },
+    {
+      "rank": 2,
+      "full_name": "meta/astryx",
+      "owner": "meta",
+      "name": "astryx",
+      "description": "An open source design system that's fully customizable and agent ready",
+      "language": "TypeScript",
+      "stars_total": "20517",
+      "stars_today": "3278",
+      "forks": "1553",
+      "url": "https://github.com/meta/astryx"
+    },
+    {
+      "rank": 11,
+      "full_name": "milind-soni/OpenMausBot",
+      "owner": "milind-soni",
+      "name": "OpenMausBot",
+      "description": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "language": "TypeScript",
+      "stars_total": "19912",
+      "stars_today": "1587",
+      "forks": "2715",
+      "url": "https://github.com/milind-soni/OpenMausBot"
+    },
+    {
+      "rank": 1,
+      "full_name": "anthropics/skills",
+      "owner": "anthropics",
+      "name": "skills",
+      "description": "Public repository for Agent Skills",
+      "language": "Python",
+      "stars_total": "191217",
+      "stars_today": "1038",
+      "forks": "22463",
+      "url": "https://github.com/anthropics/skills"
+    },
+    {
+      "rank": 7,
+      "full_name": "vercel-labs/agent-browser",
+      "owner": "vercel-labs",
+      "name": "agent-browser",
+      "description": "Browser automation CLI for AI agents",
+      "language": "Rust",
+      "stars_total": "48609",
+      "stars_today": "916",
+      "forks": "3309",
+      "url": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "rank": 4,
+      "full_name": "google-deepmind/mujoco",
+      "owner": "google-deepmind",
+      "name": "mujoco",
+      "description": "Multi-Joint dynamics with Contact. A general purpose physics simulator.",
+      "language": "C++",
+      "stars_total": "16999",
+      "stars_today": "574",
+      "forks": "2000",
+      "url": "https://github.com/google-deepmind/mujoco"
+    },
+    {
+      "rank": 5,
+      "full_name": "anthropics/claude-quickstarts",
+      "owner": "anthropics",
+      "name": "claude-quickstarts",
+      "description": "A collection of projects designed to help developers quickly get started with building deployable applications using the Claude API",
+      "language": "Python",
+      "stars_total": "20102",
+      "stars_today": "551",
+      "forks": "3320",
+      "url": "https://github.com/anthropics/claude-quickstarts"
+    },
+    {
+      "rank": 9,
+      "full_name": "ZhuLinsen/daily_stock_analysis",
+      "owner": "ZhuLinsen",
+      "name": "daily_stock_analysis",
+      "description": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "language": "Python",
+      "stars_total": "69076",
+      "stars_today": "506",
+      "forks": "56442",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis"
+    },
+    {
+      "rank": 6,
+      "full_name": "garrytan/gbrain",
+      "owner": "garrytan",
+      "name": "gbrain",
+      "description": "Garry's Opinionated OpenClaw/Hermes Agent Brain",
+      "language": "TypeScript",
+      "stars_total": "32244",
+      "stars_today": "216",
+      "forks": "4774",
+      "url": "https://github.com/garrytan/gbrain"
+    },
+    {
+      "rank": 8,
+      "full_name": "ruvnet/RuView",
+      "owner": "ruvnet",
+      "name": "RuView",
+      "description": "π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a single pixel of video.",
+      "language": "Rust",
+      "stars_total": "103564",
+      "stars_today": "172",
+      "forks": "13417",
+      "url": "https://github.com/ruvnet/RuView"
+    },
+    {
+      "rank": 10,
+      "full_name": "homeassistant-ai/ha-mcp",
+      "owner": "homeassistant-ai",
+      "name": "ha-mcp",
+      "description": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "language": "Python",
+      "stars_total": "6085",
+      "stars_today": "31",
+      "forks": "296",
+      "url": "https://github.com/homeassistant-ai/ha-mcp"
+    }
+  ],
+  "cost": {
+    "turn": 10,
+    "seconds": 130.0,
+    "input_tokens": 1130705,
+    "output_tokens": 5723,
+    "calls": 7
+  }
+}

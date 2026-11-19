@@ -1,0 +1,288 @@
+{
+  "date": "2026-11-12",
+  "fetched_at": "2026-11-12 12:00:05",
+  "sources": {
+    "hf": {
+      "endpoint": "https://huggingface.co",
+      "days_seen": [
+        "2026-11-12",
+        "2026-11-11",
+        "2026-11-10"
+      ],
+      "note": null
+    },
+    "gh": {
+      "engine": "scrapling(curl)",
+      "note": ""
+    }
+  },
+  "hf_papers": [
+    {
+      "id": "2611.13028",
+      "title": "GTAGym: Real AAA Game Tasks Environment for Evaluation and Reinforcement Learning",
+      "summary": "AAA games offer a rich testbed for evaluating agent perception, reasoning, and control. However, evaluating whether agents can complete tasks in AAA games is challenging and often human-annotated because task outcomes are often difficult to verify automatically, let alone applying it for Reinforcement Learning (RL). We introduce GTAGym, an environment and framework for evaluation and RL on GTA V tasks. Its evaluation benchmark, GTAVBench, derived from GTA V main-story missions, contains 103 online tasks reconstructed across nine task families, alongside 47 image-based shooting and sniping tasks using GTA V imagery. A web server provides access to the online environment and evaluation interface, supporting parallel testing through screenshots and keyboard-mouse actions with automatic engine-state outcome checks. We evaluate six frontier LLMs on GTAVBench with textual task instructions and on its GTAVBench-AGI branch, where instructions appear only in the first screenshot and a harness automatically compresses interaction history. The best configuration achieves 70.9% overall accuracy in GTAVBench-AGI, yet aerial navigation, evasion and interception remain difficult. GTAGym also provides a scalable generator that samples task parameters within user-specified ranges and option sets under fixed templates, creating batches of 3D and image-based shooting environments for RL with automatic reward and termination signals. LoRA RL of Qwen3.8-27B on generated on-foot navigation tasks improves the in-domain performance and transfers to out-of-domain task categories, and native GTA V tasks from 15% to 23%.",
+      "ai_summary": "",
+      "keywords": [],
+      "upvotes": 2,
+      "comments": 1,
+      "published_at": "2026-11-09",
+      "submitted_on": "2026-11-12",
+      "org": "OpenMOSS",
+      "first_author": "Jiajun Chen",
+      "n_authors": 5,
+      "github": "https://github.com/ljbro/GTAGym",
+      "project_page": "",
+      "url": "https://huggingface.co/papers/2611.13028",
+      "arxiv": "https://arxiv.org/abs/2611.13028",
+      "thumbnail": ""
+    }
+  ],
+  "hf_papers_all": [
+    {
+      "id": "2611.13028",
+      "title": "GTAGym: Real AAA Game Tasks Environment for Evaluation and Reinforcement Learning",
+      "summary": "AAA games offer a rich testbed for evaluating agent perception, reasoning, and control. However, evaluating whether agents can complete tasks in AAA games is challenging and often human-annotated because task outcomes are often difficult to verify automatically, let alone applying it for Reinforcement Learning (RL). We introduce GTAGym, an environment and framework for evaluation and RL on GTA V tasks. Its evaluation benchmark, GTAVBench, derived from GTA V main-story missions, contains 103 online tasks reconstructed across nine task families, alongside 47 image-based shooting and sniping tasks using GTA V imagery. A web server provides access to the online environment and evaluation interface, supporting parallel testing through screenshots and keyboard-mouse actions with automatic engine-state outcome checks. We evaluate six frontier LLMs on GTAVBench with textual task instructions and on its GTAVBench-AGI branch, where instructions appear only in the first screenshot and a harness automatically compresses interaction history. The best configuration achieves 70.9% overall accuracy in GTAVBench-AGI, yet aerial navigation, evasion and interception remain difficult. GTAGym also provides a scalable generator that samples task parameters within user-specified ranges and option sets under fixed templates, creating batches of 3D and image-based shooting environments for RL with automatic reward and termination signals. LoRA RL of Qwen3.8-27B on generated on-foot navigation tasks improves the in-domain performance and transfers to out-of-domain task categories, and native GTA V tasks from 15% to 23%.",
+      "ai_summary": "",
+      "keywords": [],
+      "upvotes": 2,
+      "comments": 1,
+      "published_at": "2026-11-09",
+      "submitted_on": "2026-11-12",
+      "org": "OpenMOSS",
+      "first_author": "Jiajun Chen",
+      "n_authors": 5,
+      "github": "https://github.com/ljbro/GTAGym",
+      "project_page": "",
+      "url": "https://huggingface.co/papers/2611.13028",
+      "arxiv": "https://arxiv.org/abs/2611.13028",
+      "thumbnail": ""
+    }
+  ],
+  "gh_repos": [
+    {
+      "rank": 1,
+      "full_name": "meta/astryx",
+      "owner": "meta",
+      "name": "astryx",
+      "description": "An open source design system that's fully customizable and agent ready",
+      "language": "TypeScript",
+      "stars_total": "25272",
+      "stars_today": "2776",
+      "forks": "1968",
+      "url": "https://github.com/meta/astryx"
+    },
+    {
+      "rank": 7,
+      "full_name": "we-promise/sure",
+      "owner": "we-promise",
+      "name": "sure",
+      "description": "The personal finance app for everyone (by everyone)",
+      "language": "Ruby",
+      "stars_total": "13086",
+      "stars_today": "1078",
+      "forks": "963",
+      "url": "https://github.com/we-promise/sure"
+    },
+    {
+      "rank": 5,
+      "full_name": "addyosmani/agent-skills",
+      "owner": "addyosmani",
+      "name": "agent-skills",
+      "description": "Production-grade engineering skills for AI coding agents.",
+      "language": "JavaScript",
+      "stars_total": "116059",
+      "stars_today": "787",
+      "forks": "12170",
+      "url": "https://github.com/addyosmani/agent-skills"
+    },
+    {
+      "rank": 6,
+      "full_name": "vercel-labs/agent-browser",
+      "owner": "vercel-labs",
+      "name": "agent-browser",
+      "description": "Browser automation CLI for AI agents",
+      "language": "Rust",
+      "stars_total": "49972",
+      "stars_today": "708",
+      "forks": "3492",
+      "url": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "rank": 8,
+      "full_name": "homeassistant-ai/ha-mcp",
+      "owner": "homeassistant-ai",
+      "name": "ha-mcp",
+      "description": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "language": "Python",
+      "stars_total": "7455",
+      "stars_today": "645",
+      "forks": "455",
+      "url": "https://github.com/homeassistant-ai/ha-mcp"
+    },
+    {
+      "rank": 4,
+      "full_name": "shadcn/improve",
+      "owner": "shadcn",
+      "name": "improve",
+      "description": "Use your most capable model to audit your codebase and write plans for cheaper models to execute.",
+      "language": "",
+      "stars_total": "11037",
+      "stars_today": "361",
+      "forks": "448",
+      "url": "https://github.com/shadcn/improve"
+    },
+    {
+      "rank": 2,
+      "full_name": "ZhuLinsen/daily_stock_analysis",
+      "owner": "ZhuLinsen",
+      "name": "daily_stock_analysis",
+      "description": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "language": "Python",
+      "stars_total": "70477",
+      "stars_today": "278",
+      "forks": "56928",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis"
+    },
+    {
+      "rank": 3,
+      "full_name": "GoogleChrome/modern-web-guidance-src",
+      "owner": "GoogleChrome",
+      "name": "modern-web-guidance-src",
+      "description": "",
+      "language": "TypeScript",
+      "stars_total": "1899",
+      "stars_today": "159",
+      "forks": "147",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance-src"
+    }
+  ],
+  "gh_repos_all": [
+    {
+      "rank": 1,
+      "full_name": "meta/astryx",
+      "owner": "meta",
+      "name": "astryx",
+      "description": "An open source design system that's fully customizable and agent ready",
+      "language": "TypeScript",
+      "stars_total": "25272",
+      "stars_today": "2776",
+      "forks": "1968",
+      "url": "https://github.com/meta/astryx"
+    },
+    {
+      "rank": 7,
+      "full_name": "we-promise/sure",
+      "owner": "we-promise",
+      "name": "sure",
+      "description": "The personal finance app for everyone (by everyone)",
+      "language": "Ruby",
+      "stars_total": "13086",
+      "stars_today": "1078",
+      "forks": "963",
+      "url": "https://github.com/we-promise/sure"
+    },
+    {
+      "rank": 5,
+      "full_name": "addyosmani/agent-skills",
+      "owner": "addyosmani",
+      "name": "agent-skills",
+      "description": "Production-grade engineering skills for AI coding agents.",
+      "language": "JavaScript",
+      "stars_total": "116059",
+      "stars_today": "787",
+      "forks": "12170",
+      "url": "https://github.com/addyosmani/agent-skills"
+    },
+    {
+      "rank": 6,
+      "full_name": "vercel-labs/agent-browser",
+      "owner": "vercel-labs",
+      "name": "agent-browser",
+      "description": "Browser automation CLI for AI agents",
+      "language": "Rust",
+      "stars_total": "49972",
+      "stars_today": "708",
+      "forks": "3492",
+      "url": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "rank": 8,
+      "full_name": "homeassistant-ai/ha-mcp",
+      "owner": "homeassistant-ai",
+      "name": "ha-mcp",
+      "description": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "language": "Python",
+      "stars_total": "7455",
+      "stars_today": "645",
+      "forks": "455",
+      "url": "https://github.com/homeassistant-ai/ha-mcp"
+    },
+    {
+      "rank": 4,
+      "full_name": "shadcn/improve",
+      "owner": "shadcn",
+      "name": "improve",
+      "description": "Use your most capable model to audit your codebase and write plans for cheaper models to execute.",
+      "language": "",
+      "stars_total": "11037",
+      "stars_today": "361",
+      "forks": "448",
+      "url": "https://github.com/shadcn/improve"
+    },
+    {
+      "rank": 2,
+      "full_name": "ZhuLinsen/daily_stock_analysis",
+      "owner": "ZhuLinsen",
+      "name": "daily_stock_analysis",
+      "description": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "language": "Python",
+      "stars_total": "70477",
+      "stars_today": "278",
+      "forks": "56928",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis"
+    },
+    {
+      "rank": 3,
+      "full_name": "GoogleChrome/modern-web-guidance-src",
+      "owner": "GoogleChrome",
+      "name": "modern-web-guidance-src",
+      "description": "",
+      "language": "TypeScript",
+      "stars_total": "1899",
+      "stars_today": "159",
+      "forks": "147",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance-src"
+    },
+    {
+      "rank": 9,
+      "full_name": "openai/codex-security",
+      "owner": "openai",
+      "name": "codex-security",
+      "description": "OpenAI's Codex Security CLI and TypeScript SDK for finding, validating, and fixing security vulnerabilities. npm:",
+      "language": "TypeScript",
+      "stars_total": "11843",
+      "stars_today": "52",
+      "forks": "945",
+      "url": "https://github.com/openai/codex-security"
+    },
+    {
+      "rank": 10,
+      "full_name": "TheAlgorithms/Java",
+      "owner": "TheAlgorithms",
+      "name": "Java",
+      "description": "All Algorithms implemented in Java",
+      "language": "Java",
+      "stars_total": "67090",
+      "stars_today": "51",
+      "forks": "21514",
+      "url": "https://github.com/TheAlgorithms/Java"
+    }
+  ],
+  "cost": {
+    "turn": 12,
+    "seconds": 85.0,
+    "input_tokens": 1143681,
+    "output_tokens": 4935,
+    "calls": 6
+  }
+}
