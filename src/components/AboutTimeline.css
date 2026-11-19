@@ -158,6 +158,9 @@
 
 .about-timeline-track {
   position: relative;
+  /* 脊柱直接延伸到最后一张卡片：时间线与状态模块之间没有第二段线，
+     上色填充也就不会在接缝处断成两截 */
+  padding-bottom: var(--space-7);
   view-timeline-name: --about-timeline-spine;
   view-timeline-axis: block;
 }
@@ -165,14 +168,15 @@
 .about-timeline-spine {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: -2px; /* 压进卡片 2px，避免子像素接缝 */
   left: 50%;
   z-index: 0;
   width: 2px;
   overflow: hidden;
   transform: translateX(-50%);
   border-radius: var(--radius-pill);
-  background: var(--border-subtle);
+  /* 轨道底色偏暖，填充前也读得出一条完整的线 */
+  background: color-mix(in srgb, var(--accent-secondary) 35%, var(--border-strong));
 }
 
 .about-timeline-spine__fill {
@@ -320,29 +324,15 @@
   line-height: var(--lh-body);
 }
 
-/* 时间线收尾：状态行 + ascii.rest 活跃热力图 */
+/* 时间线收尾：状态行 + ascii.rest 活跃热力图。
+   与时间线的间距由轨道底部的 padding 让给脊柱，卡片自己不再留 margin */
 .about-timeline-status {
   position: relative;
   width: 100%;
-  margin: var(--space-7) auto 0;
+  margin: 0 auto;
   padding: var(--space-3) var(--space-4) var(--space-4);
   /* 热力图用 cqw 按卡片内容宽取字号 */
   container-type: inline-size;
-}
-
-/* 黄线穿过留白接进模块顶边，让时间线延续到“现在”；
-   上下各多 2px 压住接缝，避免子像素缝隙 */
-.about-timeline-status::before {
-  content: '';
-  position: absolute;
-  top: calc(-1 * var(--space-7) - 2px);
-  left: 50%;
-  width: 2px;
-  height: calc(var(--space-7) + 2px);
-  transform: translateX(-50%);
-  border-radius: var(--radius-pill);
-  background: var(--accent-secondary);
-  box-shadow: 0 0 12px var(--accent-soft);
 }
 
 .about-timeline-status-row {
@@ -354,18 +344,131 @@
 }
 
 .about-timeline-heatmap {
+  position: relative;
   width: fit-content;
   max-width: 100%;
-  margin: var(--space-3) auto 0;
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--border-subtle);
+  margin: var(--space-4) auto 0;
+  /* 每列 ≈ 0.62em 等宽字；列数由 JS 按周数写入 --heatmap-cols，
+     系数留出回退字体的余量，任何窗口宽度都不需要滚动 */
+  font-size: min(var(--fs-micro), calc(100cqw / (var(--heatmap-cols) * 0.62)));
+}
+
+/* 月份是真正的文字：衬线字体，按列位绝对定位在网格上方 */
+.ascii-heatmap__months {
+  position: relative;
+  height: calc(1em * var(--lh-tight));
+  color: var(--content-muted);
+  font-family: var(--serif);
+}
+
+.ascii-heatmap__months span {
+  position: absolute;
+  top: 0;
+  line-height: var(--lh-tight);
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* 只有密度符号留在等宽字体里，网格才对得上 */
+.ascii-heatmap {
+  margin: 0;
   color: var(--content-default);
   font-family: var(--mono-fixed);
-  /* 66 列 × 0.6em 等宽字 ≈ 40em；按卡片宽取字号上限，
-     41 留出回退字体的余量，任何宽度都不需要滚动 */
-  font-size: min(var(--fs-micro), calc(100cqw / 41));
   line-height: var(--lh-tight);
   white-space: pre;
+}
+
+.ascii-heatmap.is-pointable {
+  cursor: pointer;
+}
+
+/* 色阶：深色模式走站点橙，填充格与图例共用同一组类。
+   用透明度拉开亮度档位，色相始终是站点的橙 */
+.hm-1 {
+  color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.hm-2 {
+  color: color-mix(in srgb, var(--accent) 62%, transparent);
+}
+
+.hm-3 {
+  color: color-mix(in srgb, var(--accent) 84%, transparent);
+}
+
+.hm-4 {
+  color: var(--accent);
+}
+
+/* 亮色主题维持原来的灰阶 */
+:root[data-site-theme="light"] .hm-1,
+:root[data-site-theme="light"] .hm-2,
+:root[data-site-theme="light"] .hm-3,
+:root[data-site-theme="light"] .hm-4 {
+  color: var(--content-default);
+}
+
+/* 汇总与图例：随画幅居中，窄窗口自动换行 */
+.ascii-heatmap__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-3) 0 0;
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.ascii-heatmap__sum strong {
+  color: var(--content-strong);
+  font-weight: var(--fw-medium);
+}
+
+.ascii-heatmap__legend .hm {
+  margin: 0 0.3em;
+  font-family: var(--mono-fixed);
+}
+
+/* 悬停提示：相对状态卡定位，跟随指针 */
+.ascii-heatmap__tip {
+  position: absolute;
+  z-index: 2;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--glass-neutral) 92%, transparent);
+  box-shadow: var(--glass-shadow-outer);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  color: var(--content-strong);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+.ascii-heatmap__meta {
+  margin: var(--space-2) 0 0;
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 屏幕阅读器摘要：画幅是 aria-hidden 的纯文本，无障碍信息走这里 */
+.ascii-heatmap__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .about-timeline-status-stats {
@@ -408,7 +511,10 @@
   font-variant-numeric: tabular-nums;
 }
 
-.about-timeline-status-github {
+.about-timeline-status-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   margin-left: auto;
 }
 
@@ -499,10 +605,6 @@
   }
 
   .about-timeline-spine {
-    left: 18px;
-  }
-
-  .about-timeline-status::before {
     left: 18px;
   }
 

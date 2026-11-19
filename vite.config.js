@@ -145,12 +145,19 @@ function readContentUpdates() {
 }
 
 // 提交日期在构建时快照一次；线上热力图随每次部署更新。
-function readCommitDates() {
+function localIsoDate(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+function readCommitData() {
   try {
     const output = execSync('git log --pretty=%cs', { encoding: 'utf8' })
-    return output.split('\n').filter(line => /^\d{4}-\d{2}-\d{2}$/.test(line))
+    return {
+      dates: output.split('\n').filter(line => /^\d{4}-\d{2}-\d{2}$/.test(line)),
+      snapshot: localIsoDate(),
+    }
   } catch {
-    return []
+    return { dates: [], snapshot: localIsoDate() }
   }
 }
 
@@ -277,7 +284,7 @@ function markdownContentPlugin() {
     load(id) {
       if (id === resolvedContentModule) return `export default ${JSON.stringify(readContentPosts())}`
       if (id === resolvedUpdatesModule) return `export default ${JSON.stringify(readContentUpdates())}`
-      if (id === resolvedCommitsModule) return `export default ${JSON.stringify(readCommitDates())}`
+      if (id === resolvedCommitsModule) return `export default ${JSON.stringify(readCommitData())}`
       return undefined
     },
     configureServer(server) {

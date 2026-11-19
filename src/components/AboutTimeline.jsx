@@ -1,18 +1,23 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { milestones } from '../lib/content/milestones'
-import { updates } from '../lib/content/updates'
-import commitDates from 'virtual:wuyu-commits'
+import commitData from 'virtual:wuyu-commits'
 import { useHeaderPin } from './ui/header-pin-context'
 import AsciiHeatmap from './AsciiHeatmap'
 import Icon from './ui/Icon'
+import Segmented from './ui/Segmented'
 import './AboutTimeline.css'
 
 const formatDate = date => date.replaceAll('-', '.')
-const latestUpdate = updates[0]
-const commitEntries = commitDates.map(date => ({ date }))
+const commitEntries = commitData.dates.map(date => ({ date }))
+const rangeOptions = [
+  { id: '12', title: '12 周' },
+  { id: '30', title: '30 周' },
+  { id: '52', title: '一年' },
+]
 
 export default function AboutTimeline() {
   const [activeIndex, setActiveIndex] = useState(-1)
+  const [heatmapRange, setHeatmapRange] = useState('30')
   const [docked, setDocked] = useState(false)
   const [navScroll, setNavScroll] = useState({ left: false, right: false })
   const itemRefs = useRef([])
@@ -559,24 +564,34 @@ export default function AboutTimeline() {
         <div className="about-timeline-status-row">
           <dl className="about-timeline-status-stats">
             <div className="about-timeline-status-stat">
-              <dt>版本</dt>
-              <dd>v{latestUpdate.date.slice(0, 7).replace('-', '.')}</dd>
-            </div>
-            <div className="about-timeline-status-stat">
               <dt>最近更新</dt>
-              <dd title={latestUpdate.title}>{formatDate(latestUpdate.date)}</dd>
+              <dd>{formatDate(commitData.snapshot)}</dd>
             </div>
           </dl>
-          <a
-            className="btn btn--secondary btn--sm about-timeline-status-github"
-            href="https://github.com/BWBYB/WUYUWeb/commits/main/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub 提交 <Icon name="github" size={14} />
-          </a>
+          <div className="about-timeline-status-actions">
+            <Segmented
+              className="segmented--compact"
+              label="热力图时间范围"
+              options={rangeOptions}
+              value={heatmapRange}
+              onChange={setHeatmapRange}
+            />
+            <a
+              className="btn btn--secondary btn--sm"
+              href="https://github.com/BWBYB/WUYUWeb/commits/main/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub 提交 <Icon name="github" size={14} />
+            </a>
+          </div>
         </div>
-        <AsciiHeatmap className="about-timeline-heatmap" entries={commitEntries} unit="commit" />
+        <AsciiHeatmap
+          className="about-timeline-heatmap"
+          entries={commitEntries}
+          weeks={Number(heatmapRange)}
+          snapshot={commitData.snapshot}
+        />
       </div>
     </section>
   )
