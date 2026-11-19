@@ -358,13 +358,111 @@
   position: relative;
   width: fit-content;
   max-width: 100%;
-  margin: var(--space-4) auto 0;
+  /* 上方留出悬停时浮出的图表名胶囊 */
+  margin: var(--space-5) auto 0;
   /* 每列 ≈ 0.62em 等宽字；列数由 JS 按周数写入 --heatmap-cols，
      系数留出回退字体的余量，任何窗口宽度都不需要滚动 */
   font-size: min(var(--fs-micro), calc(100cqw / (var(--heatmap-cols) * 0.62)));
   /* 行高钉在 --fs-micro 上：一年窗口字号会缩小，行高不跟着缩，
      热力图总高才不随窗口切换变化 */
   --lh-heatmap: calc(var(--fs-micro) * var(--lh-tight));
+}
+
+/* 统计条：总量 / 活跃率（副行日均）/ 近一周（带环比徽章）/ 最忙一天 / 连续 ×2；
+   六项排两行三列，竖线分隔，行距拉开；
+   大数字 + 小单位 + 口径副行（日期区间），随窗口切换与网格同步淡入 */
+.ascii-heatmap-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-3);
+  margin: var(--space-4) 0 0;
+  animation: ascii-heatmap-frame-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ascii-heatmap-stats {
+    animation: none;
+  }
+}
+
+.ascii-heatmap-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.ascii-heatmap-stat:nth-child(3n + 1) {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.ascii-heatmap-stat dt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--content-muted);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+.ascii-heatmap-stat__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--content-strong);
+  font-family: var(--mono);
+  line-height: var(--lh-heading);
+}
+
+.ascii-heatmap-stat__value strong {
+  font-size: var(--fs-heading-md);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.ascii-heatmap-stat__value span {
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+}
+
+.ascii-heatmap-stat__note {
+  margin: 0;
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 环比徽章：提交变多用绿、变少用红、持平中性；基线为 0 时显示「新增」 */
+.ascii-heatmap-stat__trend {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.ascii-heatmap-stat__trend.is-up {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+}
+
+.ascii-heatmap-stat__trend.is-down {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 15%, transparent);
+}
+
+.ascii-heatmap-stat__trend.is-flat {
+  color: var(--content-muted);
+  background: color-mix(in srgb, var(--content-muted) 12%, transparent);
 }
 
 /* 月份是真正的文字：衬线字体，按列位绝对定位在网格上方 */
@@ -405,6 +503,65 @@
   cursor: pointer;
 }
 
+/* 切换 12/30/52 周：网格、月份与底栏口径重挂载时一起淡入，模糊消散掩盖画幅跳变 */
+.ascii-heatmap,
+.ascii-heatmap__months,
+.ascii-heatmap__sum,
+.ascii-heatmap__range {
+  animation: ascii-heatmap-frame-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ascii-heatmap,
+  .ascii-heatmap__months,
+  .ascii-heatmap__sum,
+  .ascii-heatmap__range {
+    animation: none;
+  }
+}
+
+@keyframes ascii-heatmap-frame-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* 揭示时格子逐个弹出：独立成盒才能缩放，隐藏态只占位不绘制 */
+.ascii-heatmap .hm {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.ascii-heatmap .hm.is-off {
+  visibility: hidden;
+}
+
+.ascii-heatmap .hm.is-pop {
+  animation: ascii-heatmap-pop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ascii-heatmap .hm.is-pop {
+    animation: none;
+  }
+}
+
+@keyframes ascii-heatmap-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* 色阶：深色模式走站点橙，填充格与图例共用同一组类。
    用透明度拉开亮度档位，色相始终是站点的橙 */
 .hm-1 {
@@ -431,12 +588,13 @@
   color: var(--content-default);
 }
 
-/* 汇总与图例：随画幅居中，窄窗口自动换行 */
+/* 底栏两行：总数行（近 N 周总数）、末尾行（起止日期 + 图例贴右下角）；
+   两端对齐，窄窗口自动换行 */
 .ascii-heatmap__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--space-2) var(--space-4);
   margin: var(--space-3) 0 0;
   color: var(--content-muted);
@@ -455,16 +613,17 @@
   font-family: var(--mono-fixed);
 }
 
-/* 悬停提示：白底深字，相对状态卡定位，跟随指针 */
+/* 悬停提示：与导航同源的玻璃配方（玻璃色 + 背滤 + 8 层内高光），跟随指针 */
 .ascii-heatmap__tip {
   position: absolute;
   z-index: 2;
   padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  background: var(--glass-highlight);
-  box-shadow: var(--shadow-2);
-  color: var(--glass-ink);
+  background: color-mix(in srgb, var(--nav-glass-color) calc(var(--nav-glass-opacity) + 45%), transparent);
+  box-shadow: var(--glass-shadow-inset), var(--shadow-2);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  color: var(--content-strong);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
@@ -474,12 +633,22 @@
 }
 
 .ascii-heatmap__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
   margin: var(--space-2) 0 0;
   color: var(--content-muted);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
-  text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+.ascii-heatmap__range {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 /* 屏幕阅读器摘要：画幅是 aria-hidden 的纯文本，无障碍信息走这里 */
@@ -537,6 +706,25 @@
   align-items: center;
   gap: var(--space-2);
   margin-left: auto;
+}
+
+/* GitHub 圆形入口：玻璃卡内不叠第二层玻璃，改用分段轨道同款的
+   单层内高光玻璃环；盒高与分段控件相同，暗边不会再让圆显小 */
+.about-timeline-status-actions .btn--icon {
+  background: transparent;
+  box-shadow: var(--glass-shadow-inset);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.about-timeline-status-actions .btn--icon:hover {
+  background: color-mix(in srgb, var(--nav-glass-color) 10%, transparent);
+  color: var(--accent);
+}
+
+.about-timeline-status-actions .btn--icon:active {
+  background: color-mix(in srgb, var(--nav-glass-color) 15%, transparent);
+  color: var(--content-strong);
 }
 
 @keyframes about-timeline-card-in {
@@ -691,6 +879,26 @@
 @media (max-width: 600px) {
   .about-timeline-status {
     padding: var(--space-3);
+  }
+
+  .ascii-heatmap-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-2);
+  }
+
+  .ascii-heatmap-stat {
+    padding-left: var(--space-3);
+  }
+
+  /* 两列时第 4 项落在右列，恢复桌面上被 3n+1 去掉的竖线 */
+  .ascii-heatmap-stat:nth-child(3n + 1) {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--border-subtle);
+  }
+
+  .ascii-heatmap-stat:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
   }
 }
 

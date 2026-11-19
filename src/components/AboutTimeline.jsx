@@ -578,12 +578,13 @@ export default function AboutTimeline() {
               onChange={setHeatmapRange}
             />
             <a
-              className="btn btn--secondary btn--sm"
+              className="btn btn--secondary btn--sm btn--icon"
               href="https://github.com/BWBYB/WUYUWeb/commits/main/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="GitHub 提交"
             >
-              GitHub 提交 <Icon name="github" size={14} />
+              <Icon name="github" size={16} />
             </a>
           </div>
         </div>

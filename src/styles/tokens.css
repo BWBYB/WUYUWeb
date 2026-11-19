@@ -60,6 +60,7 @@
   --accent-soft: rgba(196, 113, 63, 0.15);
   --focus-ring: #c4713f;
   --danger: #f87171;
+  --success: #7bd8a5;
 
   --selection-bg: #c4713f;
   --selection-fg: #0a0b0b;
@@ -230,6 +231,7 @@
   --accent-soft: rgba(164, 80, 42, 0.12);
   --focus-ring: #a4502a;
   --danger: #c93c3c;
+  --success: #1c7c4a;
 
   --selection-bg: #a4502a;
   --selection-fg: #ffffff;
@@ -257,6 +259,7 @@
   --shadow-alpha-base: 0.22;
 
   --danger: color-mix(in srgb, #b3402a var(--paper-mix), #c93c3c);
+  --success: color-mix(in srgb, #35714b var(--paper-mix), #1c7c4a);
 }
 
 /* 移动端只调 token，不让页面各自改字号 */
