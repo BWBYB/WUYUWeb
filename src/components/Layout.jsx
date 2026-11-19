@@ -15,7 +15,9 @@ import { ThemeSwitcher } from './ui/apple-liquid-glass-switcher'
 import {
   ThemeSwitcherProvider,
 } from './ui/ThemeSwitcherProvider'
-import { useThemeSwitcherTheme } from './ui/theme-switcher-context'
+import { useNavSettings, useThemeSwitcherTheme } from './ui/theme-switcher-context'
+import { navChromeVars } from './ui/nav-settings'
+import { HeaderPinContext } from './ui/header-pin-context'
 import './ui/theme-switcher.css'
 import './Layout.css'
 
@@ -59,8 +61,10 @@ function BackgroundLayer({ settings, onChange, onReset }) {
 
 // 背景设置提升到这一层：Header 需要知道纸色是否开启，才能换导航高亮色。
 function LayoutContent({ children }) {
-  const { resolvedTheme } = useThemeSwitcherTheme()
+  const { resolvedTheme, settings: themeSettings } = useThemeSwitcherTheme()
+  const { navSettings } = useNavSettings()
   const [settings, setSettings] = useState(readInitialBackgroundSettings)
+  const [headerPinned, setHeaderPinned] = useState(false)
 
   const update = useCallback(patch => {
     setSettings(current => {
@@ -83,6 +87,12 @@ function LayoutContent({ children }) {
 
   // 纸色只在白天生效；切到深色时移除属性，避免残留状态
   const paper = resolvedTheme === 'light' && settings.paper
+  const navStyle = navChromeVars({
+    settings: themeSettings,
+    resolvedTheme,
+    paper,
+    navSettings,
+  })
 
   useEffect(() => {
     const root = document.documentElement
@@ -100,12 +110,14 @@ function LayoutContent({ children }) {
   }, [paper, settings.paperStrength])
 
   return (
-    <div className="layout">
+    <div className="layout" style={navStyle}>
       <BackgroundLayer settings={settings} onChange={update} onReset={reset} />
-      <Header paper={paper} />
-      <main className="main">
-        {children}
-      </main>
+      <Header paper={paper} pinned={headerPinned} />
+      <HeaderPinContext.Provider value={setHeaderPinned}>
+        <main className="main">
+          {children}
+        </main>
+      </HeaderPinContext.Provider>
       <Footer />
       <GlobalThemeSwitcher paper={paper} />
       <EdgeBlur />

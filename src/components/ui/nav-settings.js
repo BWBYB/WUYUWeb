@@ -77,3 +77,33 @@ export function scaledDuration(duration, speed) {
   const s = clamp(speed, [0.1, 3])
   return `${(Number(duration) / s).toFixed(3)}s`
 }
+
+// 导航外观注入 Layout，让 Header 与页面二级导航共享同一套玻璃、高度和动效。
+export function navChromeVars({ settings, resolvedTheme, paper, navSettings }) {
+  const actionColor = resolvedTheme === 'light'
+    ? (paper ? '#a4502a' : settings.actionColor)
+    : '#c4713f'
+  const contentColor = resolvedTheme === 'light'
+    ? (paper ? '#1b1a17' : settings.contentColor)
+    : '#ded9cf'
+
+  return {
+    '--nav-height': `${settings.height * 0.9}px`,
+    '--nav-glass-color': settings.glassColor,
+    '--nav-light-color': settings.lightColor,
+    '--nav-dark-color': settings.darkColor,
+    '--nav-content-color': contentColor,
+    '--nav-action-color': actionColor,
+    '--nav-glass-opacity': `${settings.glassOpacity}%`,
+    '--nav-active-opacity': `${settings.activeOpacity}%`,
+    '--nav-blur': `${settings.blur}px`,
+    '--nav-saturation': `${settings.saturation}%`,
+    '--nav-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
+    '--nav-reflex-dark': resolvedTheme === 'light' ? 1 : 2,
+    '--nav-stretch-duration': scaledDuration(navSettings.stretchDuration, navSettings.animationSpeed),
+    '--nav-stretch-easing': easingFromControls(
+      navSettings.easingStart,
+      navSettings.easingEnd,
+    ),
+  }
+}

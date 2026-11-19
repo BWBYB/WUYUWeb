@@ -1,0 +1,529 @@
+/* 关于页时间线：滚动驱动的时间轴。
+   版式参考 scroll-driven-animations.style 的 Baseline 时间线，
+   内容换成站点的四个里程碑。 */
+
+.about-timeline {
+  --milestone-nav-top: var(--nav-top, 16px);
+  position: relative;
+  margin-bottom: var(--space-7);
+  padding-top: var(--space-6);
+}
+
+.about-timeline-nav {
+  position: sticky;
+  top: var(--milestone-nav-top);
+  /* 高于 EdgeBlur（--z-raised），低于顶栏与设置面板（--z-sticky） */
+  z-index: var(--z-subnav);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  /* 在分裂 Header 右侧导航胶囊宽度基础上加宽 50%；装不下时在轨道内左右滑 */
+  width: calc(var(--nav-split-pill-width, 260px) * 1.5);
+  max-width: 100%;
+  height: var(--nav-height, 63px);
+  margin: 0 auto var(--space-6);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--nav-radius);
+  background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
+  box-shadow: var(--glass-shadow-inset), var(--glass-shadow-outer);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  transition: width 0.24s var(--nav-stretch-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.about-timeline-nav__track {
+  --about-nav-left-fade: 0px;
+  --about-nav-right-fade: 0px;
+  --about-nav-mask: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--about-nav-left-fade),
+    black calc(100% - var(--about-nav-right-fade)),
+    transparent 100%
+  );
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: var(--space-1);
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  cursor: grab;
+  -webkit-mask-image: var(--about-nav-mask);
+  mask-image: var(--about-nav-mask);
+}
+
+/* 鼠标拖拽中：完全跟手，关掉原生吸附与文本选择，松手后再磁吸 */
+.about-timeline-nav__track.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.about-timeline-nav__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* 左右还有内容时，对应一侧渐隐；已到端点则隐藏提示 */
+.about-timeline-nav.can-scroll-left .about-timeline-nav__track {
+  --about-nav-left-fade: var(--space-4);
+}
+
+.about-timeline-nav.can-scroll-right .about-timeline-nav__track {
+  --about-nav-right-fade: var(--space-4);
+}
+
+/* 不活跃时收缩：只保留包住居中项的小胶囊。
+   宽度 = JS 写入的居中项实测宽 + 两侧内边距；过渡期间 JS 每帧把该项锁回正中。 */
+.about-timeline-nav[data-collapsed="true"] {
+  width: calc(var(--about-nav-collapsed-width, var(--nav-split-pill-width, 260px)) + var(--space-3) * 2);
+}
+
+.about-timeline-nav[data-collapsed="true"] .about-timeline-nav__track {
+  --about-nav-left-fade: 0px;
+  --about-nav-right-fade: 0px;
+  cursor: default;
+  /* 收起态没有原生横向滚动的入口（不悬停、触屏恒展开），
+     吸附只会在收起宽度变化时把刚居中的轨道往旧吸附点拽回一帧，直接关掉 */
+  scroll-snap-type: none;
+}
+
+/* 深色玻璃只是一层底色，没有自己的文字：钉死在正中，
+   宽度跟随滚到中心的那一项（JS 写入），选项文字从它上面滑过 */
+.about-timeline-nav__indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  display: block;
+  box-sizing: border-box;
+  height: calc(100% - var(--space-4));
+  border-radius: var(--nav-radius);
+  background-color: color-mix(in srgb, var(--nav-glass-color) var(--nav-active-opacity), transparent);
+  box-shadow: var(--glass-shadow-inset);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.16s ease;
+}
+
+.about-timeline-pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  gap: var(--space-2);
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--nav-radius);
+  background: none;
+  color: var(--nav-content-color);
+  font-family: var(--nav-font);
+  font-size: var(--fs-ui);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition: color 0.2s ease;
+}
+
+.about-timeline-pill:hover {
+  color: var(--nav-action-color);
+}
+
+.about-timeline-pill:focus-visible {
+  outline: 1px solid var(--nav-action-color);
+  outline-offset: -1px;
+}
+
+.about-timeline-pill__date {
+  font-size: var(--fs-micro);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.62;
+}
+
+.about-timeline-track {
+  position: relative;
+  view-timeline-name: --about-timeline-spine;
+  view-timeline-axis: block;
+}
+
+.about-timeline-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 0;
+  width: 2px;
+  overflow: hidden;
+  transform: translateX(-50%);
+  border-radius: var(--radius-pill);
+  background: var(--border-subtle);
+}
+
+.about-timeline-spine__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--accent-tertiary), var(--accent), var(--accent-secondary));
+  box-shadow: 0 0 12px var(--accent-soft);
+}
+
+.about-timeline-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-timeline-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  align-items: center;
+  padding-block: var(--space-6);
+  scroll-margin-top: calc(var(--milestone-nav-top) + var(--nav-height, 63px) + var(--space-4));
+}
+
+.about-timeline-item:first-child {
+  padding-top: var(--space-4);
+}
+
+.about-timeline-item:last-child {
+  padding-bottom: var(--space-6);
+}
+
+.about-timeline-node {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  place-items: center;
+  justify-self: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  border-radius: var(--radius-circle);
+  background: var(--surface-canvas);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--surface-canvas) 72%, transparent),
+    0 0 24px var(--accent-soft);
+}
+
+.about-timeline-node__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-circle);
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.about-timeline-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+}
+
+.about-timeline-item.is-left .about-timeline-card {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  --about-card-from: -24px;
+}
+
+.about-timeline-item.is-right .about-timeline-card {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: start;
+  --about-card-from: 24px;
+}
+
+.about-timeline-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 28px;
+  height: 2px;
+  background: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.about-timeline-item.is-left .about-timeline-card::after {
+  right: -28px;
+}
+
+.about-timeline-item.is-right .about-timeline-card::after {
+  left: -28px;
+}
+
+.about-timeline-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.about-timeline-date {
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.about-timeline-kind {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--accent);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  white-space: nowrap;
+}
+
+.about-timeline-card-title {
+  margin: 0;
+  color: var(--content-strong);
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+}
+
+.about-timeline-card-desc {
+  margin: 0;
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+.about-timeline-now {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(100%, 36rem);
+  margin: var(--space-7) auto 0;
+  padding: var(--space-6) var(--space-5);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.about-timeline-now-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--radius-pill);
+  color: var(--accent);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+.about-timeline-now-check {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: var(--radius-circle);
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: 0 0 32px var(--accent-soft);
+}
+
+.about-timeline-now-title {
+  margin: 0;
+  color: var(--content-strong);
+  font-size: var(--fs-heading-md);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+}
+
+.about-timeline-now-desc {
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+.about-timeline-now-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  color: var(--accent);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-timeline-now-link:hover {
+  color: var(--accent-tertiary);
+}
+
+@keyframes about-timeline-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--about-card-from, 0), 32px, 0) scale(0.92);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes about-timeline-node-in {
+  from {
+    opacity: 0.35;
+    transform: scale(0.45);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes about-timeline-spine-fill {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes about-timeline-now-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-6)) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes about-timeline-now-check-in {
+  from {
+    opacity: 0;
+    transform: scale(0.35) rotate(-45deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .about-timeline-card {
+      animation: about-timeline-card-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+
+    .about-timeline-node {
+      animation: about-timeline-node-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+
+    .about-timeline-spine__fill {
+      animation: about-timeline-spine-fill linear both;
+      animation-timeline: --about-timeline-spine;
+      animation-range: entry 50% exit 50%;
+    }
+
+    .about-timeline-now {
+      animation: about-timeline-now-in cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+
+    .about-timeline-now-check {
+      animation: about-timeline-now-check-in cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 100%;
+    }
+  }
+}
+
+/* ≤1200：中间没有足够空档，回落到分裂 Header 下方 */
+@media (max-width: 1200px) {
+  .about-timeline {
+    --milestone-nav-top: calc(var(--nav-top, 16px) + var(--nav-height, 63px) + var(--space-2));
+  }
+}
+
+@media (max-width: 768px) {
+  .about-timeline-item {
+    grid-template-columns: 36px minmax(0, 1fr);
+    column-gap: var(--space-3);
+    padding-block: var(--space-5);
+  }
+
+  .about-timeline-spine {
+    left: 18px;
+  }
+
+  .about-timeline-node {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  .about-timeline-card,
+  .about-timeline-item.is-left .about-timeline-card,
+  .about-timeline-item.is-right .about-timeline-card {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .about-timeline-card::after {
+    display: none;
+  }
+
+  .about-timeline-nav {
+    margin-bottom: var(--space-5);
+  }
+
+  .about-timeline-now {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-timeline-nav {
+    transition: none;
+  }
+}

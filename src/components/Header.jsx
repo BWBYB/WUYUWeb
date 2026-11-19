@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useThemeSwitcherTheme, useNavSettings } from './ui/theme-switcher-context'
-import { easingFromControls, scaledDuration } from './ui/nav-settings'
+import { navChromeVars } from './ui/nav-settings'
 import { MEDIA } from '../lib/breakpoints'
 import NavigationSwitcher from './ui/NavigationSwitcher'
 import NavSettingsPanel from './NavSettingsPanel'
@@ -26,7 +26,7 @@ function getCompactServerSnapshot() {
   return false
 }
 
-export default function Header({ paper = false }) {
+export default function Header({ paper = false, pinned = false }) {
   const location = useLocation()
   const { settings, resolvedTheme } = useThemeSwitcherTheme()
   const { navSettings } = useNavSettings()
@@ -51,8 +51,8 @@ export default function Header({ paper = false }) {
   const isSettingsOpenRef = useRef(false)
   const isMoreOpenRef = useRef(false)
 
-  // 小屏常驻分裂：滚动、回顶部都不再触发合并
-  const splitActive = isCompactViewport || isSplit || isForcedSplit
+  // 小屏常驻分裂：滚动、回顶部都不再触发合并；页面也可请求暂时保持分裂
+  const splitActive = isCompactViewport || isSplit || isForcedSplit || pinned
   // 面板高度收起需要一整个分裂时长；等它收完再合并宽度，否则会边收边缩
   const panelCloseMergeMs = Math.max(
     220,
@@ -288,40 +288,17 @@ export default function Header({ paper = false }) {
     setIsMoreOpen(true)
   }
 
-  // 深色统一用铜色高亮；浅色纸色用赭石，普通浅色仍交给设置面板
-  const actionColor = resolvedTheme === 'light'
-    ? (paper ? '#a4502a' : settings.actionColor)
-    : '#c4713f'
-  const contentColor = resolvedTheme === 'light'
-    ? (paper ? '#1b1a17' : settings.contentColor)
-    : '#ded9cf'
-
+  // 导航外观变量由 Layout 统一提供；Header 仍显式设置一份，保持组件自足
   const headerStyle = {
-    '--nav-height': `${settings.height * 0.9}px`,
-    '--nav-glass-color': settings.glassColor,
-    '--nav-light-color': settings.lightColor,
-    '--nav-dark-color': settings.darkColor,
-    '--nav-content-color': contentColor,
-    '--nav-action-color': actionColor,
-    '--nav-glass-opacity': `${settings.glassOpacity}%`,
-    '--nav-active-opacity': `${settings.activeOpacity}%`,
-    '--nav-blur': `${settings.blur}px`,
-    '--nav-saturation': `${settings.saturation}%`,
-    '--nav-reflex-light': resolvedTheme === 'light' ? 1 : 0.3,
-    '--nav-reflex-dark': resolvedTheme === 'light' ? 1 : 2,
+    ...navChromeVars({ settings, resolvedTheme, paper, navSettings }),
     '--nav-more-items': moreItems.length,
-    // 分裂动效（动画快慢 / 缓动 / 时长）
-    '--nav-stretch-duration': scaledDuration(navSettings.stretchDuration, navSettings.animationSpeed),
-    '--nav-stretch-easing': easingFromControls(
-      navSettings.easingStart,
-      navSettings.easingEnd,
-    ),
   }
 
   return (
     <header
       className={splitActive ? 'site-header is-split' : 'site-header'}
       style={headerStyle}
+      data-header-pinned={pinned ? 'true' : undefined}
       data-on-resume={isResumePage ? 'true' : undefined}
       data-hide-capsule={isResumePage || isSettingsPage ? 'true' : undefined}
       data-settings-open={isSettingsOpen ? 'true' : undefined}

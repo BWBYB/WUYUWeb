@@ -163,6 +163,7 @@
   /* ── 层级 ── 全局浮层只用这些 token；组件内部小整数另算 */
   --z-background: -1;
   --z-raised: 10;
+  --z-subnav: 50;
   --z-sticky: 100;
   --z-dock: 1000;
   --z-dock-panel: 1100;

@@ -1,4 +1,20 @@
 .layout {
+  --nav-top: var(--space-4);
+  --nav-split-pill-width: 260px;
+  --nav-radius: calc(var(--nav-height, 63px) / 2);
+  /* ── 玻璃配方 ──
+     与主题切换器同源：8 层 inset 高光 + 外投影。
+     Header 外壳/logo/导航与页面二级导航共用这一份。 */
+  --glass-shadow-inset:
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -2px -2px 0 -2px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 3px 4px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent);
+  --glass-shadow-outer: var(--shadow-3);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
