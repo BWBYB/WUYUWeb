@@ -43,7 +43,7 @@ const spanText = (start, end) => (start === end ? shortDate(start) : `${shortDat
 const formatCount = n => n.toLocaleString('en-US')
 
 // One update is visible; a day with several goes to the brightest level.
-const level = n => (n === 0 ? 0 : n === 1 ? 3 : 4)
+const level = n => Math.min(n, 4)
 
 // 揭示进度走 ease-out：起步快，临近结尾速度慢慢收住，不再匀速扫描
 const easeOut = p => 1 - (1 - p) ** 3

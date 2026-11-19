@@ -376,7 +376,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4) var(--space-3);
   margin: var(--space-4) 0 0;
-  animation: ascii-heatmap-frame-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ascii-heatmap-frame-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -508,7 +508,7 @@
 .ascii-heatmap__months,
 .ascii-heatmap__sum,
 .ascii-heatmap__range {
-  animation: ascii-heatmap-frame-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ascii-heatmap-frame-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
