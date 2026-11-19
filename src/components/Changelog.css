@@ -1,0 +1,225 @@
+/* 更新日志：吸底日期轨 + 版本徽标 + 变更标签。
+   版式参考 Hirael 的 Changelog 01（MIT），按站内 token 重写。 */
+.changelog {
+  padding: var(--card-pad-feature);
+}
+
+.changelog-head {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.changelog-title {
+  font-size: var(--fs-heading);
+  font-weight: var(--fw-semibold);
+  color: var(--content-strong);
+  line-height: var(--lh-heading);
+  margin: 0;
+  scroll-margin-top: var(--nav-offset);
+}
+
+.changelog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.changelog-filter .segmented__option {
+  height: calc(var(--control-h-sm) - 2 * var(--segmented-pad));
+  padding: 0 var(--space-2);
+  color: var(--content-default);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+}
+
+.changelog-filter .segmented__option.is-active {
+  color: var(--content-strong);
+}
+
+.changelog-filter .segmented__count {
+  color: var(--content-default);
+  opacity: 1;
+}
+
+.changelog-filter .segmented__option.is-active .segmented__count {
+  color: var(--accent);
+}
+
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.changelog-entry {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  animation: changelog-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.changelog-entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.changelog-meta {
+  position: sticky;
+  top: var(--nav-offset);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.changelog-date {
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.changelog-version {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.changelog-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.changelog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.changelog .tag.changelog-tag--new,
+.changelog .tag.changelog-tag--improved,
+.changelog .tag.changelog-tag--fixed {
+  height: 22px;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-micro);
+}
+
+.changelog .tag.changelog-tag--new {
+  background: var(--accent-soft);
+  color: var(--content-strong);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.changelog .tag.changelog-tag--improved {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.changelog .tag.changelog-tag--fixed {
+  background: color-mix(in srgb, var(--content-strong) 6%, transparent);
+  color: var(--content-default);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+.changelog-entry-title {
+  margin: 0;
+  color: var(--content-strong);
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+}
+
+.changelog-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-4);
+  list-style: disc;
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+.changelog-items li::marker {
+  color: var(--accent-tertiary);
+}
+
+.changelog-empty {
+  margin: 0;
+  padding: var(--space-7) 0 var(--space-6);
+  color: var(--content-muted);
+  font-size: var(--fs-ui);
+  text-align: center;
+}
+
+.changelog-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.changelog-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@keyframes changelog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .changelog-entry {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .changelog-toolbar {
+    justify-content: flex-start;
+  }
+  .changelog-entry {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: var(--space-5) 0;
+  }
+  .changelog-meta {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+  }
+  .changelog-foot {
+    justify-content: flex-start;
+  }
+}

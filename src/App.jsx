@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Blog from './pages/Blog'
 import Post from './pages/Post'
 import About from './pages/About'
+import UpdatesLog from './pages/UpdatesLog'
 import Resume from './pages/Resume'
 import Settings from './pages/Settings'
 import Archive from './pages/Archive'
@@ -49,6 +50,7 @@ function App() {
           <Route path="/components" element={<Suspense fallback={<div className="route-loading">正在加载组件库…</div>}><Library /></Suspense>} />
           <Route path="/components/:slug" element={<Suspense fallback={<div className="route-loading">正在加载组件详情…</div>}><LibraryDetail /></Suspense>} />
           <Route path="/about" element={<About />} />
+          <Route path="/about/updates" element={<UpdatesLog />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </Layout>
