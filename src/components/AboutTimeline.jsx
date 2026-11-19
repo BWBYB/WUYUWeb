@@ -557,10 +557,6 @@ export default function AboutTimeline() {
 
       <div className="about-timeline-status glass-card">
         <div className="about-timeline-status-row">
-          <span className="about-timeline-status-live">
-            <span className="about-timeline-status-dot" aria-hidden="true" />
-            现在
-          </span>
           <dl className="about-timeline-status-stats">
             <div className="about-timeline-status-stat">
               <dt>版本</dt>
@@ -570,16 +566,14 @@ export default function AboutTimeline() {
               <dt>最近更新</dt>
               <dd title={latestUpdate.title}>{formatDate(latestUpdate.date)}</dd>
             </div>
-            <div className="about-timeline-status-stat">
-              <dt>日志</dt>
-              <dd>
-                {updates.length}
-                <span className="about-timeline-status-unit">条</span>
-              </dd>
-            </div>
           </dl>
-          <a className="about-timeline-status-link" href="#about-changelog">
-            更新日志 <Icon name="chevronRight" size={14} />
+          <a
+            className="btn btn--secondary btn--sm about-timeline-status-github"
+            href="https://github.com/BWBYB/WUYUWeb/commits/main/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub 提交 <Icon name="github" size={14} />
           </a>
         </div>
         <AsciiHeatmap className="about-timeline-heatmap" entries={commitEntries} unit="commit" />
