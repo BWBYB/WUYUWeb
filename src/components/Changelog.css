@@ -30,27 +30,6 @@
   gap: var(--space-2);
 }
 
-.changelog-filter .segmented__option {
-  height: calc(var(--control-h-sm) - 2 * var(--segmented-pad));
-  padding: 0 var(--space-2);
-  color: var(--content-default);
-  font-family: var(--tag-font);
-  font-size: var(--fs-micro);
-}
-
-.changelog-filter .segmented__option.is-active {
-  color: var(--content-strong);
-}
-
-.changelog-filter .segmented__count {
-  color: var(--content-default);
-  opacity: 1;
-}
-
-.changelog-filter .segmented__option.is-active .segmented__count {
-  color: var(--accent);
-}
-
 .changelog-list {
   display: flex;
   flex-direction: column;

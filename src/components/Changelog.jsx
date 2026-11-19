@@ -66,7 +66,7 @@ export default function Changelog({
         <h2 id={headingId} className="changelog-title">{title}</h2>
         <div className="changelog-toolbar">
           <Segmented
-            className="changelog-filter"
+            className="segmented--compact"
             label="筛选更新日志"
             options={changelogFilters}
             value={filter}

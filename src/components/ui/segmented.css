@@ -1,6 +1,6 @@
-/* 分段控件：分裂态导航的同款结构。
-   轨道是一枚浮起的大玻璃胶囊（12% 中性玻璃 + 导航同源 8 层高光 + 外投影）；
-   指示器是浮在槽内的第二块玻璃（36%，与导航选中胶囊同配方带自身外投影）；
+/* 分段控件：直接引用分裂态导航的玻璃来源。
+   轨道 = 导航胶囊（--nav-glass-* + .layout 的 8 层内高光）；
+   指示器 = 选中胶囊（--nav-active-opacity，6 层内高光）；
    内衬 3px 让两块玻璃之间留出缝隙。 */
 
 .segmented {
@@ -10,18 +10,10 @@
   grid-template-columns: repeat(var(--segmented-count), minmax(0, 1fr));
   padding: var(--segmented-pad);
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--glass-neutral) var(--glass-card-opacity), transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
-    inset 1.8px 3px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
-    inset -2px -2px 0 -2px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
-    inset -3px -8px 1px -6px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
-    inset -0.3px -1px 4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 12%), transparent),
-    inset -1.5px 2.5px 0 -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 0 3px 4px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  background: color-mix(in srgb, var(--nav-glass-color) var(--nav-glass-opacity), transparent);
+  box-shadow: var(--glass-shadow-inset);
+  -webkit-backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
+  backdrop-filter: blur(var(--nav-blur)) saturate(var(--nav-saturation));
 }
 
 .segmented__indicator {
@@ -30,14 +22,14 @@
   z-index: 0;
   width: calc((100% - 2 * var(--segmented-pad)) / var(--segmented-count));
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--glass-neutral) 36%, transparent);
+  background: color-mix(in srgb, var(--nav-glass-color) var(--nav-active-opacity), transparent);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 10%), transparent),
-    inset 2px 1px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 90%), transparent),
-    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 80%), transparent),
-    inset -2px -6px 1px -5px color-mix(in srgb, var(--glass-highlight) calc(var(--glass-reflex-light) * 60%), transparent),
-    inset -1px 2px 3px -1px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 20%), transparent),
-    inset 0 -4px 1px -2px color-mix(in srgb, var(--glass-ink) calc(var(--glass-reflex-dark) * 10%), transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 10%), transparent),
+    inset 2px 1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 80%), transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, var(--nav-light-color) calc(var(--nav-reflex-light) * 60%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 20%), transparent),
+    inset 0 -4px 1px -2px color-mix(in srgb, var(--nav-dark-color) calc(var(--nav-reflex-dark) * 10%), transparent);
   transform: translateX(calc(100% * var(--segmented-index)));
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -65,7 +57,7 @@
 
 .segmented__option:not(.is-active):hover {
   color: var(--accent);
-  background: color-mix(in srgb, var(--glass-neutral) 10%, transparent);
+  background: color-mix(in srgb, var(--nav-glass-color) 10%, transparent);
 }
 
 .segmented__option.is-active {
@@ -88,6 +80,36 @@
 .segmented__option.is-active .segmented__count {
   color: var(--accent);
   opacity: 1;
+}
+
+/* 紧凑变体：更新日志等高频筛选场景，小尺寸 + 标签字体 */
+.segmented--compact .segmented__option {
+  height: calc(var(--control-h-sm) - 2 * var(--segmented-pad));
+  padding: 0 var(--space-2);
+  color: var(--content-default);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+}
+
+.segmented--compact .segmented__option.is-active {
+  color: var(--content-strong);
+}
+
+.segmented--compact .segmented__count {
+  color: var(--content-default);
+  opacity: 1;
+}
+
+.segmented--compact .segmented__option.is-active .segmented__count {
+  color: var(--accent);
+}
+
+/* 玻璃卡内不再叠第二层玻璃：父级已是同配方玻璃，自身的底色和背滤
+   都会把卡片那层再算一次，轨道与指示器因此比页面上的导航深一档。 */
+.glass-card .segmented {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
