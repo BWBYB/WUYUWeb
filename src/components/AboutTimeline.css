@@ -363,9 +363,9 @@
   /* 每列 ≈ 0.62em 等宽字；列数由 JS 按周数写入 --heatmap-cols，
      系数留出回退字体的余量，任何窗口宽度都不需要滚动 */
   font-size: min(var(--fs-micro), calc(100cqw / (var(--heatmap-cols) * 0.62)));
-  /* 行高钉在 --fs-micro 上：一年窗口字号会缩小，行高不跟着缩，
-     热力图总高才不随窗口切换变化 */
-  --lh-heatmap: calc(var(--fs-micro) * var(--lh-tight));
+  /* 行高按块字符的实际墨迹定：IBM Plex Mono 的 ▓█ 墨高约 1.34em，
+     行距太紧会让相邻两行叠在一起；仍钉在 --fs-micro 上，画幅才等高 */
+  --lh-heatmap: calc(var(--fs-micro) * 1.5);
 }
 
 /* 统计条：总量 / 活跃率（副行日均）/ 近一周（带环比徽章）/ 最忙一天 / 连续 ×2；

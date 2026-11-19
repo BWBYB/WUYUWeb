@@ -42,8 +42,14 @@ const spanText = (start, end) => (start === end ? shortDate(start) : `${shortDat
 // GitHub 风格千分位
 const formatCount = n => n.toLocaleString('en-US')
 
-// One update is visible; a day with several goes to the brightest level.
-const level = n => Math.min(n, 4)
+// GitHub 风格分位档：窗口内非零日按 25/50/75 分位切四档，0 单独一档；
+// 并列值同档，阈值随窗口浮动，色阶始终贴着当期分布
+const levelOf = (n, cuts) => {
+  if (n === 0) return 0
+  let lv = 1
+  for (const cut of cuts) if (n > cut) lv += 1
+  return Math.min(4, lv)
+}
 
 // 揭示进度走 ease-out：起步快，临近结尾速度慢慢收住，不再匀速扫描
 const easeOut = p => 1 - (1 - p) ** 3
@@ -79,7 +85,7 @@ function monthLabels(weeks) {
 
 // 一次性建好整块网格：每格是独立 span，揭示时只切类名，
 // 元素保持稳定，弹出动画才能完整播放
-function buildGrid(days, weeks) {
+function buildGrid(days, weeks, cuts) {
   const first = windowStart(weeks)
   const rows = []
   for (let r = 0; r < 7; r++) {
@@ -88,7 +94,7 @@ function buildGrid(days, weeks) {
     for (let w = 0; w < weeks; w++) {
       const d = first + w * 7 + r
       if (d <= START) {
-        const lv = level(days.get(d) ?? 0)
+        const lv = levelOf(days.get(d) ?? 0, cuts)
         line += `<span class="hm hm-${lv} is-off" data-d="${d - first}">${LEVELS[lv]}</span> `
       } else {
         line += '  '
@@ -121,6 +127,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
     const first = windowStart(weeks)
     let total = 0
     let activeDays = 0
+    const counts = []
     let busiest = { day: first, count: 0 }
     let longest = { length: 0, start: first }
     let run = 0
@@ -131,6 +138,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
       if (count > busiest.count) busiest = { day: d, count }
       if (count) {
         activeDays += 1
+        counts.push(count)
         if (run === 0) runStart = d
         run += 1
         if (run > longest.length) longest = { length: run, start: runStart }
@@ -138,6 +146,10 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
         run = 0
       }
     }
+    // 分位阈值（nearest-rank）：非零日计数排序后取 25/50/75 百分位
+    counts.sort((a, b) => a - b)
+    const quantile = p => counts[Math.floor((counts.length - 1) * p)]
+    const cuts = counts.length ? [quantile(0.25), quantile(0.5), quantile(0.75)] : []
     // 今天还没提交时从昨天往回数，和 GitHub 的当前连续口径一致
     const currentEnd = days.get(START) ? START : START - 1
     let current = 0
@@ -151,6 +163,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
       first,
       total,
       activeDays,
+      cuts,
       // 日均按活跃日摊：总量 ÷ 有提交的天数，一位小数
       perDay: activeDays ? (total / activeDays).toFixed(1) : '0.0',
       // 活跃率按窗口摊：活跃天数 ÷ 窗口天数（周数 × 7）
@@ -161,6 +174,8 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
       current: { length: current, start: currentEnd - current + 1, end: currentEnd },
     }
   }, [days, weeks])
+
+  const { cuts } = stats
 
   useEffect(() => {
     const el = preRef.current
@@ -180,7 +195,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
     // 最后一周里属于未来的日子不画；网格只建一次，揭示只切类名
     const first = windowStart(weeks)
     const drawable = Math.min(totalDays, START - first + 1)
-    el.innerHTML = buildGrid(days, weeks)
+    el.innerHTML = buildGrid(days, weeks, cuts)
     const cells = new Array(drawable)
     el.querySelectorAll('.hm').forEach(node => {
       const index = Number(node.dataset.d)
@@ -259,7 +274,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
       reduced.removeEventListener('change', onReducedChange)
       cancelAnimationFrame(raf)
     }
-  }, [days, weeks])
+  }, [days, weeks, cuts])
 
   // 指针坐标 → 字符行列 → 具体日期；画幅与命中检测共用同一套几何
   const locate = event => {
