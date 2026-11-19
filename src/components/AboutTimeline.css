@@ -171,20 +171,19 @@
   bottom: -2px; /* 压进卡片 2px，避免子像素接缝 */
   left: 50%;
   z-index: 0;
-  width: 2px;
+  width: 4px;
   overflow: hidden;
   transform: translateX(-50%);
   border-radius: var(--radius-pill);
-  /* 轨道底色偏暖，填充前也读得出一条完整的线 */
-  background: color-mix(in srgb, var(--accent-secondary) 35%, var(--border-strong));
+  /* 空轨：和参照站一致的浅灰中性底，未点亮时也读得出一条完整的线 */
+  background: color-mix(in srgb, var(--content-strong) 16%, transparent);
 }
 
 .about-timeline-spine__fill {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(180deg, var(--accent-tertiary), var(--accent), var(--accent-secondary));
-  box-shadow: 0 0 12px var(--accent-soft);
+  background: var(--accent);
 }
 
 .about-timeline-list {
@@ -198,6 +197,7 @@
 }
 
 .about-timeline-item {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
   align-items: center;
@@ -223,12 +223,13 @@
   justify-self: center;
   width: 36px;
   height: 36px;
-  border: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  border: 3px solid var(--accent);
   border-radius: var(--radius-circle);
   background: var(--surface-canvas);
   box-shadow:
     0 0 0 6px color-mix(in srgb, var(--surface-canvas) 72%, transparent),
     0 0 24px var(--accent-soft);
+  will-change: transform, filter, opacity;
 }
 
 .about-timeline-node__dot {
@@ -248,37 +249,47 @@
   max-width: 26rem;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
+  will-change: transform, filter, opacity;
 }
 
 .about-timeline-item.is-left .about-timeline-card {
   grid-column: 1;
   grid-row: 1;
   justify-self: end;
-  --about-card-from: -24px;
+  width: calc(100% - var(--space-5));
+  margin-right: var(--space-5);
+  --about-card-from: -36px;
 }
 
 .about-timeline-item.is-right .about-timeline-card {
   grid-column: 3;
   grid-row: 1;
   justify-self: start;
-  --about-card-from: 24px;
+  width: calc(100% - var(--space-5));
+  margin-left: var(--space-5);
+  --about-card-from: 36px;
 }
 
-.about-timeline-card::after {
-  content: "";
+/* 连接臂：卡片与圆点之间的水平短线，从脊柱一侧向卡片生长。
+   宽度 = 卡片退让的 24px + 圆点圆环外的 4px 空隙 */
+.about-timeline-connector {
   position: absolute;
   top: 50%;
-  width: 28px;
+  z-index: 1;
+  width: calc(var(--space-5) + var(--space-1));
   height: 2px;
-  background: color-mix(in srgb, var(--accent) 55%, transparent);
+  translate: 0 -50%;
+  background: var(--accent);
 }
 
-.about-timeline-item.is-left .about-timeline-card::after {
-  right: -28px;
+.about-timeline-item.is-left .about-timeline-connector {
+  right: calc(50% + 24px);
+  transform-origin: right center;
 }
 
-.about-timeline-item.is-right .about-timeline-card::after {
-  left: -28px;
+.about-timeline-item.is-right .about-timeline-connector {
+  left: calc(50% + 24px);
+  transform-origin: left center;
 }
 
 .about-timeline-meta {
@@ -521,7 +532,7 @@
 @keyframes about-timeline-card-in {
   from {
     opacity: 0;
-    transform: translate3d(var(--about-card-from, 0), 32px, 0) scale(0.92);
+    transform: translate3d(var(--about-card-from, 0), 32px, 0) scale(0.9);
     filter: blur(4px);
   }
   to {
@@ -531,14 +542,31 @@
   }
 }
 
+/* 未点到：灰阶、缩小；滚到视口中心时点亮 */
 @keyframes about-timeline-node-in {
   from {
-    opacity: 0.35;
+    opacity: 0.5;
+    filter: grayscale(1);
     transform: scale(0.45);
   }
   to {
     opacity: 1;
+    filter: grayscale(0);
     transform: scale(1);
+  }
+}
+
+/* 连接臂从脊柱一侧向卡片生长 */
+@keyframes about-timeline-connector-in {
+  from {
+    opacity: 0;
+    filter: grayscale(1);
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scaleX(1);
   }
 }
 
@@ -564,16 +592,24 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+    /* 与参照站同一编排：卡片、圆点、连接臂各自随 view() 进场，
+       到元素垂直居中（contain 50%）时完成，此时刚好进入阅读区 */
     .about-timeline-card {
-      animation: about-timeline-card-in linear both;
+      animation: about-timeline-card-in ease-out both;
       animation-timeline: view();
-      animation-range: entry 0% entry 100%;
+      animation-range: contain 30% contain 50%;
     }
 
     .about-timeline-node {
       animation: about-timeline-node-in linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 100%;
+      animation-range: contain 30% contain 50%;
+    }
+
+    .about-timeline-connector {
+      animation: about-timeline-connector-in linear both;
+      animation-timeline: view();
+      animation-range: contain 30% contain 50%;
     }
 
     .about-timeline-spine__fill {
@@ -594,6 +630,15 @@
 @media (max-width: 1200px) {
   .about-timeline {
     --milestone-nav-top: calc(var(--nav-top, 16px) + var(--nav-height, 63px) + var(--space-2));
+  }
+}
+
+/* ≤900：卡片入场只上移，不起横向位移；
+   窄容器里向外的横移会在入场时把卡片推出视口，产生横向滚动条 */
+@media (max-width: 900px) {
+  .about-timeline-item.is-left .about-timeline-card,
+  .about-timeline-item.is-right .about-timeline-card {
+    --about-card-from: 0px;
   }
 }
 
@@ -619,10 +664,12 @@
     grid-column: 2;
     grid-row: 1;
     justify-self: stretch;
+    width: 100%;
     max-width: none;
+    margin-inline: 0;
   }
 
-  .about-timeline-card::after {
+  .about-timeline-connector {
     display: none;
   }
 

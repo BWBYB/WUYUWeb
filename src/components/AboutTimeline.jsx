@@ -545,6 +545,7 @@ export default function AboutTimeline() {
               <span className="about-timeline-node" aria-hidden="true">
                 <span className="about-timeline-node__dot" />
               </span>
+              <span className="about-timeline-connector" aria-hidden="true" />
               <article className="about-timeline-card glass-card">
                 <div className="about-timeline-meta">
                   <time className="about-timeline-date" dateTime={milestone.date}>
