@@ -98,6 +98,8 @@
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--text);
+  /* 长链接等不可断词在正文里允许断开，避免撑破容器 */
+  overflow-wrap: break-word;
 }
 
 .post-numeral {
