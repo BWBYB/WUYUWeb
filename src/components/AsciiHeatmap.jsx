@@ -1,13 +1,13 @@
 // heatmap 移植自 ascii.rest（MIT，© 2026 bas3line）：
 // https://ascii.rest/heatmap/ · 格子由构建时快照的 git 提交日期点亮；
 // 日期锚到当天，进入视口时一次性填充，避免滑进未来月份。
-// 网格符号必须留在等宽字体里才能对齐；月份、汇总和图例是真正的文字，走站点衬线栈。
+// 网格符号必须留在等宽字体里才能对齐；星期标签、月份、汇总和图例是真正的文字，走站点衬线栈。
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 const LEFT = 6 // weekday labels
 const LEVELS = '·░▒▓█'
-const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-const DAYS = ['mon', '', 'wed', '', 'fri', '', '']
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DAYS = ['Mon', '', 'Wed', '', 'Fri', '', '']
 const REPO = 'https://github.com/BWBYB/WUYUWeb/commits/main/'
 
 // 本地日历日编码成 1970 起的 UTC 天数：和 toDay 的编码一致，
@@ -68,7 +68,8 @@ function grid(daysShown, days, weeks) {
   const first = windowStart(weeks)
   const rows = []
   for (let r = 0; r < 7; r++) {
-    let line = DAYS[r].padEnd(LEFT - 2) + '  '
+    // 标签占 6 个等宽列宽，替换成衬线字也不改变网格与月份的位置
+    let line = `<span class="ascii-heatmap__day">${DAYS[r]}</span>`
     for (let w = 0; w < weeks; w++) {
       const d = first + w * 7 + r
       let cell = ' '
@@ -86,6 +87,7 @@ function grid(daysShown, days, weeks) {
 export default function AsciiHeatmap({ className = '', entries = [], weeks = 30, snapshot = '' }) {
   const preRef = useRef(null)
   const boxRef = useRef(null)
+  const sumRef = useRef(null)
   const [tip, setTip] = useState(null)
   const cols = LEFT + weeks * 2
   const months = useMemo(() => monthLabels(weeks), [weeks])
@@ -133,11 +135,18 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
     let seen = false
     let text = ''
 
+    // 脚注计数跟着揭示进度走：数字随网格一起从 0 数到窗口总数
     const draw = () => {
       const next = grid(shown, days, weeks)
       if (next !== text) {
         text = next
         el.innerHTML = next
+      }
+      if (sumRef.current) {
+        const first = windowStart(weeks)
+        let revealed = 0
+        for (let d = first; d <= START && d - first < shown; d += 1) revealed += days.get(d) ?? 0
+        sumRef.current.textContent = String(revealed)
       }
     }
 
@@ -272,7 +281,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
       </div>
       <p className="ascii-heatmap__foot">
         <span className="ascii-heatmap__sum">
-          近 {weeks} 周 <strong>{stats.total}</strong> 次提交
+          近 {weeks} 周 <strong ref={sumRef}>{stats.total}</strong> 次提交
         </span>
         <span className="ascii-heatmap__legend" aria-hidden="true">
           less

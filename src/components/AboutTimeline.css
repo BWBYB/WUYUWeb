@@ -362,12 +362,15 @@
   /* 每列 ≈ 0.62em 等宽字；列数由 JS 按周数写入 --heatmap-cols，
      系数留出回退字体的余量，任何窗口宽度都不需要滚动 */
   font-size: min(var(--fs-micro), calc(100cqw / (var(--heatmap-cols) * 0.62)));
+  /* 行高钉在 --fs-micro 上：一年窗口字号会缩小，行高不跟着缩，
+     热力图总高才不随窗口切换变化 */
+  --lh-heatmap: calc(var(--fs-micro) * var(--lh-tight));
 }
 
 /* 月份是真正的文字：衬线字体，按列位绝对定位在网格上方 */
 .ascii-heatmap__months {
   position: relative;
-  height: calc(1em * var(--lh-tight));
+  height: var(--lh-heatmap);
   color: var(--content-muted);
   font-family: var(--serif);
 }
@@ -375,9 +378,18 @@
 .ascii-heatmap__months span {
   position: absolute;
   top: 0;
-  line-height: var(--lh-tight);
+  line-height: var(--lh-heatmap);
   white-space: nowrap;
   transform: translateX(-50%);
+}
+
+/* 星期标签在网格行首，衬线文字；宽度恰为 6 个等宽列，列位不变。
+   top 对齐让标签盒不撑高行盒，行距始终等于 --lh-heatmap */
+.ascii-heatmap__day {
+  display: inline-block;
+  width: 3.6em;
+  vertical-align: top;
+  font-family: var(--serif);
 }
 
 /* 只有密度符号留在等宽字体里，网格才对得上 */
@@ -385,7 +397,7 @@
   margin: 0;
   color: var(--content-default);
   font-family: var(--mono-fixed);
-  line-height: var(--lh-tight);
+  line-height: var(--lh-heatmap);
   white-space: pre;
 }
 
@@ -443,18 +455,16 @@
   font-family: var(--mono-fixed);
 }
 
-/* 悬停提示：相对状态卡定位，跟随指针 */
+/* 悬停提示：白底深字，相对状态卡定位，跟随指针 */
 .ascii-heatmap__tip {
   position: absolute;
   z-index: 2;
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--glass-neutral) 92%, transparent);
-  box-shadow: var(--glass-shadow-outer);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  color: var(--content-strong);
+  background: var(--glass-highlight);
+  box-shadow: var(--shadow-2);
+  color: var(--glass-ink);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
   font-variant-numeric: tabular-nums;
