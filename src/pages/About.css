@@ -40,6 +40,12 @@
   line-height: var(--lh-ui);
 }
 
+/* 首屏保持满幅节奏；下半部分与时间线统一收进阅读档 */
+.about-page > .changelog {
+  max-width: var(--page-compact);
+  margin-inline: auto;
+}
+
 /* 更新日志：吸底日期轨 + 版本徽标 + 变更标签。
    版式参考 Hirael 的 Changelog 01（MIT），按站内 token 重写。 */
 .about-changelog {

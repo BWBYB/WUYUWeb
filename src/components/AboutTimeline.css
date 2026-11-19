@@ -5,7 +5,8 @@
 .about-timeline {
   --milestone-nav-top: var(--nav-top, 16px);
   position: relative;
-  margin-bottom: var(--space-7);
+  max-width: var(--page-compact);
+  margin: 0 auto var(--space-7);
   padding-top: var(--space-6);
 }
 
@@ -324,7 +325,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  width: min(100%, 36rem);
+  width: 100%;
   margin: var(--space-7) auto 0;
   padding: var(--space-6) var(--space-5);
   border-radius: var(--radius-lg);
@@ -515,10 +516,6 @@
 
   .about-timeline-nav {
     margin-bottom: var(--space-5);
-  }
-
-  .about-timeline-now {
-    width: 100%;
   }
 }
 
