@@ -23,6 +23,6 @@
 
 新文章可直接套用 `templates/post.md`——它自带 `status: draft`，写完记得改成 `published`，否则文章不会出现在站点里，也不会报错。
 
-更新记录使用 `## 日期｜标题`、引用摘要和列表项目的固定格式，可直接套用 `templates/update-entry.md`。
+更新记录使用 `## 日期｜标题`、可选标签行（`标签：新增、优化、修复`）、引用摘要和列表项目的固定格式，可直接套用 `templates/update-entry.md`。
 
-本地运行 `npm run dev` 后，可以打开 `/updates-editor` 用网页表单编辑并保存更新记录。生产构建只提供 `/timeline` 只读展示。
+本地运行 `npm run dev` 后，可以打开 `/updates-editor` 用网页表单编辑并保存更新记录。生产构建只在 `/about` 展示更新日志，不提供编辑入口。

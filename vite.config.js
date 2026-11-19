@@ -12,6 +12,14 @@ const resolvedContentModule = `\0${virtualContentModule}`
 const virtualUpdatesModule = 'virtual:wuyu-updates'
 const resolvedUpdatesModule = `\0${virtualUpdatesModule}`
 const updatesFilePath = resolve('content/updates.md')
+const updateTagAliases = new Map([
+  ['新增', 'new'],
+  ['new', 'new'],
+  ['优化', 'improved'],
+  ['improved', 'improved'],
+  ['修复', 'fixed'],
+  ['fixed', 'fixed'],
+])
 
 function collectMarkdownFiles(directory) {
   if (!fs.existsSync(directory)) return []
@@ -85,6 +93,23 @@ function parseUpdatesMarkdown(source) {
     let lineIndex = 0
 
     while (lineIndex < lines.length && lines[lineIndex].trim() === '') lineIndex += 1
+
+    const tagMatch = lineIndex < lines.length
+      ? lines[lineIndex].trim().match(/^(?:标签|tags)\s*[:：]\s*(.+)$/i)
+      : null
+    const tags = tagMatch
+      ? [...new Set(tagMatch[1].split(/[,，、\s]+/).filter(Boolean).map(label => {
+          const kind = updateTagAliases.get(label.toLowerCase())
+          if (!kind) throw new Error(`更新记录标签不支持：${label}（${headingText}）`)
+          return kind
+        }))]
+      : []
+
+    if (tagMatch) {
+      lineIndex += 1
+      while (lineIndex < lines.length && lines[lineIndex].trim() === '') lineIndex += 1
+    }
+
     while (lineIndex < lines.length && /^>\s?/.test(lines[lineIndex].trim())) {
       summaryLines.push(lines[lineIndex].trim().replace(/^>\s?/, ''))
       lineIndex += 1
@@ -99,6 +124,7 @@ function parseUpdatesMarkdown(source) {
     return {
       date: match[1],
       title: match[2].trim(),
+      tags,
       summary,
       summaryHtml: summary ? renderUpdateMarkdown(summary, true) : '',
       items,

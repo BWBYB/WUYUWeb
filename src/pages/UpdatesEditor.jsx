@@ -1,14 +1,23 @@
 import { useState } from 'react'
-import Timeline from './Timeline'
+import UpdatesPreview from '../components/UpdatesPreview'
 import Button from '../components/ui/Button'
+import Checkbox from '../components/ui/Checkbox'
 import Field from '../components/ui/Field'
 import { updates } from '../lib/content/updates'
 import './UpdatesEditor.css'
+
+const TAG_OPTIONS = [
+  { id: 'new', label: '新增' },
+  { id: 'improved', label: '优化' },
+  { id: 'fixed', label: '修复' },
+]
+const TAG_LABELS = Object.fromEntries(TAG_OPTIONS.map(option => [option.id, option.label]))
 
 function createEmptyEntry() {
   return {
     date: new Date().toISOString().slice(0, 10),
     title: '',
+    tags: [],
     summary: '',
     itemsText: '具体更新内容',
   }
@@ -18,6 +27,7 @@ function toEditableEntry(record) {
   return {
     date: record.date,
     title: record.title,
+    tags: record.tags || [],
     summary: record.summary,
     itemsText: record.items.join('\n'),
   }
@@ -31,14 +41,20 @@ function serializeEntries(entries) {
     '',
     ...entries.flatMap(entry => {
       const items = entry.itemsText.split(/\r?\n/).map(item => item.trim()).filter(Boolean)
-      return [
+      const lines = [
         `## ${entry.date}｜${entry.title.trim()}`,
         '',
+      ]
+      if (entry.tags.length) {
+        lines.push(`标签：${entry.tags.map(tag => TAG_LABELS[tag]).join('、')}`, '')
+      }
+      lines.push(
         `> ${entry.summary.trim()}`,
         '',
         ...items.map(item => `- ${item}`),
         '',
-      ]
+      )
+      return lines
     }),
   ].join('\n').trimEnd()
 }
@@ -56,6 +72,16 @@ export default function UpdatesEditor() {
 
   const removeEntry = (index) => {
     setEntries(current => current.filter((_entry, entryIndex) => entryIndex !== index))
+  }
+
+  const toggleTag = (index, tag) => {
+    setEntries(current => current.map((entry, entryIndex) => {
+      if (entryIndex !== index) return entry
+      const tags = entry.tags.includes(tag)
+        ? entry.tags.filter(item => item !== tag)
+        : [...entry.tags, tag]
+      return { ...entry, tags }
+    }))
   }
 
   const save = async () => {
@@ -85,6 +111,7 @@ export default function UpdatesEditor() {
   const previewRecords = entries.map(entry => ({
     date: entry.date,
     title: entry.title || '未命名更新',
+    tags: entry.tags,
     summary: entry.summary,
     items: entry.itemsText.split(/\r?\n/).map(item => item.trim()).filter(Boolean),
     count: entry.itemsText.split(/\r?\n/).map(item => item.trim()).filter(Boolean).length,
@@ -118,6 +145,20 @@ export default function UpdatesEditor() {
               <Field label="标题">
                 <input className="control" value={entry.title} placeholder="例如：更新记录页面上线" onChange={event => updateEntry(index, 'title', event.target.value)} />
               </Field>
+              <div className="field">
+                <span className="field__label" id={`updates-tags-${index}`}>标签</span>
+                <div className="updates-editor-tags" role="group" aria-labelledby={`updates-tags-${index}`}>
+                  {TAG_OPTIONS.map(option => (
+                    <Checkbox
+                      key={option.id}
+                      label={option.label}
+                      checked={entry.tags.includes(option.id)}
+                      onChange={() => toggleTag(index, option.id)}
+                    />
+                  ))}
+                </div>
+                <span className="field__hint">可选，用于关于页筛选</span>
+              </div>
               <Field label="摘要">
                 <textarea className="control" rows="2" value={entry.summary} placeholder="一句话说明这次更新" onChange={event => updateEntry(index, 'summary', event.target.value)} />
               </Field>
@@ -132,9 +173,9 @@ export default function UpdatesEditor() {
         <section className="updates-editor-preview" aria-label="更新记录预览">
           <div className="updates-editor-preview-heading">
             <span>实时预览</span>
-            <a href="/timeline">打开展示页 →</a>
+            <a href="/about">打开关于页 →</a>
           </div>
-          <Timeline records={previewRecords} preview />
+          <UpdatesPreview records={previewRecords} />
         </section>
       </div>
     </div>

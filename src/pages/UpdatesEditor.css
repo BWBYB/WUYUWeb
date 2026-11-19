@@ -16,6 +16,7 @@
 .updates-editor-form { display: grid; gap: var(--space-4); }
 .updates-editor-entry { position: relative; display: grid; gap: var(--space-3); min-width: 0; margin: 0; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--glass); }
 .updates-editor-entry legend { padding: 0 var(--space-2); color: var(--text-h); font-size: var(--fs-ui); font-weight: var(--fw-semibold); }
+.updates-editor-tags { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .updates-editor-remove { position: absolute; top: 14px; right: 16px; padding: var(--space-2) var(--space-2); background: transparent; color: var(--text-muted); font-size: var(--fs-micro); }
 .updates-editor-remove:hover:not(:disabled) { border-color: rgba(239, 68, 68, .5); color: #ef4444; }
 .updates-editor-remove:disabled { cursor: not-allowed; opacity: .4; }
