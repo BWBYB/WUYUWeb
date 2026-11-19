@@ -501,12 +501,20 @@ export function SegmentedPreview() {
 
 export function SegmentedDemo() {
   const [value, setValue] = useState('all')
+  const [filterValue, setFilterValue] = useState('all')
   const options = [
     { id: 'all', title: '全部', count: 36 },
     { id: 'general', title: '通用', count: 4 },
     { id: 'navigation', title: '导航', count: 6 },
   ]
+  const filterOptions = [
+    { id: 'all', title: '全部', count: 9 },
+    { id: 'new', title: '新增', count: 8 },
+    { id: 'improved', title: '优化', count: 7 },
+    { id: 'fixed', title: '修复', count: 1 },
+  ]
   const active = options.find((option) => option.id === value)
+  const activeFilter = filterOptions.find((option) => option.id === filterValue)
 
   return (
     <div className="lib-demo-stack lib-demo-segmented">
@@ -517,6 +525,14 @@ export function SegmentedDemo() {
         onChange={setValue}
       />
       <span className="lib-demo-readout" role="status">当前：{active.title}</span>
+      <Segmented
+        className="segmented--compact"
+        label="紧凑分段示例"
+        options={filterOptions}
+        value={filterValue}
+        onChange={setFilterValue}
+      />
+      <span className="lib-demo-readout" role="status">当前：{activeFilter.title}</span>
     </div>
   )
 }

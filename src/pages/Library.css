@@ -927,6 +927,11 @@
   max-width: 420px;
 }
 
+/* 紧凑示例按内容宽度排布，与更新日志里的真实筛选条一致 */
+.lib-demo-segmented .segmented--compact {
+  align-self: flex-start;
+}
+
 .lib-demo-tiles {
   display: flex;
   gap: var(--space-2);

@@ -409,6 +409,7 @@ export const libraryComponents = [
     notes: [
       '组件库分类筛选与本站设置的分段共用这一颗玻璃指示器。',
       'options 传 id / title / count，受控 value 由页面保存。',
+      'segmented--compact 收小尺寸并改用标签字体，用于更新日志筛选。',
       '方向键、Home、End 在选项间移动，指示器 0.45s 滑过去。',
     ],
   },
