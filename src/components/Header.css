@@ -191,7 +191,7 @@
   font-synthesis: weight;
   color: var(--nav-content-color);
   font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-logo);
   letter-spacing: .16em; /* 四字母等距 */
   text-decoration: none;
   transition: color .2s ease, transform .2s ease,

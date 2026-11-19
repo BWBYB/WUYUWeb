@@ -47,6 +47,9 @@
   background: var(--bg);
 
   font-synthesis: none;
+  /* 关闭移动端文本溢出算法：已响应式的页面不再被自动放大 */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

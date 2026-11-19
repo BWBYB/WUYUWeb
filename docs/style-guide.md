@@ -52,15 +52,16 @@
 | --- | --- | --- |
 | `--fw-regular` | 400 | 正文、摘要、引用 |
 | `--fw-medium` | 500 | 标签、按钮、卡片次级标题 |
-| `--fw-semibold` | 600 | 页面标题、文章标题、强调 |
+| `--fw-semibold` | 暗 500 / 亮 600 | 页面标题、文章标题、强调；暗色降一档 |
+| `--fw-logo` | 600 | 导航 Logo 合成粗体，不随主题变 |
 
-`index.html` 加载 IBM Plex Mono 300/400/500/600（代码、ASCII 与 Lab 样张）、Noto Serif SC 400/600（中文衬线），`src/index.css` 另声明得意黑 Smiley Sans（标签）。英文与数字全站统一使用自托管的 Anthropic Serif TTF（`src/assets/fonts/AnthropicSerifWebText.ttf`，只有 400 一档，`src/index.css` 声明）；Anthropic Sans 与 Anthropic Mono 已停止加载。新增字重前必须先改字体 URL。
+`index.html` 加载 IBM Plex Mono 300/400/500/600（代码、ASCII 与 Lab 样张）、Noto Serif SC 400/500/600（中文衬线），`src/index.css` 另声明得意黑 Smiley Sans（标签）。英文与数字全站统一使用自托管的 Anthropic Serif TTF（`src/assets/fonts/AnthropicSerifWebText.ttf`，只有 400 一档，`src/index.css` 声明）；Anthropic Sans 与 Anthropic Mono 已停止加载。新增字重前必须先改字体 URL。
 
 全站正文、标题、元信息与日期统一使用同一套 `--serif-editorial`（英文 Anthropic Serif → 中文思源宋体）；`--sans`、`--serif`、`--mono`、`--accent-font`、`--post-date-font` 都是它的别名，不再引入第二种 Anthropic 字体。中文统一由回退字体渲染（Anthropic Serif 无中文字形）。仅两处例外：导航走 `--nav-font`（PingFang 黑体栈），标签走 `--tag-font`（得意黑）。
 
-全站英文与数字统一为 Anthropic Serif；单字重 400，`font-synthesis: none` 关闭合成粗体，500/600 的英文按 400 渲染，中文仍按思源宋 600 渲染。日期、正文数字与标题数字都走同一套栈，不再区分等宽。
+全站英文与数字统一为 Anthropic Serif；单字重 400，`font-synthesis: none` 关闭合成粗体，500/600 的英文按 400 渲染，中文按思源宋对应字重渲染（semibold：暗色 500、亮色 600）。日期、正文数字与标题数字都走同一套栈，不再区分等宽。
 
-信息型小字（分类、脚注、kicker，12–14px）与页脚文字使用 `--accent-font`（同一 Serif 栈）；导航项与更多面板使用 `--nav-font`（PingFang 黑体）；所有标签（分类、文章标签、技术栈胶囊）使用 `--tag-font`（得意黑）；导航 Logo 用 Serif 600（合成粗体，宽度按实测 em 值裁切）。代码块、ASCII 画与等宽字体样张使用 `--mono-fixed`（IBM Plex Mono），数字必须留在等宽网格里。
+信息型小字（分类、脚注、kicker，12–14px）与页脚文字使用 `--accent-font`（同一 Serif 栈）；导航项与更多面板使用 `--nav-font`（PingFang 黑体）；所有标签（分类、文章标签、技术栈胶囊）使用 `--tag-font`（得意黑），且只用于 ≤ `--fs-ui` 的标签、胶囊与筛选项，正文段落和导语禁止使用艺术字体；导航 Logo 用 Serif 600（`--fw-logo`，合成粗体，宽度按实测 em 值裁切）。代码块、ASCII 画与等宽字体样张使用 `--mono-fixed`（IBM Plex Mono），数字必须留在等宽网格里。
 
 ### 行高
 
@@ -80,6 +81,8 @@
 5. 确实需要新档位时，先改本文件和 `index.css`，不要在组件里临时加。
 
 例外：图标字形与单行控件允许 `line-height: 1`（几何对齐）；Player 磁带的装饰字重与行高保留裸值。它们由 baseline 记录。
+
+根元素另设 `text-size-adjust: 100%`（含 `-webkit-` 前缀），关闭移动端文本溢出算法，避免已响应式的页面被浏览器自动放大文字。
 
 ## 三、颜色
 
