@@ -1,91 +1,126 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { resume } from '../lib/content/resume'
-import ChapterRail from '../components/ChapterRail'
+import AboutTimeline from '../components/AboutTimeline'
+import { updates } from '../lib/content/updates'
+import Icon from '../components/ui/Icon'
+import Segmented from '../components/ui/Segmented'
+import Tag from '../components/ui/Tag'
 import '../styles/effects.css'
 import './About.css'
 
-const aboutChapters = [
-  { id: 'about-overview', title: '这里有什么', level: 2 },
-  { id: 'about-stack', title: '技术栈', level: 2 },
-  { id: 'about-contact', title: '联系', level: 2 },
-  { id: 'about-why', title: '为什么做这个站', level: 2 },
+const CHANGELOG_TAG_LABELS = {
+  new: '新增',
+  improved: '优化',
+  fixed: '修复',
+}
+
+const changelogFilters = [
+  { id: 'all', title: '全部', count: updates.length },
+  ...Object.entries(CHANGELOG_TAG_LABELS).map(([id, title]) => ({
+    id,
+    title,
+    count: updates.filter(entry => entry.tags.includes(id)).length,
+  })),
 ]
 
 export default function About() {
+  const [changelogFilter, setChangelogFilter] = useState('all')
+  const visibleChangelog = changelogFilter === 'all'
+    ? updates
+    : updates.filter(entry => entry.tags.includes(changelogFilter))
+
   return (
     <div className="about-page">
-      <header className="about-header fade-in fade-in-1">
-        <h1 className="about-title">关于这个网站</h1>
+      <header className="about-intro fade-in fade-in-1">
+        <div className="about-intro-inner">
+          <h1 className="about-intro-title">欢迎来到 WUYU 的个人网站。</h1>
+          <p className="about-intro-subtitle">这里收录着网站的时间线与更新日志。</p>
+          <p className="about-intro-lead">
+            这个网站主要用于存放我的一些思考、文章与前端的探索。下滑可以查看网站的更新历史与里程碑。
+          </p>
+        </div>
       </header>
 
-      <div className="about-grid">
-        <div className="about-card about-profile glass-card fade-in fade-in-2">
-          <div className="avatar-ring">
-            <div className="avatar-inner">W</div>
+      <AboutTimeline />
+
+      <section
+        className="about-changelog glass-card fade-in fade-in-2"
+        aria-labelledby="about-changelog"
+      >
+        <header className="about-changelog-head">
+          <div className="about-changelog-intro">
+            <h2 id="about-changelog" className="about-changelog-title">更新日志</h2>
+            <p className="about-changelog-desc">站点的细节改动，按时间倒序。</p>
           </div>
-          <p className="about-intro">
-            WUYUWeb 是我的个人站点。这里放文章、项目记录、更新时间线，
-            以及一些关于文字、声音和交互的实验。
-          </p>
-        </div>
-
-        <div className="about-card glass-card fade-in fade-in-3">
-          <h2 id="about-overview" className="about-card-title">这里有什么</h2>
-          <ul className="about-list">
-            <li>文章：学习笔记与技术复盘</li>
-            <li>时间线：站点和生活的更新记录</li>
-            <li>探索：前端动效与交互实验</li>
-            <li>CD机：用 Web Audio 合成的磁带播放器</li>
-          </ul>
-        </div>
-
-        <div className="about-card glass-card fade-in fade-in-4">
-          <h2 id="about-stack" className="about-card-title">技术栈</h2>
-          <div className="tech-tags">
-            {['React', 'Vite', 'JavaScript', 'CSS', 'Web Audio', 'Three.js'].map(tech => (
-              <span key={tech} className="tech-tag">{tech}</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="about-card glass-card fade-in fade-in-5">
-          <h2 id="about-contact" className="about-card-title">联系</h2>
-          <div className="contact-links">
-            <a href={resume.profile.github} target="_blank" rel="noopener noreferrer" className="contact-link">
-              <span className="contact-icon">GH</span>
-              GitHub
-            </a>
-            <a href={`mailto:${resume.profile.email}`} className="contact-link">
-              <span className="contact-icon">@</span>
-              邮箱
-            </a>
-          </div>
-        </div>
-
-        <div className="about-card about-wide glass-card fade-in fade-in-5">
-          <h2 id="about-why" className="about-card-title">为什么做这个站</h2>
-          <p className="about-site-desc">
-            这个网站不追热点，也不做信息流。它更像一个长期维护的笔记本：
-            内容优先，设计有规则，改动可回退。希望若干年后回头看，
-            这些文字还能让我想起现在的自己。
-          </p>
-          <div className="about-timeline-actions">
-            <Link className="about-timeline-link" to="/resume">
-              查看我的经历 <span aria-hidden="true">→</span>
-            </Link>
-            <Link className="about-timeline-link" to="/timeline">
-              查看更新记录 <span aria-hidden="true">→</span>
-            </Link>
+          <div className="about-changelog-controls">
+            <Segmented
+              className="about-changelog-filter"
+              label="筛选更新日志"
+              options={changelogFilters}
+              value={changelogFilter}
+              onChange={setChangelogFilter}
+            />
             {import.meta.env.DEV && (
-              <Link className="about-timeline-link" to="/updates-editor">
-                本地编辑 <span aria-hidden="true">✎</span>
+              <Link className="about-changelog-all about-changelog-edit" to="/updates-editor">
+                本地编辑 <Icon name="pencil" size={14} />
               </Link>
             )}
           </div>
-        </div>
-      </div>
+        </header>
 
-      <ChapterRail chapters={aboutChapters} label="关于目录" />
+        <p className="sr-only" aria-live="polite">当前显示 {visibleChangelog.length} 条更新</p>
+
+        {visibleChangelog.length > 0 ? (
+          <div className="about-changelog-list">
+            {visibleChangelog.map((entry, index) => (
+              <article
+                key={`${changelogFilter}-${entry.date}`}
+                className="about-changelog-entry"
+                style={{ animationDelay: `${index * 45}ms` }}
+              >
+                <div className="about-changelog-meta">
+                  <time className="about-changelog-date" dateTime={entry.date}>
+                    {entry.date.replaceAll('-', '.')}
+                  </time>
+                  <span className="about-changelog-version">v{entry.date.slice(0, 7).replace('-', '.')}</span>
+                </div>
+                <div className="about-changelog-body">
+                  {entry.tags.length > 0 && (
+                    <div className="about-changelog-tags">
+                      {entry.tags.map(kind => (
+                        <Tag
+                          key={kind}
+                          className={`changelog-tag changelog-tag--${kind}`}
+                        >
+                          {CHANGELOG_TAG_LABELS[kind]}
+                        </Tag>
+                      ))}
+                    </div>
+                  )}
+                  <h3 className="about-changelog-entry-title">{entry.title}</h3>
+                  <ul className="about-changelog-items">
+                    {entry.items.map(item => <li key={item}>{item}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="about-changelog-empty">这个筛选下还没有记录。</p>
+        )}
+
+        <footer className="about-changelog-foot">
+          <p>完整提交记录在 GitHub。</p>
+          <a
+            className="about-changelog-all"
+            href="https://github.com/BWBYB/WUYUWeb/commits/main/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub 提交 <Icon name="github" size={14} />
+          </a>
+        </footer>
+      </section>
     </div>
   )
 }

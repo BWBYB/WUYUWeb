@@ -30,8 +30,7 @@ npm run dev
 | `/blog/:slug` | 文章详情，含自动生成目录 | 静态 |
 | `/post/:id` | 旧链接重定向到新 slug | 静态 |
 | `/archive` | 按年月归档 | 静态 |
-| `/timeline` | 站点更新记录 | 静态 |
-| `/about` | 关于这个网站：内容、技术栈与联系方式 | 静态 |
+| `/about` | 关于这个网站：首屏介绍、站点时间线、更新日志与标签筛选 | 静态 |
 | `/resume` | 单页个人简历：首屏、关于、项目、经历、教育、打印；入口为左上角 WUYU | 静态 |
 | `/settings` | 导航动效参数调节（阈值、时长、倍速、缓动） | 静态 |
 | `/lab` | 前端动效实验室：文字、动效、交互、视觉四组演示，含 three.js 3D 场景与液态玻璃导航对照 | 懒加载 |
@@ -45,6 +44,8 @@ npm run dev
 文章和更新记录都在 `content/`，用 Markdown + frontmatter 维护。构建时由 `vite.config.js` 里的插件解析成虚拟模块 `virtual:wuyu-content` 注入前端，因此**内容改动会触发整页刷新**，不是局部 HMR。
 
 frontmatter 的必填字段、目录职责与写作模板，见 [content/README.md](content/README.md)。
+
+关于页的四条代表性里程碑单独维护在 `src/lib/content/milestones.js`，与 `content/updates.md` 的详细日志分开；改里程碑只改这一处。
 
 ## 结构
 

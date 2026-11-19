@@ -8,7 +8,6 @@ import About from './pages/About'
 import Resume from './pages/Resume'
 import Settings from './pages/Settings'
 import Archive from './pages/Archive'
-import Timeline from './pages/Timeline'
 import { getPostByLegacyId } from './lib/content/posts'
 import './styles/effects.css'
 import './App.css'
@@ -39,7 +38,6 @@ function App() {
           <Route path="/post/:id" element={<LegacyPostRedirect />} />
           <Route path="/resume" element={<Resume />} />
           <Route path="/archive" element={<Archive />} />
-          <Route path="/timeline" element={<Timeline />} />
           {UpdatesEditor && (
             <Route
               path="/updates-editor"

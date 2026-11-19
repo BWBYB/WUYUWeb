@@ -5,195 +5,318 @@
   padding-top: var(--page-top);
 }
 
-.about-header {
-  margin-bottom: var(--page-header-gap);
+.about-intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100svh - 72px - var(--space-5) - var(--page-top));
+  text-align: center;
 }
 
-.about-title {
-  font-size: var(--fs-display);
-  font-weight: var(--fw-semibold);
-  color: var(--text-h);
-  line-height: var(--lh-tight);
+.about-intro-inner {
+  --about-intro-title-size: clamp(calc(var(--fs-display) * 0.889), 5.4vw, calc(var(--fs-display) * 1.667));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 64rem);
+  transform: translateY(calc(var(--space-8) * -1));
+}
+
+.about-intro-title {
   margin: 0;
-  letter-spacing: 0;
+  color: var(--content-strong);
+  font-size: var(--about-intro-title-size);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  text-wrap: balance;
 }
 
-/* About Grid */
-.about-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
+.about-intro-subtitle {
+  margin: var(--space-4) 0 0;
+  color: var(--accent);
+  font-size: clamp(calc(var(--fs-display) * 0.667), 4.05vw, calc(var(--fs-display) * 1.25));
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
 }
 
-.about-card {
+.about-intro-lead {
+  max-width: var(--measure);
+  margin: var(--space-4) 0 0;
+  color: var(--content-default);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-ui);
+}
+
+/* 更新日志：吸底日期轨 + 版本徽标 + 变更标签。
+   版式参考 Hirael 的 Changelog 01（MIT），按站内 token 重写。 */
+.about-changelog {
   padding: var(--card-pad-feature);
 }
 
-.about-wide {
-  grid-column: span 2;
-}
-
-.about-card-title {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
-  color: var(--text-h);
-  margin: 0 0 var(--space-4);
-  scroll-margin-top: 88px;
-}
-
-/* Profile Card */
-.about-profile {
+.about-changelog-head {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: var(--space-5);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.avatar-ring {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-circle);
-  padding: var(--space-1);
-  background: var(--gradient-1);
+.about-changelog-intro {
+  min-width: 0;
 }
 
-.avatar-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-circle);
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.about-changelog-title {
   font-size: var(--fs-heading-sm);
   font-weight: var(--fw-medium);
-  color: var(--text);
+  color: var(--content-strong);
+  line-height: var(--lh-heading);
+  margin: 0 0 var(--space-2);
+  scroll-margin-top: calc(var(--nav-top, 16px) + var(--nav-height, 63px) + var(--space-3));
 }
 
-.about-intro {
+.about-changelog-desc {
+  max-width: 34em;
+  margin: 0;
+  color: var(--content-muted);
   font-size: var(--fs-ui);
   line-height: var(--lh-body);
-  color: var(--text);
-  margin: 0;
 }
 
-/* List */
-.about-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.about-list li {
-  font-size: var(--fs-ui);
-  line-height: var(--lh-ui);
-  color: var(--text);
-  padding: var(--space-2) 0;
-  padding-left: var(--space-4);
-  position: relative;
-}
-
-.about-list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 15px;
-  width: 5px;
-  height: 5px;
-  border-radius: var(--radius-circle);
-  background: var(--accent-2);
-}
-
-/* Tech Tags */
-.tech-tags {
+.about-changelog-controls {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.about-changelog-filter .segmented__option {
+  height: 32px;
+  padding: 0 var(--space-2);
+  color: var(--content-default);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+}
+
+.about-changelog-filter .segmented__option.is-active {
+  color: var(--content-strong);
+}
+
+.about-changelog-filter .segmented__count {
+  color: var(--content-default);
+  opacity: 1;
+}
+
+.about-changelog-filter .segmented__option.is-active .segmented__count {
+  color: var(--accent);
+}
+
+.about-changelog-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--content-default);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.about-changelog-all:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--accent-soft);
+}
+
+.about-changelog-edit {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.about-changelog-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-changelog-entry {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  animation: about-changelog-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.about-changelog-entry:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.about-changelog-meta {
+  position: sticky;
+  top: calc(var(--nav-top, 16px) + var(--nav-height, 63px) + var(--space-3));
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
 }
 
-.tech-tag {
-  font-family: var(--tag-font);
+.about-changelog-date {
+  color: var(--content-muted);
   font-size: var(--fs-micro);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--bg-card-hover);
-  color: var(--text);
-  border: 1px solid var(--border);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Contact Links */
-.contact-links {
+.about-changelog-version {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+.about-changelog-body {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: var(--space-3);
 }
 
-.contact-link {
-  font-size: var(--fs-ui);
-  color: var(--text);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  transition: all 0.2s;
-  border: 1px solid transparent;
-}
-
-.contact-link:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border);
-  color: var(--text-h);
-}
-
-.contact-icon {
-  font-size: 11px;
-  font-weight: var(--fw-semibold);
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  background: var(--bg-card-hover);
-  color: var(--accent-2);
-}
-
-/* About Site */
-.about-site-desc {
-  font-size: var(--fs-ui);
-  line-height: var(--lh-body);
-  color: var(--text);
-  margin: 0;
-}
-
-.about-timeline-actions {
+.about-changelog-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-5);
-  margin-top: var(--space-5);
-}
-
-.about-timeline-link {
-  display: inline-flex;
   gap: var(--space-2);
-  color: var(--accent-2);
-  font-size: var(--fs-ui);
-  text-decoration: none;
 }
 
-.about-timeline-link:hover { color: var(--text-h); }
+.about-changelog .tag.changelog-tag--new,
+.about-changelog .tag.changelog-tag--improved,
+.about-changelog .tag.changelog-tag--fixed {
+  height: 22px;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-micro);
+}
+
+.about-changelog .tag.changelog-tag--new {
+  background: var(--accent-soft);
+  color: var(--content-strong);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.about-changelog .tag.changelog-tag--improved {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.about-changelog .tag.changelog-tag--fixed {
+  background: color-mix(in srgb, var(--content-strong) 6%, transparent);
+  color: var(--content-default);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+.about-changelog-entry-title {
+  margin: 0;
+  color: var(--content-strong);
+  font-size: var(--fs-heading-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-heading);
+}
+
+.about-changelog-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-4);
+  list-style: disc;
+  color: var(--content-default);
+  font-size: var(--fs-ui);
+  line-height: var(--lh-body);
+}
+
+.about-changelog-items li::marker {
+  color: var(--accent-tertiary);
+}
+
+.about-changelog-empty {
+  margin: 0;
+  padding: var(--space-7) 0 var(--space-6);
+  color: var(--content-muted);
+  font-size: var(--fs-ui);
+  text-align: center;
+}
+
+.about-changelog-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.about-changelog-foot p {
+  margin: 0;
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+@keyframes about-changelog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-changelog-entry {
+    animation: none;
+  }
+}
 
 @media (max-width: 768px) {
-  .about-title {
-    font-size: var(--fs-heading);
+  .about-intro {
+    min-height: calc(100svh - var(--space-8) - var(--space-4) - var(--page-top));
   }
-  .about-grid {
+  .about-changelog-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .about-changelog-controls {
+    justify-content: flex-start;
+  }
+  .about-changelog-entry {
     grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: var(--space-5) 0;
   }
-  .about-wide {
-    grid-column: span 1;
+  .about-changelog-meta {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+  }
+  .about-changelog-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
   }
 }
