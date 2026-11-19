@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { milestones, timelineNow } from '../lib/content/milestones'
+import { milestones } from '../lib/content/milestones'
+import { updates } from '../lib/content/updates'
+import commitDates from 'virtual:wuyu-commits'
 import { useHeaderPin } from './ui/header-pin-context'
+import AsciiHeatmap from './AsciiHeatmap'
 import Icon from './ui/Icon'
 import './AboutTimeline.css'
 
 const formatDate = date => date.replaceAll('-', '.')
+const latestUpdate = updates[0]
+const commitEntries = commitDates.map(date => ({ date }))
 
 export default function AboutTimeline() {
   const [activeIndex, setActiveIndex] = useState(-1)
@@ -550,16 +555,34 @@ export default function AboutTimeline() {
         </ol>
       </div>
 
-      <div className="about-timeline-now glass-card">
-        <span className="about-timeline-now-pill">现在 · v{timelineNow.version}</span>
-        <span className="about-timeline-now-check" aria-hidden="true">
-          <Icon name="check" size={30} />
-        </span>
-        <h3 className="about-timeline-now-title">{timelineNow.title}</h3>
-        <p className="about-timeline-now-desc">{timelineNow.summary}</p>
-        <a className="about-timeline-now-link" href="#about-changelog">
-          继续看更新日志 <Icon name="chevronRight" size={14} />
-        </a>
+      <div className="about-timeline-status glass-card">
+        <div className="about-timeline-status-row">
+          <span className="about-timeline-status-live">
+            <span className="about-timeline-status-dot" aria-hidden="true" />
+            现在
+          </span>
+          <dl className="about-timeline-status-stats">
+            <div className="about-timeline-status-stat">
+              <dt>版本</dt>
+              <dd>v{latestUpdate.date.slice(0, 7).replace('-', '.')}</dd>
+            </div>
+            <div className="about-timeline-status-stat">
+              <dt>最近更新</dt>
+              <dd title={latestUpdate.title}>{formatDate(latestUpdate.date)}</dd>
+            </div>
+            <div className="about-timeline-status-stat">
+              <dt>日志</dt>
+              <dd>
+                {updates.length}
+                <span className="about-timeline-status-unit">条</span>
+              </dd>
+            </div>
+          </dl>
+          <a className="about-timeline-status-link" href="#about-changelog">
+            更新日志 <Icon name="chevronRight" size={14} />
+          </a>
+        </div>
+        <AsciiHeatmap className="about-timeline-heatmap" entries={commitEntries} unit="commit" />
       </div>
     </section>
   )

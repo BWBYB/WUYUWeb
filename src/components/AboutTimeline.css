@@ -320,64 +320,102 @@
   line-height: var(--lh-body);
 }
 
-.about-timeline-now {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
+/* 时间线收尾：状态行 + ascii.rest 活跃热力图 */
+.about-timeline-status {
   width: 100%;
   margin: var(--space-7) auto 0;
-  padding: var(--space-6) var(--space-5);
-  border-radius: var(--radius-lg);
-  text-align: center;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  /* 热力图用 cqw 按卡片内容宽取字号 */
+  container-type: inline-size;
 }
 
-.about-timeline-now-pill {
+.about-timeline-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  min-height: var(--control-h);
+}
+
+.about-timeline-heatmap {
+  width: fit-content;
+  max-width: 100%;
+  margin: var(--space-3) auto 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--content-default);
+  font-family: var(--mono-fixed);
+  /* 66 列 × 0.6em 等宽字 ≈ 40em；按卡片宽取字号上限，
+     41 留出回退字体的余量，任何宽度都不需要滚动 */
+  font-size: min(var(--fs-micro), calc(100cqw / 41));
+  line-height: var(--lh-tight);
+  white-space: pre;
+}
+
+.about-timeline-status-live {
   display: inline-flex;
   align-items: center;
-  height: 24px;
-  padding: 0 var(--space-2);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  border-radius: var(--radius-pill);
-  color: var(--accent);
+  gap: var(--space-2);
+  color: var(--content-default);
   font-family: var(--tag-font);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
 }
 
-.about-timeline-now-check {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+.about-timeline-status-dot {
+  width: 6px;
+  height: 6px;
   border-radius: var(--radius-circle);
-  background: var(--accent-soft);
-  color: var(--accent);
-  box-shadow: 0 0 32px var(--accent-soft);
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-soft);
+  animation: about-timeline-status-pulse 2.6s ease-in-out infinite;
 }
 
-.about-timeline-now-title {
+.about-timeline-status-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+}
+
+.about-timeline-status-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.about-timeline-status-stat dt {
+  color: var(--content-muted);
+  font-family: var(--tag-font);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-ui);
+}
+
+.about-timeline-status-stat dd {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
   margin: 0;
   color: var(--content-strong);
-  font-size: var(--fs-heading-md);
-  font-weight: var(--fw-medium);
-  line-height: var(--lh-heading);
-}
-
-.about-timeline-now-desc {
-  max-width: var(--measure);
-  margin: 0;
-  color: var(--content-default);
+  font-family: var(--mono);
   font-size: var(--fs-ui);
-  line-height: var(--lh-body);
+  line-height: var(--lh-ui);
+  font-variant-numeric: tabular-nums;
 }
 
-.about-timeline-now-link {
+.about-timeline-status-unit {
+  color: var(--content-muted);
+  font-size: var(--fs-micro);
+}
+
+.about-timeline-status-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  margin-top: var(--space-1);
+  margin-left: auto;
   color: var(--accent);
   font-size: var(--fs-micro);
   line-height: var(--lh-ui);
@@ -385,7 +423,7 @@
   transition: color 0.2s ease;
 }
 
-.about-timeline-now-link:hover {
+.about-timeline-status-link:hover {
   color: var(--accent-tertiary);
 }
 
@@ -422,25 +460,25 @@
   }
 }
 
-@keyframes about-timeline-now-in {
+@keyframes about-timeline-status-in {
   from {
     opacity: 0;
-    transform: translateY(var(--space-6)) scale(0.94);
+    transform: translateY(var(--space-4));
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-@keyframes about-timeline-now-check-in {
-  from {
-    opacity: 0;
-    transform: scale(0.35) rotate(-45deg);
-  }
-  to {
+@keyframes about-timeline-status-pulse {
+  0%, 100% {
     opacity: 1;
-    transform: scale(1) rotate(0);
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
   }
 }
 
@@ -464,16 +502,10 @@
       animation-range: entry 50% exit 50%;
     }
 
-    .about-timeline-now {
-      animation: about-timeline-now-in cubic-bezier(0.22, 1, 0.36, 1) both;
+    .about-timeline-status {
+      animation: about-timeline-status-in cubic-bezier(0.22, 1, 0.36, 1) both;
       animation-timeline: view();
       animation-range: entry 0% entry 100%;
-    }
-
-    .about-timeline-now-check {
-      animation: about-timeline-now-check-in cubic-bezier(0.34, 1.56, 0.64, 1) both;
-      animation-timeline: view();
-      animation-range: entry 10% entry 100%;
     }
   }
 }
@@ -519,8 +551,40 @@
   }
 }
 
+@media (max-width: 600px) {
+  .about-timeline-status {
+    padding: var(--space-3);
+  }
+
+  .about-timeline-status-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3) var(--space-4);
+  }
+
+  .about-timeline-status-link {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .about-timeline-status-stats {
+    grid-column: 1 / -1;
+  }
+
+  .about-timeline-status-stat {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .about-timeline-nav {
     transition: none;
+  }
+
+  .about-timeline-status-dot {
+    animation: none;
   }
 }

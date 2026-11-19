@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import matter from 'gray-matter'
 import { marked } from 'marked'
+import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path, { resolve } from 'node:path'
 
@@ -11,6 +12,8 @@ const virtualContentModule = 'virtual:wuyu-content'
 const resolvedContentModule = `\0${virtualContentModule}`
 const virtualUpdatesModule = 'virtual:wuyu-updates'
 const resolvedUpdatesModule = `\0${virtualUpdatesModule}`
+const virtualCommitsModule = 'virtual:wuyu-commits'
+const resolvedCommitsModule = `\0${virtualCommitsModule}`
 const updatesFilePath = resolve('content/updates.md')
 const updateTagAliases = new Map([
   ['新增', 'new'],
@@ -141,6 +144,16 @@ function readContentUpdates() {
   return parseUpdatesMarkdown(fs.readFileSync(updatesFilePath, 'utf8'))
 }
 
+// 提交日期在构建时快照一次；线上热力图随每次部署更新。
+function readCommitDates() {
+  try {
+    const output = execSync('git log --pretty=%cs', { encoding: 'utf8' })
+    return output.split('\n').filter(line => /^\d{4}-\d{2}-\d{2}$/.test(line))
+  } catch {
+    return []
+  }
+}
+
 function readRequestBody(request) {
   return new Promise((resolveBody, reject) => {
     let body = ''
@@ -258,11 +271,13 @@ function markdownContentPlugin() {
     resolveId(id) {
       if (id === virtualContentModule) return resolvedContentModule
       if (id === virtualUpdatesModule) return resolvedUpdatesModule
+      if (id === virtualCommitsModule) return resolvedCommitsModule
       return undefined
     },
     load(id) {
       if (id === resolvedContentModule) return `export default ${JSON.stringify(readContentPosts())}`
       if (id === resolvedUpdatesModule) return `export default ${JSON.stringify(readContentUpdates())}`
+      if (id === resolvedCommitsModule) return `export default ${JSON.stringify(readCommitDates())}`
       return undefined
     },
     configureServer(server) {
