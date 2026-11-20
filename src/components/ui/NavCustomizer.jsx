@@ -57,7 +57,7 @@ export default function NavCustomizer() {
           <p>调整顶部导航栏下滑分裂的触发与节奏。改动即时保存，返回页面生效。</p>
         </div>
         <div className="theme-customizer-actions">
-          <button type="button" className="theme-customizer-reset" onClick={resetNavSettings}>
+          <button type="button" className="theme-customizer-reset btn btn--text btn--sm" onClick={resetNavSettings}>
             恢复默认
           </button>
         </div>

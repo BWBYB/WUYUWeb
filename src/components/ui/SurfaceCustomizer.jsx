@@ -51,7 +51,7 @@ export default function SurfaceCustomizer() {
           <p>统一调节卡片、面板与导航的层级，改动即时保存。</p>
         </div>
         <div className="theme-customizer-actions">
-          <button type="button" className="theme-customizer-reset" onClick={resetSurfaceSettings}>
+          <button type="button" className="theme-customizer-reset btn btn--text btn--sm" onClick={resetSurfaceSettings}>
             恢复默认
           </button>
         </div>
