@@ -7,7 +7,8 @@ const STORAGE_KEY = 'my-blog-about-stats-layout'
 const CHANGE_EVENT = 'my-blog-about-stats-layout-change'
 
 export const ABOUT_STATS_LAYOUTS = ['balanced', 'flush']
-export const DEFAULT_ABOUT_STATS_LAYOUT = 'balanced'
+// 默认关闭缩进：六项统计与状态行左缘齐平（33），与站点主人 Chrome 里的设置一致
+export const DEFAULT_ABOUT_STATS_LAYOUT = 'flush'
 
 function normalizeLayout(value) {
   return ABOUT_STATS_LAYOUTS.includes(value) ? value : DEFAULT_ABOUT_STATS_LAYOUT

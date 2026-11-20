@@ -2,10 +2,10 @@
 // 参数由 Provider 写到根元素 CSS 变量，页面不直接读这里。
 
 export const DEFAULT_EDGE_BLUR_SETTINGS = {
-  enabled: true,
-  blur: 8,          // backdrop-filter 半径（px）
+  enabled: false,
+  blur: 1,          // backdrop-filter 半径（px）
   height: 150,      // 模糊带高度（px）
-  fade: 50,         // 实心区占高度的比例（%），之后渐变到透明
+  fade: 10,         // 实心区占高度的比例（%），之后渐变到透明
 }
 
 const numericRanges = {

@@ -2,10 +2,10 @@
 // 阴影分三层，统一由这里的四个参数推导；边框分普通与玻璃两套强度。
 
 export const DEFAULT_SURFACE_SETTINGS = {
-  shadowStrength: 1,
-  shadowY: 18,
-  shadowBlur: 44,
-  shadowSpread: 0,
+  shadowStrength: 1.04,
+  shadowY: 24,
+  shadowBlur: 30,
+  shadowSpread: 8,
   borderStrength: 1,
   glassStrength: 1,
 }

@@ -28,6 +28,8 @@ import {
 
 const STORAGE_KEY = 'my-blog-theme-switcher-theme'
 const themes = new Set(['light', 'dark', 'system'])
+// 站点默认主题：与站点主人在 Chrome 里的设置一致；设置页的「恢复主题」也回到这里
+export const DEFAULT_THEME = 'light'
 
 function readSystemTheme() {
   if (typeof window === 'undefined') return 'dark'
@@ -35,14 +37,14 @@ function readSystemTheme() {
 }
 
 function readTheme() {
-  if (typeof window === 'undefined') return 'light'
+  if (typeof window === 'undefined') return DEFAULT_THEME
 
   try {
     const storedTheme = window.localStorage.getItem(STORAGE_KEY)
     if (storedTheme === 'dim') return 'dark'
-    return themes.has(storedTheme) ? storedTheme : 'dark'
+    return themes.has(storedTheme) ? storedTheme : DEFAULT_THEME
   } catch {
-    return 'dark'
+    return DEFAULT_THEME
   }
 }
 

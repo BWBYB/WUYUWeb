@@ -1,4 +1,4 @@
-import { useAboutStatsLayout } from '../../hooks/useAboutStatsLayout'
+import { DEFAULT_ABOUT_STATS_LAYOUT, useAboutStatsLayout } from '../../hooks/useAboutStatsLayout'
 import Switch from './Switch'
 import './ThemeSwitcherCustomizer.css'
 import './AboutStatsCustomizer.css'
@@ -16,9 +16,18 @@ export default function AboutStatsCustomizer() {
           <span className="theme-customizer-kicker">ABOUT STATS</span>
           <h2 id="about-stats-customizer-title">关于页统计条</h2>
           <p>
-            六项提交统计在卡片里的横向位置。默认左右留白相等（各 96px）；
-            关掉后回到老版式：贴住左内缘，右边留出 127px 空白。
+            六项提交统计在卡片里的横向位置。默认与状态行左缘齐平（距外框 33px）；
+            打开后整条再缩进 16px（49px），与上面的「最近更新」拉开一档层级。
           </p>
+        </div>
+        <div className="theme-customizer-actions">
+          <button
+            type="button"
+            className="theme-customizer-reset btn btn--text btn--sm"
+            onClick={() => updateLayout(DEFAULT_ABOUT_STATS_LAYOUT)}
+          >
+            恢复默认
+          </button>
         </div>
       </div>
 
@@ -30,13 +39,13 @@ export default function AboutStatsCustomizer() {
         <div className="theme-customizer-grid">
           <div className="theme-customizer-control about-stats-toggle">
             <span className="theme-customizer-control-copy">
-              <span>左右平衡</span>
-              <small>{balanced ? '开：左右各 96px' : '关：贴左，右边空 127px'}</small>
+              <span>左侧缩进</span>
+              <small>{balanced ? '开：缩进 16px（距外框 49）' : '关：与状态行齐平（距外框 33）'}</small>
             </span>
             <Switch
               checked={balanced}
               onChange={(value) => updateLayout(value ? 'balanced' : 'flush')}
-              label="统计条左右留白平衡"
+              label="统计条左侧缩进"
             />
           </div>
         </div>

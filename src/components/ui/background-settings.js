@@ -53,26 +53,28 @@ const INTEGER_KEYS = new Set(['waterLimit'])
 const FISH_INTEGER_KEYS = new Set(['count', 'lengthMin', 'lengthMax'])
 const ADVANCED_INTEGER_KEYS = new Set(['fbmOctaves'])
 
+// 默认值即站点主人在自己 Chrome 里长期调校后的一组参数（原样搬过来当基准），
+// 这样换浏览器 / 新设备第一次访问就是他熟悉的样子。
 export const DEFAULT_BACKGROUND_SETTINGS = {
   mode: 'ascii', // 字符水体 / 极光 / 无 —— 同一时刻只渲染一层
   brush: 'gradient', // 梯度（十级明暗）/ 积木（块面）
   waveMode: 'cross', // 五种波动方式
-  waveSpeed: 1,
+  waveSpeed: 1.61,
   amplitude: 1,
-  wavelength: 1.25,
-  direction: 0,
+  wavelength: 1,
+  direction: 110,
   turbulence: 1,
-  waterDensity: 0.36,
-  waterLimit: 7,
-  presence: 1,
+  waterDensity: 0.53,
+  waterLimit: 4,
+  presence: 1.05,
   ripple: true,
   // 纸色：仅白天模式生效，取样例 bg-sampler 的暖纸配色
   paper: false,
   paperStrength: 1,
-  rippleSize: 1,
+  rippleSize: 0.75,
   rippleSpread: 1,
   rippleDecay: 1,
-  dimStrength: 0.85, // 文字区域逐格压暗
+  dimStrength: 0.65, // 文字区域逐格压暗
   readingDim: false, // 阅读页（非首页）额外减淡
   fish: {
     count: 3,
@@ -85,14 +87,14 @@ export const DEFAULT_BACKGROUND_SETTINGS = {
     startleReach: 0.9,
     emergeDuration: 1.4,
     tileAlpha: 0.75,
-    shadowAlpha: 0.14,
+    shadowAlpha: 0.26,
   },
   advanced: {
     fbmOctaves: 4,
     noiseScale: 1,
     gamma: 1,
     cellK: 1,
-    pixelBudget: 16,
+    pixelBudget: 12,
   },
 }
 
