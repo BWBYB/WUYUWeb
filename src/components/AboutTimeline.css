@@ -576,7 +576,13 @@
   color: color-mix(in srgb, var(--accent) 84%, transparent);
 }
 
+/* U+2588（█）在 IBM Plex Mono 里是独立字形（gid 140），不属于 ░▒▓ 那组连号
+   （gid 149–151）：12px 下墨迹顶端低 0.97px、底端低 0.44px、总高矮 0.53px，
+   并排看就像整块往下沉。按上下居中补偿 0.058em（≈0.7px@12px）。
+   用 top 而不是 transform：格子揭示动画 .is-pop 会写 transform，写在 transform 上会被动画顶掉 */
 .hm-4 {
+  position: relative;
+  top: -0.058em;
   color: var(--accent);
 }
 
