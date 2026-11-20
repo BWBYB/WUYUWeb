@@ -37,34 +37,36 @@ export default function Changelog({
     : updates.filter(entry => entry.tags.includes(filter))
   const visible = limit == null ? filtered : filtered.slice(0, limit)
 
-  const links = (
+  // 底栏只留「全部日志」入口；GitHub 已由头部圆钮承担
+  const links = allLogsHref ? (
     <div className="changelog-links">
-      {allLogsHref && (
-        <Link className="btn btn--secondary btn--sm" to={allLogsHref}>
-          全部日志（共 {updates.length} 条）<Icon name="chevronRight" size={14} />
-        </Link>
-      )}
-      <a
-        className="btn btn--secondary btn--sm"
-        href="https://github.com/BWBYB/WUYUWeb/commits/main/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        GitHub 提交 <Icon name="github" size={14} />
-      </a>
-      {showEditorLink && import.meta.env.DEV && (
-        <Link className="btn btn--primary btn--sm" to="/updates-editor">
-          本地编辑 <Icon name="pencil" size={14} />
-        </Link>
-      )}
+      <Link className="btn btn--secondary btn--sm" to={allLogsHref}>
+        全部日志（共 {updates.length} 条）<Icon name="chevronRight" size={14} />
+      </Link>
     </div>
-  )
+  ) : null
 
   return (
     <section className="changelog glass-card fade-in fade-in-2" aria-labelledby={headingId}>
       <header className="changelog-head">
-        <h2 id={headingId} className="changelog-title">{title}</h2>
-        <div className="changelog-toolbar">
+        <div className="changelog-head-top">
+          <h2 id={headingId} className="changelog-title">{title}</h2>
+          <a
+            className="btn btn--secondary btn--sm btn--icon"
+            href="https://github.com/BWBYB/WUYUWeb/commits/main/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub 提交"
+          >
+            <Icon name="github" size={16} />
+          </a>
+        </div>
+        <div className="changelog-head-actions">
+          {showEditorLink && import.meta.env.DEV && (
+            <Link className="btn btn--primary btn--sm" to="/updates-editor">
+              本地编辑 <Icon name="pencil" size={14} />
+            </Link>
+          )}
           <Segmented
             className="segmented--compact"
             label="筛选更新日志"
@@ -72,7 +74,6 @@ export default function Changelog({
             value={filter}
             onChange={setFilter}
           />
-          {links}
         </div>
       </header>
 
@@ -119,9 +120,11 @@ export default function Changelog({
         <p className="changelog-empty">这个筛选下还没有记录。</p>
       )}
 
-      <footer className="changelog-foot">
-        {links}
-      </footer>
+      {links ? (
+        <footer className="changelog-foot">
+          {links}
+        </footer>
+      ) : null}
     </section>
   )
 }
