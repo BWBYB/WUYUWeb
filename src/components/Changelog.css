@@ -4,32 +4,22 @@
   padding: var(--card-pad-feature);
 }
 
-/* 头部两行：标题独占一行，筛选分段在第二行靠右 */
+/* 头部单行：标题在左，筛选分段 + GitHub 圆钮在右 */
 .changelog-head {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
   padding-bottom: var(--space-5);
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* 标题行：标题左、GitHub 圆钮右，与热力图状态行同款按钮 */
-.changelog-head-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-
-/* 第二行：本地编辑（仅 DEV）在左、筛选分段在右；只有分段时靠右 */
+/* 右侧操作组：分段在左、GitHub 圆钮在右（圆钮与热力图状态行同款） */
 .changelog-head-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.changelog-head-actions .segmented {
   margin-left: auto;
 }
 
@@ -164,12 +154,18 @@
 
 .changelog-foot {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-4);
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
   margin-top: var(--space-5);
   padding-top: var(--space-5);
   border-top: 1px solid var(--border-subtle);
+}
+
+/* 只有「全部日志」时仍然贴右边 */
+.changelog-links {
+  margin-left: auto;
 }
 
 .changelog-links {
@@ -197,9 +193,6 @@
 }
 
 @media (max-width: 768px) {
-  .changelog-toolbar {
-    justify-content: flex-start;
-  }
   .changelog-entry {
     grid-template-columns: 1fr;
     gap: var(--space-3);

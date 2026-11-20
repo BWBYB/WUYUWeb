@@ -46,11 +46,25 @@ export default function Changelog({
     </div>
   ) : null
 
+  // 本地编辑固定在卡片左下角，只在 DEV 出现
+  const editorLink = showEditorLink && import.meta.env.DEV ? (
+    <Link className="btn btn--primary btn--sm" to="/updates-editor">
+      本地编辑 <Icon name="pencil" size={14} />
+    </Link>
+  ) : null
+
   return (
     <section className="changelog glass-card fade-in fade-in-2" aria-labelledby={headingId}>
       <header className="changelog-head">
-        <div className="changelog-head-top">
-          <h2 id={headingId} className="changelog-title">{title}</h2>
+        <h2 id={headingId} className="changelog-title">{title}</h2>
+        <div className="changelog-head-actions">
+          <Segmented
+            className="segmented--compact"
+            label="筛选更新日志"
+            options={changelogFilters}
+            value={filter}
+            onChange={setFilter}
+          />
           <a
             className="btn btn--secondary btn--sm btn--icon"
             href="https://github.com/BWBYB/WUYUWeb/commits/main/"
@@ -60,20 +74,6 @@ export default function Changelog({
           >
             <Icon name="github" size={16} />
           </a>
-        </div>
-        <div className="changelog-head-actions">
-          {showEditorLink && import.meta.env.DEV && (
-            <Link className="btn btn--primary btn--sm" to="/updates-editor">
-              本地编辑 <Icon name="pencil" size={14} />
-            </Link>
-          )}
-          <Segmented
-            className="segmented--compact"
-            label="筛选更新日志"
-            options={changelogFilters}
-            value={filter}
-            onChange={setFilter}
-          />
         </div>
       </header>
 
@@ -120,8 +120,9 @@ export default function Changelog({
         <p className="changelog-empty">这个筛选下还没有记录。</p>
       )}
 
-      {links ? (
+      {editorLink || links ? (
         <footer className="changelog-foot">
+          {editorLink}
           {links}
         </footer>
       ) : null}
