@@ -4,6 +4,7 @@
 // 网格符号必须留在等宽字体里才能对齐；星期标签、月份、汇总和图例是真正的文字，走站点衬线栈。
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from './ui/Icon'
+import { useAboutStatsLayout } from '../hooks/useAboutStatsLayout'
 
 const LEFT = 6 // weekday labels
 const LEVELS = '·░▒▓█'
@@ -110,6 +111,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
   const boxRef = useRef(null)
   const sumRef = useRef(null)
   const [tip, setTip] = useState(null)
+  const [statsLayout] = useAboutStatsLayout()
   const cols = LEFT + weeks * 2
   const months = useMemo(() => monthLabels(weeks), [weeks])
 
@@ -336,7 +338,7 @@ export default function AsciiHeatmap({ className = '', entries = [], weeks = 30,
 
   return (
     <>
-      <dl key={`s-${weeks}`} className="ascii-heatmap-stats">
+      <dl key={`s-${weeks}`} className="ascii-heatmap-stats" data-layout={statsLayout}>
         <div className="ascii-heatmap-stat">
           <dt>
             <Icon name="commit" size={12} />

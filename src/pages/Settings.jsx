@@ -3,6 +3,7 @@ import ThemeSwitcherCustomizer from '../components/ui/ThemeSwitcherCustomizer'
 import SurfaceCustomizer from '../components/ui/SurfaceCustomizer'
 import EdgeBlurCustomizer from '../components/ui/EdgeBlurCustomizer'
 import NavCustomizer from '../components/ui/NavCustomizer'
+import AboutStatsCustomizer from '../components/ui/AboutStatsCustomizer'
 import ChapterRail from '../components/ChapterRail'
 import './Settings.css'
 
@@ -11,6 +12,7 @@ const settingsChapters = [
   { id: 'surface-customizer-title', title: '阴影与边框', level: 2 },
   { id: 'edge-blur-customizer-title', title: '边缘模糊', level: 2 },
   { id: 'nav-customizer-title', title: '导航栏动效', level: 2 },
+  { id: 'about-stats-customizer-title', title: '关于页统计条', level: 2 },
 ]
 
 export default function Settings() {
@@ -32,6 +34,8 @@ export default function Settings() {
       <EdgeBlurCustomizer />
 
       <NavCustomizer />
+
+      <AboutStatsCustomizer />
 
       <Link className="settings-page-back btn btn--secondary fade-in fade-in-5" to={returnTo}>
         <span aria-hidden="true">←</span> 返回

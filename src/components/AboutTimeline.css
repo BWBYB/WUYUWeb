@@ -383,6 +383,11 @@
   animation: ascii-heatmap-frame-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* 详细设置 → 关于页统计条：关掉「左右平衡」即回到老版式（贴左、右边留白 127） */
+.ascii-heatmap-stats[data-layout="flush"] {
+  padding-left: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ascii-heatmap-stats {
     animation: none;
