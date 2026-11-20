@@ -369,12 +369,16 @@
 }
 
 /* 统计条：总量 / 活跃率（副行日均）/ 近一周（带环比徽章）/ 最忙一天 / 连续 ×2；
-   六项排两行三列，竖线分隔，行距拉开；
-   大数字 + 小单位 + 口径副行（日期区间），随窗口切换与网格同步淡入 */
+   六项排两行三列，等宽、间距 12，大数字 + 小单位 + 口径副行（日期区间），
+   随窗口切换与网格同步淡入。
+   左内距 96（6rem）：让首尾两侧留白相等。原始差值是左 0 / 右 127.5，
+   但左边加内距会同时压窄列宽、把第三格内容的右缘也往左带，每加 1px 右边只减约 1/3，
+   所以平衡点不是 127.5÷2 = 63.75，而是 95.6（实测 95.6 / 95.7），按 token 取 96 */
 .ascii-heatmap-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4) var(--space-3);
+  padding-left: calc(var(--space-7) * 2);
   margin: var(--space-4) 0 0;
   animation: ascii-heatmap-frame-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -408,6 +412,8 @@
   line-height: var(--lh-ui);
 }
 
+/* 数值与副行贴格子的左边缘，和标题左侧的 12px 图标同一条线；
+   只有标题的文字部分因图标占位而缩进 16px（图标在最左，文字在后） */
 .ascii-heatmap-stat__value {
   display: flex;
   align-items: baseline;
@@ -441,7 +447,8 @@
 .ascii-heatmap-stat__trend {
   display: inline-flex;
   align-items: center;
-  align-self: center;
+  /* 跟数字共用基线，而不是在 31px 行盒里垂直居中：居中会让徽章浮在数字视觉重心上方 */
+  align-self: baseline;
   gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-pill);
@@ -890,6 +897,8 @@
   .ascii-heatmap-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-4) var(--space-2);
+    /* 窄屏放弃左右平衡，两列直接吃满容器：96px 内距会把每列压到 107 */
+    padding-left: 0;
   }
 
   .ascii-heatmap-stat {
